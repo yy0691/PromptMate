@@ -45,6 +45,7 @@ import { PreferencesPanel } from "./PreferencesPanel";
 import { CardContent } from "./ui/card";
 import { useTranslation } from 'react-i18next';
 import { MCPSettingsPanel } from '@/components/promptx/MCPSettingsPanel';
+import { CloudStorageSettings } from "./CloudStorageSettings";
 
 // 侧边栏显示模式类型
 type SidebarMode = "expanded" | "collapsed";
@@ -88,7 +89,7 @@ export function Sidebar({ className }: { className?: string }) {
   const [sidebarMode, setSidebarMode] = useState<SidebarMode>(
     preferences.ui.sidebarExpanded ? "expanded" : "collapsed"
   );
-  const [settingsPanel, setSettingsPanel] = useState<"appearance" | "data" | "ai" | "mcp" | "about" | "preferences">("appearance");
+  const [settingsPanel, setSettingsPanel] = useState<"appearance" | "data" | "ai" | "mcp" | "cloud-storage" | "about" | "preferences">("appearance");
   const [showCategoryManager, setShowCategoryManager] = useState(false);
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
@@ -568,7 +569,7 @@ export function Sidebar({ className }: { className?: string }) {
     <div 
       ref={sidebarRef}
       className={cn(
-        "h-full border-r relative transition-all duration-300 flex-shrink-0 bg-background flex flex-col",
+        "h-[calc(100vh-3rem)] border-r relative transition-all duration-300 flex-shrink-0 bg-background flex flex-col",
         isCollapsed && "w-[60px]",
         !isCollapsed && "sidebar-dynamic-width",
         className
@@ -1126,6 +1127,14 @@ export function Sidebar({ className }: { className?: string }) {
               <Icons.zap className="w-4 h-4 mr-2" />
               MCP设置
             </Button>
+            <Button 
+              variant={settingsPanel === "cloud-storage" ? "default" : "outline"} 
+              onClick={() => setSettingsPanel("cloud-storage")}
+              className="flex items-center"
+            >
+              <Icons.cloud className="w-4 h-4 mr-2" />
+              {t('dataManagement.cloudSync')}
+            </Button>
             {/* PromptX settings tab removed; use main view via sidebar button */}
           </div>
           
@@ -1240,6 +1249,15 @@ export function Sidebar({ className }: { className?: string }) {
             <ScrollArea className="h-[60vh] pr-4">
               <div className="py-2">
                 <MCPSettingsPanel />
+              </div>
+            </ScrollArea>
+          )}
+
+          {/* 云存储设置面板 */}
+          {settingsPanel === "cloud-storage" && (
+            <ScrollArea className="h-[60vh] pr-4">
+              <div className="py-2">
+                <CloudStorageSettings />
               </div>
             </ScrollArea>
           )}

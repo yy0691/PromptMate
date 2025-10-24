@@ -16,7 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { 
   Cloud, 
-  CloudSync, 
+  CloudCog, 
   Settings, 
   CheckCircle, 
   XCircle, 
@@ -351,7 +351,7 @@ export const CloudStorageSettings: React.FC<CloudStorageSettingsProps> = ({ clas
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <CloudSync className="h-5 w-5" />
+            <CloudCog className="h-5 w-5" />
             云存储状态
           </CardTitle>
           <CardDescription>
