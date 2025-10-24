@@ -2,7 +2,7 @@
  * 云存储管理器
  * 统一管理不同云存储服务的接口
  */
-import { EventEmitter } from 'events';
+import EventEmitter from 'eventemitter3';
 import { 
   CloudStorageSettings, 
   CloudSyncStatus, 

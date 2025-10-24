@@ -46,7 +46,6 @@ export default defineConfig(({ mode }) => ({
         // 将Node.js模块和Electron模块标记为外部依赖
         'fs',
         'path', 
-        'events',
         'electron',
         'chokidar',
         'fsevents', // macOS 原生模块
@@ -62,7 +61,6 @@ export default defineConfig(({ mode }) => ({
           // 为外部模块提供全局变量名
           'fs': 'fs',
           'path': 'path',
-          'events': 'events',
           'electron': 'electron',
           'chokidar': 'chokidar',
           'fsevents': 'fsevents'

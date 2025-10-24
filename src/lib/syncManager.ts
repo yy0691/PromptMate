@@ -1,7 +1,7 @@
 import { Prompt, Category, Settings } from '../types';
 import { promises as fs } from 'fs';
 import { join, dirname } from 'path';
-import { EventEmitter } from 'events';
+import EventEmitter from 'eventemitter3';
 import { watch } from 'chokidar';
 import * as os from 'os';
 
