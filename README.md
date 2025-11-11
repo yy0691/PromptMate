@@ -109,6 +109,8 @@
 
 开发过程中若需快速验证，可执行 `npm run server:dev`（内部会先构建再启动）。服务会自动注入速率限制、审计日志与同步事件记录，客户端即可直接调用文档中定义的 REST 接口完成注册、登录、提示词同步等能力。
 
+> ✅ 部署前请参考《[后端部署检查清单](docs/backend-deployment-checklist.md)》，逐项确认 Supabase 表结构、RLS 策略、自定义域及环境变量配置，确保 `promptmate.luoyuanai.cn` 服务完全可用。
+
 ## 📥 下载与安装
 
 您可以前往我们的 **[Releases 页面](https://github.com/yy0691/PromptMate/releases)** 下载适用于您操作系统的最新版本。
