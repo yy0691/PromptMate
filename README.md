@@ -90,6 +90,27 @@
 - **⌨️ 全局快捷键**:
   - 支持自定义全局快捷键，随时随地一键呼出 PromptMate 主窗口。
 
+## 🔐 后端认证与同步服务
+
+按照 [账号与数据同步接口文档](docs/auth-sync-interface.md) 的规范，仓库内新增了 `server/` 目录以提供基于 Supabase 的统一账户体系与数据同步服务：
+
+1. 复制配置模板并填写 Supabase 与域名信息：
+   ```bash
+   cp server/.env.example server/.env
+   ```
+2. 安装依赖后运行一次构建（输出至 `dist-server/`，该目录已加入 `.gitignore`）：
+   ```bash
+   npm run server:build
+   ```
+3. 使用生产配置启动服务（默认端口 8787，可通过 `PORT` 覆盖）：
+   ```bash
+   npm run server:start
+   ```
+
+开发过程中若需快速验证，可执行 `npm run server:dev`（内部会先构建再启动）。服务会自动注入速率限制、审计日志与同步事件记录，客户端即可直接调用文档中定义的 REST 接口完成注册、登录、提示词同步等能力。
+
+> ✅ 部署前请参考《[后端部署检查清单](docs/backend-deployment-checklist.md)》，逐项确认 Supabase 表结构、RLS 策略、自定义域及环境变量配置，确保 `promptmate.luoyuanai.cn` 服务完全可用。
+
 ## 📥 下载与安装
 
 您可以前往我们的 **[Releases 页面](https://github.com/yy0691/PromptMate/releases)** 下载适用于您操作系统的最新版本。
