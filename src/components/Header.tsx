@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Moon, Sun, Pin, PinOff, Menu, Minus, Maximize2, X } from "lucide-react";
+import { Moon, Sun, Pin, PinOff, Menu, Minus, Maximize2, X, User, LogOut } from "lucide-react";
 import { useSettings } from "@/hooks/useSettings";
 import { usePrompts } from "@/hooks/usePrompts";
-import { useEffect, CSSProperties } from "react";
+import { useEffect, CSSProperties, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Icons } from "@/components/ui/icons";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -13,7 +13,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/hooks/useAuth";
+import { AuthDialog } from "@/components/AuthDialog";
 
 // 定义样式接口扩展WebkitAppRegion属性
 interface DraggableStyle extends CSSProperties {
@@ -34,6 +44,8 @@ export function Header() {
   const { toast } = useToast();
   const isMac = isMacOS();
   const { t } = useTranslation();
+  const { user, isAuthenticated, logout } = useAuth();
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
 
   // 检查electronAPI是否可用
   const isElectronAPIAvailable = () => {
@@ -43,27 +55,8 @@ export function Header() {
            typeof window.electronAPI.close === 'function';
   };
 
-  // 调试信息
-  useEffect(() => {
-    console.log('Header component mounted');
-    console.log('window.electronAPI:', window.electronAPI);
-    console.log('isElectronAPIAvailable:', isElectronAPIAvailable());
-    
-    if (window.electronAPI) {
-      console.log('electronAPI methods:', {
-        minimize: typeof window.electronAPI.minimize,
-        maximize: typeof window.electronAPI.maximize,
-        close: typeof window.electronAPI.close,
-        togglePinWindow: typeof window.electronAPI.togglePinWindow
-      });
-    } else {
-      console.warn('electronAPI is not available');
-      toast({
-        title: t("Header.message.debug"),
-        description: t("Header.message.debugDesc"),
-      });
-    }
-  }, []);
+  // 判断是否为网页版（非Electron环境）
+  const isWebVersion = !isElectronAPIAvailable();
 
   // 获取标题
   const getTitle = () => {
@@ -151,16 +144,12 @@ export function Header() {
   return (
         /* 头部容器 */
     <div 
-      className={`flex flex-col md:flex-row items-center backdrop-blur-sm bg-background/80 border-b px-4 py-2 md:py-2 md:h-12 sticky top-0 z-10 titlebar-drag ${
-        isMac ? 'pl-20' : ''
+      className={`flex flex-col md:flex-row items-center backdrop-blur-sm bg-background/80 border-b px-4 py-2 md:py-2 md:h-12 sticky top-0 z-10 ${
+        isWebVersion ? '' : 'titlebar-drag'
+      } ${
+        isMac && !isWebVersion ? 'pl-20' : ''
       }`}
     >
-      {/* 左侧标题区域 */}
-      <div className="flex items-center md:w-1/4">
-        <h2 className={`text-sm font-medium ${isMobile ? 'mb-2' : 'mr-4'} titlebar-no-drag`}>
-          
-        </h2>
-      </div>
       {/* 搜索框 */}
       <div className="flex-1 flex items-center justify-center">
         <div className="relative w-full max-w-2xl">
@@ -176,6 +165,51 @@ export function Header() {
       {/* 右侧按钮区域 */}
       <TooltipProvider delayDuration={100}>
         <div className="flex items-center space-x-2 mt-2 md:mt-0 md:w-1/4 justify-end">
+          {/* 用户登录/菜单 */}
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="titlebar-no-drag h-9 px-3"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  <span className="hidden sm:inline">
+                    {user?.nickname || user?.email || t("Header.user.guest")}
+                  </span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">
+                      {user?.nickname || t("Header.user.noNickname")}
+                    </p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user?.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => logout()}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>{t("Header.user.logout")}</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setAuthDialogOpen(true)}
+              className="titlebar-no-drag h-9 px-3"
+            >
+              <User className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">{t("Header.user.login")}</span>
+            </Button>
+          )}
+
           <Tooltip>
             <TooltipTrigger asChild>
               {/* 主题按钮 */}
@@ -197,28 +231,31 @@ export function Header() {
             </TooltipContent>
           </Tooltip>
 
-          {/* 窗口置顶按钮 */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => togglePinWindow(!settings.alwaysOnTop)}
-                className={`rounded-full ${settings.alwaysOnTop ? "text-primary" : ""} titlebar-no-drag h-9 w-9`}
-              >
-                {settings.alwaysOnTop ? (
-                  <Pin className="h-4.5 w-4.5" />
-                ) : (
-                  <PinOff className="h-4.5 w-4.5" />
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{settings.alwaysOnTop ? t("Header.button.cancelPinWindow") : t("Header.button.pinWindow")}</p>
-            </TooltipContent>
-          </Tooltip>
+          {/* 窗口置顶按钮 - 仅在Electron环境显示 */}
+          {!isWebVersion && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => togglePinWindow(!settings.alwaysOnTop)}
+                  className={`rounded-full ${settings.alwaysOnTop ? "text-primary" : ""} titlebar-no-drag h-9 w-9`}
+                >
+                  {settings.alwaysOnTop ? (
+                    <Pin className="h-4.5 w-4.5" />
+                  ) : (
+                    <PinOff className="h-4.5 w-4.5" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{settings.alwaysOnTop ? t("Header.button.cancelPinWindow") : t("Header.button.pinWindow")}</p>
+              </TooltipContent>
+            </Tooltip>
+          )}
 
-          {!isMac && (
+          {/* 窗口控制按钮 - 仅在Electron环境且非Mac系统显示 */}
+          {!isWebVersion && !isMac && (
             <>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -272,6 +309,9 @@ export function Header() {
           )}
         </div>
       </TooltipProvider>
+
+      {/* 登录对话框 */}
+      <AuthDialog open={authDialogOpen} onOpenChange={setAuthDialogOpen} />
     </div>
   );
 }

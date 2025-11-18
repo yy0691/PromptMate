@@ -211,6 +211,7 @@
       "favoritePrompts": "收藏提示词",
       "categoryPrompts": "分类提示词",
       "recommendedPrompts": "推荐提示词",
+      "marketplace": "模板市场",
       "manageCategories": "管理分类",
       "workflows": "工作流"
     },
@@ -1171,5 +1172,109 @@
     "saveChanges": "保存更改",
     "confirmDelete": "确认删除",
     "confirmDeleteDescription": "此操作将永久删除此提示词，该操作无法撤销。"
+  },
+  "auth": {
+    "title": "登录/注册",
+    "description": "登录以同步您的提示词数据",
+    "email": "邮箱",
+    "password": "密码",
+    "nickname": "昵称",
+    "confirmPassword": "确认密码",
+    "emailPlaceholder": "请输入邮箱地址",
+    "passwordPlaceholder": "请输入密码",
+    "nicknamePlaceholder": "请输入昵称",
+    "confirmPasswordPlaceholder": "请再次输入密码",
+    "or": "或",
+    "login": {
+      "title": "登录",
+      "button": "登录",
+      "loggingIn": "登录中..."
+    },
+    "register": {
+      "title": "注册",
+      "button": "注册",
+      "registering": "注册中..."
+    },
+    "error": {
+      "invalidInput": "输入无效",
+      "pleaseFillAllFields": "请填写所有必填字段",
+      "passwordMismatch": "密码不匹配",
+      "passwordMismatchDesc": "两次输入的密码不一致，请重新输入",
+      "passwordTooShort": "密码太短",
+      "passwordTooShortDesc": "密码长度至少需要6个字符"
+    },
+    "oauth": {
+      "cancelled": "已取消",
+      "cancelledDesc": "OAuth登录已取消",
+      "failed": "OAuth登录失败",
+      "failedDesc": "无法完成OAuth登录，请重试"
+    }
+  },
+  "Header": {
+    "user": {
+      "login": "登录",
+      "logout": "退出登录",
+      "guest": "访客",
+      "noNickname": "未设置昵称"
+    }
+  },
+  "marketplace": {
+    "title": "模板市场",
+    "upload": "上传模板",
+    "searchPlaceholder": "搜索模板...",
+    "category": "分类",
+    "tag": "标签",
+    "allCategories": "全部分类",
+    "allTags": "全部标签",
+    "sortByDate": "按时间排序",
+    "sortByDownloads": "按下载量排序",
+    "sortByViews": "按浏览量排序",
+    "noPrompts": "暂无模板",
+    "noPromptsDesc": "还没有人上传模板，快来成为第一个吧！",
+    "view": "查看",
+    "download": "下载",
+    "edit": "编辑",
+    "delete": "删除",
+    "uploadPrompt": "上传模板",
+    "editPrompt": "编辑模板",
+    "uploadPromptDesc": "分享您的提示词模板到市场",
+    "editPromptDesc": "修改您的模板信息",
+    "titlePlaceholder": "输入模板标题",
+    "contentPlaceholder": "输入模板内容",
+    "description": "描述",
+    "descriptionPlaceholder": "输入模板描述（可选）",
+    "content": "内容",
+    "tags": "标签",
+    "tagsPlaceholder": "用逗号分隔，例如：AI, 写作, 创意",
+    "categoryCreative": "创意",
+    "categoryProductivity": "效率",
+    "categoryDevelopment": "开发",
+    "categoryEducation": "教育",
+    "categoryBusiness": "商务",
+    "categoryOther": "其他",
+    "views": "浏览",
+    "downloads": "下载",
+    "success": {
+      "uploaded": "上传成功",
+      "updated": "更新成功",
+      "deleted": "删除成功",
+      "downloaded": "下载成功",
+      "pendingReview": "您的模板已提交，等待审核中",
+      "addedToLibrary": "模板已添加到您的提示词库"
+    },
+    "error": {
+      "loadFailed": "加载失败",
+      "uploadFailed": "上传失败",
+      "updateFailed": "更新失败",
+      "deleteFailed": "删除失败",
+      "downloadFailed": "下载失败",
+      "loginRequired": "需要登录",
+      "loginRequiredDesc": "请先登录后再上传模板",
+      "invalidInput": "输入无效",
+      "pleaseFillRequired": "请填写所有必填字段"
+    },
+    "confirm": {
+      "delete": "确定要删除这个模板吗？此操作无法撤销。"
+    }
   }
 }

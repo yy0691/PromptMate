@@ -13,6 +13,15 @@ import { getProfile, updateProfile } from './controllers/profileController';
 import { pullSync, pushSync } from './controllers/syncController';
 import { heartbeat } from './controllers/devicesController';
 import { listAuditLogs } from './controllers/securityController';
+import {
+  createMarketplacePrompt,
+  deleteMarketplacePrompt,
+  downloadMarketplacePrompt,
+  getMarketplacePrompt,
+  listMarketplacePrompts,
+  reviewMarketplacePrompt,
+  updateMarketplacePrompt,
+} from './controllers/marketplaceController';
 
 export function initRoutes() {
   registerRoute('POST', '/api/auth/register/email', registerWithEmail, { rateLimitKey: 'auth:strict' });
@@ -41,4 +50,13 @@ export function initRoutes() {
   registerRoute('POST', '/api/devices/heartbeat', heartbeat, { requireAuth: true });
 
   registerRoute('GET', '/api/security/audit-logs', listAuditLogs);
+
+  // 模板市场路由
+  registerRoute('GET', '/api/marketplace/prompts', listMarketplacePrompts);
+  registerRoute('GET', '/api/marketplace/prompts/:id', getMarketplacePrompt);
+  registerRoute('POST', '/api/marketplace/prompts', createMarketplacePrompt, { requireAuth: true, rateLimitKey: 'write:standard' });
+  registerRoute('PATCH', '/api/marketplace/prompts/:id', updateMarketplacePrompt, { requireAuth: true, rateLimitKey: 'write:standard' });
+  registerRoute('DELETE', '/api/marketplace/prompts/:id', deleteMarketplacePrompt, { requireAuth: true, rateLimitKey: 'write:standard' });
+  registerRoute('POST', '/api/marketplace/prompts/:id/review', reviewMarketplacePrompt, { requireAuth: true, rateLimitKey: 'write:standard' });
+  registerRoute('POST', '/api/marketplace/prompts/:id/download', downloadMarketplacePrompt);
 }

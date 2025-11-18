@@ -1,7 +1,7 @@
 {
   "version": "1.1.11",
-  "buildDate": "2025-10-24T02:58:08.929Z",
-  "buildTime": "2025-10-24T02:58:08.930Z",
-  "gitCommit": "9d6cc11",
-  "gitBranch": "fix-electron-renderer-resolve-events-module"
+  "buildDate": "2025-10-24T05:55:51.326Z",
+  "buildTime": "2025-10-24T05:55:51.329Z",
+  "gitCommit": "c981702",
+  "gitBranch": "main"
 }

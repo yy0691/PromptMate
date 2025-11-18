@@ -5,6 +5,7 @@ import { useSettings } from "@/hooks/useSettings";
 import { Header } from "@/components/Header";
 import { PromptsProvider } from "@/hooks/usePrompts";
 import { AppViewProvider, useAppView } from "@/hooks/useAppView";
+import { AuthProvider } from "@/hooks/useAuth";
 import { Toaster } from "@/components/ui/toaster";
 import { Icons } from "@/components/ui/icons"; // Import Icons for fallback
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -15,6 +16,7 @@ import { useSplashScreenContext } from "@/hooks/useSplashScreenContext";
 // Import conditional workflow view
 import { ConditionalWorkflowView } from "@/components/ConditionalWorkflowView";
 import { PromptXView } from "@/components/promptx/PromptXView";
+import { MarketplaceView } from "@/views/MarketplaceView";
 
 // Lazy load the Index component (handle named export)
 const Index = lazy(() => 
@@ -63,6 +65,8 @@ function AppContent() {
         return <ConditionalWorkflowView />;
       case 'promptx':
         return <PromptXView sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />;
+      case 'marketplace':
+        return <MarketplaceView onToggleSidebar={toggleSidebar} />;
       case 'prompts':
       default:
         return (
@@ -99,15 +103,17 @@ function AppContent() {
 export default function App() {
   return (
     <ErrorBoundary>
-      <AppViewProvider>
-        <ErrorBoundary>
-          <PromptsProvider>
-            <ErrorBoundary>
-              <AppContent />
-            </ErrorBoundary>
-          </PromptsProvider>
-        </ErrorBoundary>
-      </AppViewProvider>
+      <AuthProvider>
+        <AppViewProvider>
+          <ErrorBoundary>
+            <PromptsProvider>
+              <ErrorBoundary>
+                <AppContent />
+              </ErrorBoundary>
+            </PromptsProvider>
+          </ErrorBoundary>
+        </AppViewProvider>
+      </AuthProvider>
     </ErrorBoundary>
   );
 }

@@ -707,6 +707,37 @@ export function Sidebar({ className }: { className?: string }) {
                 </Tooltip>
               </TooltipProvider>
 
+              <TooltipProvider delayDuration={100}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant={currentView === 'marketplace' ? "default" : "ghost"}
+                      className={cn(
+                        "rounded-xl group hover:scale-105 transition-transform",
+                        currentView === 'marketplace' ? "" : "hover:bg-accent hover:text-accent-foreground",
+                        isCollapsed
+                          ? "h-9 w-9 p-0 mx-auto flex items-center justify-center"
+                          : "w-full justify-start py-1 px-3"
+                      )}
+                      onClick={() => {
+                        setCurrentView('marketplace');
+                        setActiveCategory(null);
+                        setShowFavorites(false);
+                        setShowRecommended(false);
+                      }}
+                    >
+                      <Icons.gift className="h-4 w-4" />
+                      {!isCollapsed && t("sidebar.tooltip.marketplace")}
+                    </Button>
+                  </TooltipTrigger>
+                  {isCollapsed && (
+                    <TooltipContent side="right">
+                      {t("sidebar.tooltip.marketplace")}
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
+
               {isDev && (
                 <TooltipProvider delayDuration={100}>
                   <Tooltip>

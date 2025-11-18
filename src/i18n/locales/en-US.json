@@ -206,6 +206,7 @@
       "favoritePrompts": "Favorite",
       "categoryPrompts": "Category",
       "recommendedPrompts": "Recommended",
+      "marketplace": "Template Marketplace",
       "manageCategories": "Manage Categories",
       "workflows": "Workflows"
     },
@@ -1306,5 +1307,109 @@
     "saveChanges": "Save Changes",
     "confirmDelete": "Confirm Delete",
     "confirmDeleteDescription": "This action will permanently delete this prompt, and the operation cannot be undone."
+  },
+  "auth": {
+    "title": "Login / Register",
+    "description": "Login to sync your prompt data",
+    "email": "Email",
+    "password": "Password",
+    "nickname": "Nickname",
+    "confirmPassword": "Confirm Password",
+    "emailPlaceholder": "Enter email address",
+    "passwordPlaceholder": "Enter password",
+    "nicknamePlaceholder": "Enter nickname",
+    "confirmPasswordPlaceholder": "Enter password again",
+    "or": "Or",
+    "login": {
+      "title": "Login",
+      "button": "Login",
+      "loggingIn": "Logging in..."
+    },
+    "register": {
+      "title": "Register",
+      "button": "Register",
+      "registering": "Registering..."
+    },
+    "error": {
+      "invalidInput": "Invalid input",
+      "pleaseFillAllFields": "Please fill in all required fields",
+      "passwordMismatch": "Password mismatch",
+      "passwordMismatchDesc": "The two passwords do not match, please re-enter",
+      "passwordTooShort": "Password too short",
+      "passwordTooShortDesc": "Password must be at least 6 characters long"
+    },
+    "oauth": {
+      "cancelled": "Cancelled",
+      "cancelledDesc": "OAuth login cancelled",
+      "failed": "OAuth login failed",
+      "failedDesc": "Unable to complete OAuth login, please try again"
+    }
+  },
+  "Header": {
+    "user": {
+      "login": "Login",
+      "logout": "Logout",
+      "guest": "Guest",
+      "noNickname": "No nickname"
+    }
+  },
+  "marketplace": {
+    "title": "Template Marketplace",
+    "upload": "Upload Template",
+    "searchPlaceholder": "Search templates...",
+    "category": "Category",
+    "tag": "Tag",
+    "allCategories": "All Categories",
+    "allTags": "All Tags",
+    "sortByDate": "Sort by Date",
+    "sortByDownloads": "Sort by Downloads",
+    "sortByViews": "Sort by Views",
+    "noPrompts": "No Templates",
+    "noPromptsDesc": "No one has uploaded templates yet. Be the first!",
+    "view": "View",
+    "download": "Download",
+    "edit": "Edit",
+    "delete": "Delete",
+    "uploadPrompt": "Upload Template",
+    "editPrompt": "Edit Template",
+    "uploadPromptDesc": "Share your prompt template to the marketplace",
+    "editPromptDesc": "Modify your template information",
+    "titlePlaceholder": "Enter template title",
+    "contentPlaceholder": "Enter template content",
+    "description": "Description",
+    "descriptionPlaceholder": "Enter template description (optional)",
+    "content": "Content",
+    "tags": "Tags",
+    "tagsPlaceholder": "Separated by commas, e.g.: AI, Writing, Creative",
+    "categoryCreative": "Creative",
+    "categoryProductivity": "Productivity",
+    "categoryDevelopment": "Development",
+    "categoryEducation": "Education",
+    "categoryBusiness": "Business",
+    "categoryOther": "Other",
+    "views": "views",
+    "downloads": "downloads",
+    "success": {
+      "uploaded": "Uploaded successfully",
+      "updated": "Updated successfully",
+      "deleted": "Deleted successfully",
+      "downloaded": "Downloaded successfully",
+      "pendingReview": "Your template has been submitted and is pending review",
+      "addedToLibrary": "Template has been added to your prompt library"
+    },
+    "error": {
+      "loadFailed": "Failed to load",
+      "uploadFailed": "Upload failed",
+      "updateFailed": "Update failed",
+      "deleteFailed": "Delete failed",
+      "downloadFailed": "Download failed",
+      "loginRequired": "Login required",
+      "loginRequiredDesc": "Please login before uploading templates",
+      "invalidInput": "Invalid input",
+      "pleaseFillRequired": "Please fill in all required fields"
+    },
+    "confirm": {
+      "delete": "Are you sure you want to delete this template? This action cannot be undone."
+    }
   }
 }
