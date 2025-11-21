@@ -1,0 +1,5 @@
+ignoredBuiltDependencies:
+  - '@swc/core'
+  - electron
+  - esbuild
+  - lzma-native
