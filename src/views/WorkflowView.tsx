@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Icons } from "@/components/ui/icons";
 import { Workflow } from "@/types/workflow";
 import { useAppView } from "@/hooks/useAppView";
+import { Sidebar } from "@/components/Sidebar";
 
 type ViewMode = 'list' | 'builder' | 'executor' | 'templates';
 
@@ -388,8 +389,14 @@ function WorkflowViewContent() {
 function WorkflowView() {
   return (
     <WorkflowsProvider>
-      <div className="min-h-screen">
-        <WorkflowViewContent />
+      <div className="flex flex-1 min-h-0">
+        {/* 左侧边栏 - 始终显示 */}
+        <Sidebar />
+        
+        {/* 右侧内容区域 */}
+        <div className="flex-1 min-h-0">
+          <WorkflowViewContent />
+        </div>
       </div>
     </WorkflowsProvider>
   );

@@ -110,9 +110,10 @@ export function Sidebar({ className }: { className?: string }) {
   // 处理点击全部提示词
   const handleAllPromptsClick = useCallback(() => {
     console.log('All prompts clicked');
+    setCurrentView('prompts'); // 切换到提示词视图
     resetAllFilters();
     console.log(t("sidebar.message.allPromptsClicked"));
-  }, [resetAllFilters, t]); // ✅ 添加依赖项
+  }, [resetAllFilters, setCurrentView, t]); // ✅ 添加依赖项
   
   // 当设置对话框关闭时，重置面板状态
   useEffect(() => {
@@ -219,6 +220,9 @@ export function Sidebar({ className }: { className?: string }) {
   const handleCategoryClick = (categoryId: string) => {
     console.log('Category clicked:', categoryId);
     
+    // 切换到提示词视图
+    setCurrentView('prompts');
+    
     // 先设置一个缓存变量
     const targetCategory = categoryId;
     
@@ -243,6 +247,9 @@ export function Sidebar({ className }: { className?: string }) {
   const handleFavoritesClick = () => {
     console.log('Favorites clicked');
     
+    // 切换到提示词视图
+    setCurrentView('prompts');
+    
     // 清空所有其他状态
     setActiveCategory(null);
     setShowRecommended(false);
@@ -263,6 +270,9 @@ export function Sidebar({ className }: { className?: string }) {
   // 处理点击推荐模板
   const handleRecommendedClick = () => {
     console.log('Recommended clicked');
+    
+    // 切换到提示词视图（推荐模板在提示词视图中显示）
+    setCurrentView('prompts');
     
     // 清空所有其他状态
     setActiveCategory(null);

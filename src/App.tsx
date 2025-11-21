@@ -33,6 +33,13 @@ function AppContent() {
   const { setAppReady } = useSplashScreenContext();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const isDev = import.meta.env.DEV;
+
+  // 当切换到需要侧边栏的视图时，确保侧边栏是打开的
+  useEffect(() => {
+    if (currentView === 'promptx' || currentView === 'marketplace' || currentView === 'workflows') {
+      setSidebarOpen(true);
+    }
+  }, [currentView]);
   
   // 启动页面管理
   const { 

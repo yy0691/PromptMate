@@ -39,6 +39,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Sidebar } from '@/components/Sidebar';
 
 export function MarketplaceView({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
   const { t } = useTranslation();
@@ -270,9 +271,14 @@ export function MarketplaceView({ onToggleSidebar }: { onToggleSidebar?: () => v
   };
 
   return (
-    <div className="flex flex-col h-full">
-      {/* 头部工具栏 */}
-      <div className="flex-shrink-0 p-4 border-b space-y-4">
+    <div className="flex flex-1 min-h-0">
+      {/* 左侧边栏 - 始终显示 */}
+      <Sidebar />
+
+      {/* 右侧内容区域 */}
+      <div className="flex-1 min-h-0 flex flex-col">
+        {/* 头部工具栏 */}
+        <div className="flex-shrink-0 p-4 border-b space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">{t('marketplace.title')}</h1>
           <Button onClick={handleOpenUpload} disabled={!isAuthenticated}>
@@ -307,12 +313,12 @@ export function MarketplaceView({ onToggleSidebar }: { onToggleSidebar?: () => v
             </SelectContent>
           </Select>
 
-          <Select value={selectedTag} onValueChange={setSelectedTag}>
+          <Select value={selectedTag || 'all'} onValueChange={(v) => setSelectedTag(v === 'all' ? '' : v)}>
             <SelectTrigger className="w-[150px]">
               <SelectValue placeholder={t('marketplace.tag')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">{t('marketplace.allTags')}</SelectItem>
+              <SelectItem value="all">{t('marketplace.allTags')}</SelectItem>
               {allTags.map(tag => (
                 <SelectItem key={tag} value={tag}>{tag}</SelectItem>
               ))}
@@ -567,6 +573,7 @@ export function MarketplaceView({ onToggleSidebar }: { onToggleSidebar?: () => v
           )}
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 }
