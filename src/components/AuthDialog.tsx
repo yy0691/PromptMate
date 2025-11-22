@@ -23,7 +23,7 @@ interface AuthDialogProps {
 
 export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDialogProps) {
   const { t } = useTranslation();
-  const { login, register, handleOAuthCallback } = useAuth();
+  const { login, register, handleOAuthCallback: handleOAuthCallbackFromAuth } = useAuth();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<'login' | 'register'>(defaultTab);
   const [loading, setLoading] = useState(false);
@@ -193,7 +193,7 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
 
   // 处理 OAuth 登录回调
   const handleOAuthLoginCallback = async (provider: 'google' | 'github', code: string, redirectUri: string) => {
-    await handleOAuthCallback(provider, code, redirectUri);
+    await handleOAuthCallbackFromAuth(provider, code, redirectUri);
   };
 
   // 检查浏览器环境的 OAuth 回调（通过 URL 参数）
