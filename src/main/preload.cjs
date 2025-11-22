@@ -45,7 +45,21 @@ contextBridge.exposeInMainWorld('electronAPI', {
   resetToDefaults: (language) => ipcRenderer.invoke('db-reset-to-defaults', language),
   
   // 通用IPC调用方法
-  invoke: (channel, ...args) => ipcRenderer.invoke(channel, ...args)
+  invoke: (channel, ...args) => ipcRenderer.invoke(channel, ...args),
+  
+  // OAuth 回调监听
+  onOAuthCallback: (callback) => {
+    ipcRenderer.on('oauth-callback', (event, data) => {
+      callback(data);
+    });
+    // 返回清理函数
+    return () => {
+      ipcRenderer.removeAllListeners('oauth-callback');
+    };
+  },
+  
+  // 打开外部链接
+  openExternal: (url) => ipcRenderer.send('open-external', url)
 }); 
 
 console.log('electronAPI exposed to renderer process');

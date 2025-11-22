@@ -2,10 +2,11 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings, Sparkles, ArrowLeft, Puzzle, Cloud } from "lucide-react";
+import { Settings, Sparkles, ArrowLeft, Puzzle, Cloud, Users } from "lucide-react";
 import { AISettings } from "@/components/AISettings";
 import { PluginSettings } from "@/components/PluginSettings";
 import { CloudStorageSettings } from "@/components/CloudStorageSettings";
+import { LinuxDoSettings } from "@/components/LinuxDoSettings";
 import { useTranslation } from "react-i18next";
 import { DataImportExport } from "@/components/DataImportExport";
 
@@ -40,7 +41,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
       {/* 设置选项卡 */}
       <Tabs defaultValue="ai" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="ai" className="flex items-center gap-2">
             <Sparkles className="h-4 w-4" />
             AI设置
@@ -48,6 +49,10 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           <TabsTrigger value="cloud" className="flex items-center gap-2">
             <Cloud className="h-4 w-4" />
             云同步
+          </TabsTrigger>
+          <TabsTrigger value="linuxdo" className="flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            LinuxDo
           </TabsTrigger>
           <TabsTrigger value="plugins" className="flex items-center gap-2">
             <Puzzle className="h-4 w-4" />
@@ -137,6 +142,11 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
               <DataImportExport inline />
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* LinuxDo 选项卡 */}
+        <TabsContent value="linuxdo" className="space-y-6">
+          <LinuxDoSettings />
         </TabsContent>
 
         {/* 插件管理选项卡 */}

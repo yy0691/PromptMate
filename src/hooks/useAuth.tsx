@@ -26,6 +26,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   refreshAuth: () => Promise<boolean>;
   getAccessToken: () => string | null;
+  handleOAuthCallback: (provider: 'google' | 'github', code: string, redirectUri: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -201,6 +202,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return tokens?.access_token || null;
   }, [loadStoredAuth]);
 
+  // 处理 OAuth 回调
+  const handleOAuthCallback = useCallback(async (provider: 'google' | 'github', code: string, redirectUri: string) => {
+    try {
+      const authResponse = await authService.oauthCallback(provider, code, redirectUri);
+      saveAuth(authResponse);
+      toast({
+        title: '登录成功',
+        description: `欢迎回来，${authResponse.user.nickname || authResponse.user.email}！`,
+        variant: 'success',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'OAuth登录失败',
+        description: error.message || 'OAuth登录失败，请重试',
+        variant: 'destructive',
+      });
+      throw error;
+    }
+  }, [saveAuth, toast]);
+
   return (
     <AuthContext.Provider
       value={{
@@ -212,6 +233,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         refreshAuth,
         getAccessToken,
+        handleOAuthCallback,
       }}
     >
       {children}

@@ -15,3 +15,4 @@ browser-extension.zip
 src/build-info.json
 src/build-info.json
 *.local
+.DS_Store
