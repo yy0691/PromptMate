@@ -3,7 +3,7 @@
  * 支持邮箱登录、注册和OAuth登录
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,7 +23,7 @@ interface AuthDialogProps {
 
 export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDialogProps) {
   const { t } = useTranslation();
-  const { login, register } = useAuth();
+  const { login, register, handleOAuthCallback: handleOAuthCallbackFromAuth } = useAuth();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<'login' | 'register'>(defaultTab);
   const [loading, setLoading] = useState(false);
@@ -118,35 +118,41 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
     setOAuthLoading(provider);
     try {
       // 构建重定向URI（对于Electron应用，使用自定义协议）
-      const redirectUri = window.location.origin.includes('localhost')
-        ? 'http://localhost:5173/auth/callback'
-        : 'promptmate://oauth';
+      const isElectron = !!(window as any).electronAPI;
+      const redirectUri = isElectron
+        ? 'promptmate://oauth'
+        : `${window.location.origin}/auth/callback`;
 
       const oauthUrl = await authService.getOAuthUrl(provider, redirectUri);
       
       // 打开OAuth授权页面
-      // 对于Electron，可能需要使用shell.openExternal
-      if ((window as any).electronAPI?.openExternal) {
+      if (isElectron && (window as any).electronAPI?.openExternal) {
+        // Electron 环境：使用 shell.openExternal 打开外部浏览器
         (window as any).electronAPI.openExternal(oauthUrl);
+        
+        // 监听 OAuth 回调（通过 IPC）
+        const cleanup = (window as any).electronAPI.onOAuthCallback?.((data: any) => {
+          cleanup?.();
+          handleOAuthCallback(provider, data);
+        });
       } else {
-        // 浏览器环境，直接打开新窗口
+        // 浏览器环境：打开弹出窗口
         const popup = window.open(oauthUrl, 'oauth', 'width=500,height=600');
         
-        // 监听OAuth回调（简化版，实际应该通过消息传递）
+        if (!popup) {
+          throw new Error('无法打开弹出窗口，请检查浏览器弹窗设置');
+        }
+        
+        // 监听弹出窗口关闭
         const checkClosed = setInterval(() => {
-          if (popup?.closed) {
+          if (popup.closed) {
             clearInterval(checkClosed);
             setOAuthLoading(null);
-            toast({
-              title: t('auth.oauth.cancelled'),
-              description: t('auth.oauth.cancelledDesc'),
-            });
+            // 检查 URL 中是否有回调参数（浏览器环境）
+            checkBrowserOAuthCallback(provider);
           }
         }, 500);
       }
-
-      // 注意：OAuth回调处理需要额外的实现
-      // 这里只是打开授权页面，实际回调处理需要在应用启动时配置
     } catch (error: any) {
       toast({
         title: t('auth.oauth.failed'),
@@ -156,6 +162,80 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
       setOAuthLoading(null);
     }
   };
+
+  // 处理 OAuth 回调
+  const handleOAuthCallback = async (provider: 'google' | 'github', data: any) => {
+    try {
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      if (!data.code) {
+        throw new Error('未收到授权码');
+      }
+
+      const redirectUri = (window as any).electronAPI
+        ? 'promptmate://oauth'
+        : `${window.location.origin}/auth/callback`;
+
+      await handleOAuthLoginCallback(provider, data.code, redirectUri);
+      setOAuthLoading(null);
+      onOpenChange(false);
+    } catch (error: any) {
+      toast({
+        title: t('auth.oauth.failed'),
+        description: error.message || t('auth.oauth.failedDesc'),
+        variant: 'destructive',
+      });
+      setOAuthLoading(null);
+    }
+  };
+
+  // 处理 OAuth 登录回调
+  const handleOAuthLoginCallback = async (provider: 'google' | 'github', code: string, redirectUri: string) => {
+    await handleOAuthCallbackFromAuth(provider, code, redirectUri);
+  };
+
+  // 检查浏览器环境的 OAuth 回调（通过 URL 参数）
+  const checkBrowserOAuthCallback = async (provider: 'google' | 'github') => {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      const error = urlParams.get('error');
+
+      if (error) {
+        throw new Error(error);
+      }
+
+      if (code) {
+        const redirectUri = `${window.location.origin}/auth/callback`;
+        await handleOAuthLoginCallback(provider, code, redirectUri);
+        // 清除 URL 参数
+        window.history.replaceState({}, '', window.location.pathname);
+        onOpenChange(false);
+      }
+    } catch (error: any) {
+      toast({
+        title: t('auth.oauth.failed'),
+        description: error.message || t('auth.oauth.failedDesc'),
+        variant: 'destructive',
+      });
+    }
+  };
+
+  // 组件挂载时检查 URL 参数（浏览器环境）
+  useEffect(() => {
+    if (!(window as any).electronAPI) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      if (code) {
+        // 尝试从 state 参数推断 provider，或默认使用 google
+        const state = urlParams.get('state') || '';
+        const provider = state.includes('github') ? 'github' : 'google';
+        checkBrowserOAuthCallback(provider);
+      }
+    }
+  }, []);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

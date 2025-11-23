@@ -700,8 +700,82 @@ function createWindow() {
   registerGlobalShortcut(settings.globalShortcut);
 }
 
+// 注册自定义协议 promptmate:// (必须在 app.whenReady 之前)
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient('promptmate', process.execPath, [path.resolve(process.argv[1])]);
+  }
+} else {
+  app.setAsDefaultProtocolClient('promptmate');
+}
+
+// 处理自定义协议 URL (在 macOS 上需要特殊处理)
+app.on('open-url', (event, url) => {
+  event.preventDefault();
+  handleOAuthCallback(url);
+});
+
+// 处理命令行参数中的协议 URL (Windows/Linux)
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    // 查找协议 URL
+    const url = commandLine.find(arg => arg.startsWith('promptmate://'));
+    if (url) {
+      handleOAuthCallback(url);
+    }
+    // 如果主窗口被最小化，则恢复它
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+}
+
+// 处理 OAuth 回调
+function handleOAuthCallback(url) {
+  try {
+    const urlObj = new URL(url);
+    if (urlObj.protocol === 'promptmate:' && urlObj.hostname === 'oauth') {
+      // 提取查询参数
+      const params = new URLSearchParams(urlObj.search);
+      const code = params.get('code');
+      const error = params.get('error');
+      const state = params.get('state');
+      
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        // 通过 IPC 发送 OAuth 回调数据到渲染进程
+        mainWindow.webContents.send('oauth-callback', {
+          code,
+          error,
+          state,
+          provider: state ? (state.includes('google') ? 'google' : 'github') : null
+        });
+        
+        // 显示并聚焦窗口
+        if (mainWindow.isMinimized()) mainWindow.restore();
+        mainWindow.focus();
+      } else {
+        log.warn('主窗口不存在，无法处理 OAuth 回调');
+      }
+    }
+  } catch (error) {
+    log.error('处理 OAuth 回调失败:', error);
+  }
+}
+
 // 初始化应用
 app.whenReady().then(async () => {
+  // 处理启动时的协议 URL (Windows/Linux)
+  if (process.platform === 'win32' || process.platform === 'linux') {
+    const url = process.argv.find(arg => arg.startsWith('promptmate://'));
+    if (url) {
+      handleOAuthCallback(url);
+    }
+  }
+  
   createWindow();
   
   // 初始化数据库 (使用 sql.js)
@@ -917,6 +991,12 @@ ipcMain.on('close-window', () => {
   if (mainWindow) {
     mainWindow.close();
   }
+});
+
+// 打开外部链接
+ipcMain.on('open-external', (_, url) => {
+  const { shell } = require('electron');
+  shell.openExternal(url);
 });
 
 // 导出/导入数据
