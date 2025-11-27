@@ -46,6 +46,9 @@ export function Header() {
   const { t } = useTranslation();
   const { user, isAuthenticated, logout } = useAuth();
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  
+  // 在生产环境暂时隐藏登录功能
+  const isProduction = import.meta.env.PROD;
 
   // 检查electronAPI是否可用
   const isElectronAPIAvailable = () => {
