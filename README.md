@@ -1,7 +1,6 @@
 # PromptMate
 
 <div align="center">
-  <img src="URL_TO_YOUR_LOGO" alt="PromptMate Logo" width="150"/>
   <p>
     <strong>您的智能 AI 提示词管家</strong>
   </p>
