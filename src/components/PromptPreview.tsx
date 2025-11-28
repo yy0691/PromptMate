@@ -21,6 +21,7 @@ interface PromptPreviewProps {
   variableValues: Record<string, string>;
   onVariableChange: (values: Record<string, string>) => void;
   onPreviewChange: (content: string) => void;
+  onOpenVariableForm?: () => void; // 新增：打开变量表单的回调
 }
 
 export const PromptPreview: React.FC<PromptPreviewProps> = ({
@@ -30,8 +31,18 @@ export const PromptPreview: React.FC<PromptPreviewProps> = ({
   variableValues,
   onVariableChange,
   onPreviewChange,
+  onOpenVariableForm,
 }) => {
   const { t } = useTranslation();
+
+  // 处理变量点击事件
+  const handleVariableClick = () => {
+    // 如果表单未打开，则打开表单
+    if (!showVariableForm && onOpenVariableForm) {
+      onOpenVariableForm();
+    }
+  };
+
   // 计算预览内容
   const previewContent = variableValues && Object.keys(variableValues).length > 0
     ? applyVariableValues(prompt.content, variableValues)
@@ -87,12 +98,14 @@ export const PromptPreview: React.FC<PromptPreviewProps> = ({
             <VariableReplacementDisplay
               originalContent={prompt.content}
               variableValues={safeVariableValues}
+              onVariableClick={handleVariableClick}
             />
           ) : (
             // 显示原始内容（带变量高亮）
             <VariableDisplay
               content={prompt.content}
               showVariableCount={true}
+              onVariableClick={handleVariableClick}
             />
           )}
         </div>

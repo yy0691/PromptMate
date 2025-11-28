@@ -40,7 +40,7 @@
     "dist:mac-arm": "npm run build && electron-builder --mac --arm64 --config.electronDownload.mirror=https://npmmirror.com/mirrors/electron/",
     "dist:mac": "npm run build && electron-builder --mac --universal --config.electronDownload.mirror=https://npmmirror.com/mirrors/electron/",
     "dist:all": "npm run build && electron-builder --win --x64 --config.electronDownload.mirror=https://npmmirror.com/mirrors/electron/ && electron-builder --mac --universal --config.electronDownload.mirror=https://npmmirror.com/mirrors/electron/",
-    "electron:dev": "concurrently \"vite\" \"wait-on http://localhost:5173 http://localhost:5174 http://localhost:5175 && electron .\"",
+    "electron:dev": "concurrently \"vite\" \"npm run server:dev\" \"wait-on http://localhost:5173 http://localhost:5174 http://localhost:5175 && electron .\"",
     "electron:build": "vite build && npm run build:electron && electron-builder",
     "electron:preview": "vite build && npm run build:electron && electron .",
     "electron:start": "set NODE_ENV=development && electron .",

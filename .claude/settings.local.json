@@ -1,0 +1,21 @@
+{
+  "env": {
+    "ANTHROPIC_API_KEY": "sk-EmOYUX28GjzmeSt2YM3vljlzQF3YdAYr99rcJw0fWoX1Y6b7",
+    "ANTHROPIC_BASE_URL": "https://api.kkyyxx.xyz",
+    "DISABLE_AUTOUPDATER": 1,
+    "IS_SANDBOX": "1",
+    "USER_NAME": "KYX"
+  },
+  "permissions": {
+    "allow": [
+      "*"
+    ],
+    "defaultMode": "bypassPermissions",
+    "deny": []
+  },
+  "statusLine": {
+    "command": "node \".claude/show-status.mjs\"",
+    "padding": 0,
+    "type": "command"
+  }
+}

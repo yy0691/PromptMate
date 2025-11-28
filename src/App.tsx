@@ -1,4 +1,5 @@
 import { useEffect, useState, lazy, Suspense, useCallback } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { useSettings } from "@/hooks/useSettings";
 // import { ThemeProvider } from "@/components/ThemeProvider"; // 移除ThemeProvider，避免与useSettings冲突
 // import { Index } from "@/pages/Index"; // Remove direct import
@@ -17,6 +18,7 @@ import { useSplashScreenContext } from "@/hooks/useSplashScreenContext";
 import { ConditionalWorkflowView } from "@/components/ConditionalWorkflowView";
 import { PromptXView } from "@/components/promptx/PromptXView";
 import { MarketplaceView } from "@/views/MarketplaceView";
+import { AuthCallback } from "@/pages/AuthCallback";
 
 // Lazy load the Index component (handle named export)
 const Index = lazy(() => 
@@ -32,6 +34,7 @@ function AppContent() {
   const { currentView } = useAppView();
   const { setAppReady } = useSplashScreenContext();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const location = useLocation();
   const isDev = import.meta.env.DEV;
 
   // 当切换到需要侧边栏的视图时，确保侧边栏是打开的
@@ -96,11 +99,26 @@ function AppContent() {
     );
   }
 
+  // OAuth 回调路由不显示 Header
+  if (location.pathname === '/auth/callback') {
+    return (
+      <>
+        <Routes>
+          <Route path="/auth/callback" element={<AuthCallback />} />
+        </Routes>
+        <Toaster />
+      </>
+    );
+  }
+
   return (
     <main className="min-h-screen flex flex-col" data-testid="main-app">
       <Header />
       <div className="flex-1 flex min-h-0 overflow-hidden app-content">
-        {renderCurrentView()}
+        <Routes>
+          <Route path="/" element={renderCurrentView()} />
+          <Route path="*" element={renderCurrentView()} />
+        </Routes>
       </div>
       <Toaster />
     </main>

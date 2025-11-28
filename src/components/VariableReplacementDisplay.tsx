@@ -2,18 +2,20 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { cn } from '@/lib/utils';
-import { applyVariableValues } from '@/lib/variableUtils';
+import { applyVariableValues, VariableInfo } from '@/lib/variableUtils';
 
 interface VariableReplacementDisplayProps {
   originalContent: string;
   variableValues: Record<string, string>;
   className?: string;
+  onVariableClick?: (variable?: VariableInfo) => void; // 新增：点击变量的回调
 }
 
 export const VariableReplacementDisplay: React.FC<VariableReplacementDisplayProps> = ({
   originalContent,
   variableValues,
-  className = ""
+  className = "",
+  onVariableClick,
 }) => {
   // 使用现有的 applyVariableValues 函数获取最终内容
   const finalContent = applyVariableValues(originalContent, variableValues);
@@ -61,9 +63,11 @@ export const VariableReplacementDisplay: React.FC<VariableReplacementDisplayProp
                       "inline-block px-2 py-0.5 mx-0.5 rounded text-white font-medium text-sm",
                       "bg-gradient-to-r from-blue-500 to-purple-600",
                       "hover:from-blue-600 hover:to-purple-700 hover:shadow-sm",
-                      "transition-all duration-200 cursor-help"
+                      "transition-all duration-200",
+                      onVariableClick ? "cursor-pointer" : "cursor-help"
                     )}
-                    title="已填写的变量"
+                    title="已填写的变量 - 点击打开变量表单"
+                    onClick={() => onVariableClick?.()}
                   >
                     {value}
                   </span>

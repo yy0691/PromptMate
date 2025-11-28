@@ -4,7 +4,7 @@
  */
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import { authService, User, AuthResponse } from '@/services/authService';
+import { authService, User, AuthResponse, OAuthProvider } from '@/services/authService';
 import { useToast } from '@/hooks/use-toast';
 
 const TOKEN_STORAGE_KEY = 'promptmate_auth_tokens';
@@ -26,7 +26,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   refreshAuth: () => Promise<boolean>;
   getAccessToken: () => string | null;
-  handleOAuthCallback: (provider: 'google' | 'github', code: string, redirectUri: string) => Promise<void>;
+  handleOAuthCallback: (provider: OAuthProvider, code: string, redirectUri: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -203,7 +203,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [loadStoredAuth]);
 
   // 处理 OAuth 回调
-  const handleOAuthCallback = useCallback(async (provider: 'google' | 'github', code: string, redirectUri: string) => {
+  const handleOAuthCallback = useCallback(async (provider: OAuthProvider, code: string, redirectUri: string) => {
     try {
       const authResponse = await authService.oauthCallback(provider, code, redirectUri);
       saveAuth(authResponse);

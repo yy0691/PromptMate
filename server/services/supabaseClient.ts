@@ -74,6 +74,20 @@ export async function signInWithEmail(email: string, password: string) {
 }
 
 export function buildOAuthUrl(provider: string, redirectUri: string): string {
+  // 对于 Supabase 支持的标准 OAuth 提供商（google, github 等）
+  // 使用 Supabase 的统一授权端点
+  const standardProviders = ['google', 'github', 'facebook', 'twitter', 'discord'];
+  
+  if (standardProviders.includes(provider.toLowerCase())) {
+    const query = new URLSearchParams({
+      provider,
+      redirect_to: redirectUri,
+    });
+    return `${supabaseUrl}/auth/v1/authorize?${query.toString()}`;
+  }
+  
+  // 对于自定义 OAuth 提供商（如 linuxdo），也使用 Supabase 端点
+  // Supabase 会根据配置的自定义提供商进行处理
   const query = new URLSearchParams({
     provider,
     redirect_to: redirectUri,

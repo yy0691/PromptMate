@@ -168,49 +168,53 @@ export function Header() {
       {/* 右侧按钮区域 */}
       <TooltipProvider delayDuration={100}>
         <div className="flex items-center space-x-2 mt-2 md:mt-0 md:w-1/4 justify-end">
-          {/* 用户登录/菜单 */}
-          {isAuthenticated ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+          {/* 用户登录/菜单 - 生产环境下隐藏 */}
+          {!isProduction && (
+            <>
+              {isAuthenticated ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="titlebar-no-drag h-9 px-3"
+                    >
+                      <User className="h-4 w-4 mr-2" />
+                      <span className="hidden sm:inline">
+                        {user?.nickname || user?.email || t("Header.user.guest")}
+                      </span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">
+                          {user?.nickname || t("Header.user.noNickname")}
+                        </p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {user?.email}
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => logout()}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>{t("Header.user.logout")}</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
                 <Button
                   variant="ghost"
                   size="sm"
+                  onClick={() => setAuthDialogOpen(true)}
                   className="titlebar-no-drag h-9 px-3"
                 >
                   <User className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">
-                    {user?.nickname || user?.email || t("Header.user.guest")}
-                  </span>
+                  <span className="hidden sm:inline">{t("Header.user.login")}</span>
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      {user?.nickname || t("Header.user.noNickname")}
-                    </p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {user?.email}
-                    </p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => logout()}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>{t("Header.user.logout")}</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setAuthDialogOpen(true)}
-              className="titlebar-no-drag h-9 px-3"
-            >
-              <User className="h-4 w-4 mr-2" />
-              <span className="hidden sm:inline">{t("Header.user.login")}</span>
-            </Button>
+              )}
+            </>
           )}
 
           <Tooltip>

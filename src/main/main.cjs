@@ -745,14 +745,28 @@ function handleOAuthCallback(url) {
       const error = params.get('error');
       const state = params.get('state');
       
+      // 从 state 参数推断 OAuth 提供商
+      let provider = null;
+      if (state) {
+        if (state.includes('google')) {
+          provider = 'google';
+        } else if (state.includes('github')) {
+          provider = 'github';
+        } else if (state.includes('linuxdo')) {
+          provider = 'linuxdo';
+        }
+      }
+      
       if (mainWindow && !mainWindow.isDestroyed()) {
         // 通过 IPC 发送 OAuth 回调数据到渲染进程
         mainWindow.webContents.send('oauth-callback', {
           code,
           error,
           state,
-          provider: state ? (state.includes('google') ? 'google' : 'github') : null
+          provider
         });
+        
+        log.info(`OAuth 回调处理成功: provider=${provider}, hasCode=${!!code}, hasError=${!!error}`);
         
         // 显示并聚焦窗口
         if (mainWindow.isMinimized()) mainWindow.restore();

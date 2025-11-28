@@ -6,6 +6,9 @@
 // API基础URL配置
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8787';
 
+// OAuth 提供商类型
+export type OAuthProvider = 'google' | 'github' | 'linuxdo';
+
 export interface User {
   id: string;
   email: string;
@@ -80,7 +83,7 @@ class AuthService {
   /**
    * 获取OAuth授权URL
    */
-  async getOAuthUrl(provider: 'google' | 'github', redirectUri: string): Promise<string> {
+  async getOAuthUrl(provider: OAuthProvider, redirectUri: string): Promise<string> {
     const response = await fetch(
       `${this.baseURL}/api/auth/oauth/url?provider=${provider}&redirect_uri=${encodeURIComponent(redirectUri)}`,
       {
@@ -103,7 +106,7 @@ class AuthService {
   /**
    * OAuth回调处理
    */
-  async oauthCallback(provider: 'google' | 'github', code: string, redirectUri: string): Promise<AuthResponse> {
+  async oauthCallback(provider: OAuthProvider, code: string, redirectUri: string): Promise<AuthResponse> {
     const response = await fetch(`${this.baseURL}/api/auth/oauth/callback`, {
       method: 'POST',
       headers: {

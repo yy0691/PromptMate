@@ -259,6 +259,7 @@ export function PromptEditorModular() {
                   // 这里可以添加预览内容变化的处理逻辑
                   console.log('Preview content changed:', content);
                 }}
+                onOpenVariableForm={() => updateField('showVariableForm', true)}
                 className="h-full"
               />
             )}

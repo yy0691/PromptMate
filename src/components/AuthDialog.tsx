@@ -11,8 +11,8 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { authService } from '@/services/authService';
-import { Loader2, Mail, Github } from 'lucide-react';
+import { authService, OAuthProvider } from '@/services/authService';
+import { Loader2, Mail, Github, Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface AuthDialogProps {
@@ -114,7 +114,7 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
   };
 
   // 处理OAuth登录
-  const handleOAuthLogin = async (provider: 'google' | 'github') => {
+  const handleOAuthLogin = async (provider: OAuthProvider) => {
     setOAuthLoading(provider);
     try {
       // 构建重定向URI（对于Electron应用，使用自定义协议）
@@ -124,12 +124,12 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
         : `${window.location.origin}/auth/callback`;
 
       const oauthUrl = await authService.getOAuthUrl(provider, redirectUri);
-      
+
       // 打开OAuth授权页面
       if (isElectron && (window as any).electronAPI?.openExternal) {
         // Electron 环境：使用 shell.openExternal 打开外部浏览器
         (window as any).electronAPI.openExternal(oauthUrl);
-        
+
         // 监听 OAuth 回调（通过 IPC）
         const cleanup = (window as any).electronAPI.onOAuthCallback?.((data: any) => {
           cleanup?.();
@@ -138,11 +138,11 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
       } else {
         // 浏览器环境：打开弹出窗口
         const popup = window.open(oauthUrl, 'oauth', 'width=500,height=600');
-        
+
         if (!popup) {
           throw new Error('无法打开弹出窗口，请检查浏览器弹窗设置');
         }
-        
+
         // 监听弹出窗口关闭
         const checkClosed = setInterval(() => {
           if (popup.closed) {
@@ -164,7 +164,7 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
   };
 
   // 处理 OAuth 回调
-  const handleOAuthCallback = async (provider: 'google' | 'github', data: any) => {
+  const handleOAuthCallback = async (provider: OAuthProvider, data: any) => {
     try {
       if (data.error) {
         throw new Error(data.error);
@@ -192,12 +192,12 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
   };
 
   // 处理 OAuth 登录回调
-  const handleOAuthLoginCallback = async (provider: 'google' | 'github', code: string, redirectUri: string) => {
+  const handleOAuthLoginCallback = async (provider: OAuthProvider, code: string, redirectUri: string) => {
     await handleOAuthCallbackFromAuth(provider, code, redirectUri);
   };
 
   // 检查浏览器环境的 OAuth 回调（通过 URL 参数）
-  const checkBrowserOAuthCallback = async (provider: 'google' | 'github') => {
+  const checkBrowserOAuthCallback = async (provider: OAuthProvider) => {
     try {
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get('code');
@@ -231,7 +231,12 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
       if (code) {
         // 尝试从 state 参数推断 provider，或默认使用 google
         const state = urlParams.get('state') || '';
-        const provider = state.includes('github') ? 'github' : 'google';
+        let provider: OAuthProvider = 'google';
+        if (state.includes('github')) {
+          provider = 'github';
+        } else if (state.includes('linuxdo')) {
+          provider = 'linuxdo';
+        }
         checkBrowserOAuthCallback(provider);
       }
     }
@@ -332,6 +337,22 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
                 GitHub
               </Button>
             </div>
+
+            {/* Linux.do 登录按钮 */}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleOAuthLogin('linuxdo')}
+              disabled={oauthLoading !== null}
+              className="w-full"
+            >
+              {oauthLoading === 'linuxdo' ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Globe className="mr-2 h-4 w-4" />
+              )}
+              Linux.do
+            </Button>
           </TabsContent>
 
           {/* 注册标签页 */}
