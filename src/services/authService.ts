@@ -4,7 +4,8 @@
  */
 
 // API基础URL配置
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8787';
+// 在生产环境使用相对路径（同域），开发环境使用本地服务器
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? '' : 'http://localhost:8787');
 
 // OAuth 提供商类型
 export type OAuthProvider = 'google' | 'github' | 'linuxdo';
