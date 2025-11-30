@@ -22,3 +22,4 @@ src/build-info.json
 .DS_Store
 .obsidian
 .vercel
+.env
