@@ -7,17 +7,16 @@
  */
 
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { initRoutes, matchRoute } from '../server/router';
+import { matchRoute } from '../server/router';
+import { initRoutes } from '../server/registerRoutes';
 import { getUserFromToken } from '../server/services/supabaseClient';
-import { sendError, sendJson, sendNoContent } from '../server/utils/response-vercel';
+import { sendError } from '../server/utils/response-vercel';
 
 // 初始化路由（只执行一次）
 let routesInitialized = false;
 function initRoutesOnce() {
   if (!routesInitialized) {
-    // 动态导入以避免循环依赖
-    const { initRoutes: init } = require('../server/registerRoutes');
-    init();
+    initRoutes();
     routesInitialized = true;
   }
 }
