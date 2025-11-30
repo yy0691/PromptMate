@@ -14,7 +14,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { CategoryManager } from "./category/CategoryManager";
-import { Category } from "@/types";
+import { Category, CloudStorageSettings as CloudStorageSettingsType } from "@/types";
 import { ViewBadge } from "./category/ViewBadge";
 import { CategoryIcon } from "./category/CategoryIcon";
 import { IconSelector } from "./category/IconSelector";
@@ -1298,7 +1298,7 @@ export function Sidebar({ className }: { className?: string }) {
           {settingsPanel === "cloud-storage" && (
             <ScrollArea className="max-h-[calc(85vh-180px)] sm:max-h-[60vh] pr-4">
               <div className="py-2">
-                <CloudStorageSettings />
+                <CloudStorageSettings/>
               </div>
             </ScrollArea>
           )}

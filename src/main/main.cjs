@@ -692,6 +692,44 @@ function createWindow() {
     mainWindow = null;
   });
 
+  // 拦截所有外部链接，在系统默认浏览器中打开
+  const { shell } = require('electron');
+  
+  // 拦截 window.open 和 target="_blank" 链接
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    // 检查是否是外部链接
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      log.info('在系统浏览器中打开外部链接:', url);
+      shell.openExternal(url);
+      return { action: 'deny' }; // 阻止在 Electron 中打开新窗口
+    }
+    return { action: 'deny' }; // 默认阻止所有新窗口
+  });
+  
+  // 拦截页面内导航到外部链接
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    // 获取当前页面的 URL
+    const currentUrl = mainWindow.webContents.getURL();
+    
+    // 如果是开发环境，允许导航到 localhost
+    const isDev = process.env.NODE_ENV === 'development';
+    if (isDev && (url.startsWith('http://localhost') || url.startsWith('http://127.0.0.1'))) {
+      return; // 允许开发服务器内部导航
+    }
+    
+    // 如果是生产环境，允许 file:// 协议的导航
+    if (url.startsWith('file://')) {
+      return; // 允许本地文件导航
+    }
+    
+    // 外部 HTTP/HTTPS 链接在系统浏览器中打开
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      event.preventDefault();
+      log.info('拦截导航并在系统浏览器中打开:', url);
+      shell.openExternal(url);
+    }
+  });
+
   // 加载设置并应用窗口置顶状态
   const settings = getSettings();
   mainWindow.setAlwaysOnTop(settings.alwaysOnTop);
