@@ -49,6 +49,26 @@ export function Header() {
   
   // 在生产环境暂时隐藏登录功能
   const isProduction = import.meta.env.PROD;
+  
+  // 后门：按 Ctrl+Shift+L 可以在生产环境显示登录按钮
+  const [showLoginInProd, setShowLoginInProd] = useState(false);
+  
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl+Shift+L (Windows/Linux) 或 Cmd+Shift+L (Mac) 切换登录按钮显示
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'l') {
+        e.preventDefault();
+        setShowLoginInProd(prev => {
+          const newValue = !prev;
+          console.log(`[Debug] Login button ${newValue ? 'enabled' : 'disabled'} in production`);
+          return newValue;
+        });
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // 检查electronAPI是否可用
   const isElectronAPIAvailable = () => {
@@ -168,8 +188,8 @@ export function Header() {
       {/* 右侧按钮区域 */}
       <TooltipProvider delayDuration={100}>
         <div className="flex items-center space-x-2 mt-2 md:mt-0 md:w-1/4 justify-end">
-          {/* 用户登录/菜单 - 生产环境下隐藏 */}
-          {!isProduction && (
+          {/* 用户登录/菜单 - 生产环境下隐藏，但可通过 Ctrl+Shift+L 显示 */}
+          {(!isProduction || showLoginInProd) && (
             <>
               {isAuthenticated ? (
                 <DropdownMenu>
