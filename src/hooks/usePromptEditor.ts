@@ -422,12 +422,17 @@ export const usePromptEditor = (options: PromptEditorOptions = {}) => {
     }
   }, [autoSave, state.hasChanges, state.isEditing, prompt, debouncedSaveChanges]);
 
-  // 当提示词变化时重置表单
+  // 当切换到不同的提示词时重置表单（通过 ID 判断，而不是对象引用）
   useEffect(() => {
-    if (prompt && !isAutoSavingRef.current) {
+    const currentPromptId = prompt?.id || null;
+    const prevPromptId = previousSelectedPromptIdRef.current;
+    
+    // 只有当提示词ID变化时才重置表单，避免自动保存时触发重置
+    if (currentPromptId !== prevPromptId && !isAutoSavingRef.current) {
       resetForm();
+      previousSelectedPromptIdRef.current = currentPromptId;
     }
-  }, [prompt, resetForm]);
+  }, [prompt?.id, resetForm]);
 
   // 注册切换提示词前的检查回调函数
   useEffect(() => {

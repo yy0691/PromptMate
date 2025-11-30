@@ -20,6 +20,27 @@ export async function registerWithEmail(context: RequestContext) {
     const nickname = assertString(body.nickname, 'nickname');
 
     const result = await signUpWithEmail(email, password, nickname);
+    
+    console.log('[Register] signUpWithEmail result:', JSON.stringify({
+      hasUser: !!result.user,
+      userId: result.user?.id,
+      hasSession: !!result.session,
+    }));
+
+    // 创建 profiles 表记录
+    if (result.user?.id) {
+      try {
+        const profile = await upsertProfile(result.user.id, {
+          nickname: nickname,
+        });
+        console.log('[Register] upsertProfile result:', JSON.stringify(profile));
+      } catch (profileError: any) {
+        console.error('[Register] upsertProfile failed:', profileError.message);
+        // 不抛出错误，允许注册继续（用户可以稍后登录时补充 profile）
+      }
+    } else {
+      console.warn('[Register] No user ID returned from signUpWithEmail');
+    }
 
     sendJson(context.res, 200, {
       user: {
@@ -31,6 +52,7 @@ export async function registerWithEmail(context: RequestContext) {
       email_confirmed: false,
     });
   } catch (error: any) {
+    console.error('[Register] Error:', error.message);
     sendError(context.res, 400, error.message ?? 'Failed to register', 'INVALID_PARAMS');
   }
 }

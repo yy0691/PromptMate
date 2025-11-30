@@ -89,14 +89,20 @@ export function PromptEditorModular() {
   });
 
   // 选中新提示词时，默认进入预览模式
+  const previousPromptIdRef = React.useRef<string | null>(null);
   React.useEffect(() => {
-    if (selectedPrompt && state.isEditing) {
-      // 如果当前在编辑模式，切换到预览模式
-      if (!state.hasChanges) {
+    const currentId = selectedPrompt?.id || null;
+    const prevId = previousPromptIdRef.current;
+    
+    // 只有当切换到不同的提示词时才触发（避免自动保存时退出编辑模式）
+    if (currentId !== prevId) {
+      previousPromptIdRef.current = currentId;
+      
+      if (selectedPrompt && state.isEditing && !state.hasChanges) {
         cancelEditing();
       }
     }
-  }, [selectedPrompt?.id]); // 只在选中不同提示词时触发
+  }, [selectedPrompt?.id, state.isEditing, state.hasChanges, cancelEditing]);
 
   if (!selectedPrompt) {
     return (

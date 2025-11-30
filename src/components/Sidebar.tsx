@@ -1181,7 +1181,7 @@ export function Sidebar({ className }: { className?: string }) {
           
           {/* 外观设置面板 */}
           {settingsPanel === "appearance" && (
-            <ScrollArea className="h-[60vh] pr-4">
+            <ScrollArea className="max-h-[calc(85vh-180px)] sm:max-h-[60vh] pr-4">
               <div className="py-2 space-y-6">
                 
                 {/* 语言设置 */}
@@ -1268,7 +1268,7 @@ export function Sidebar({ className }: { className?: string }) {
           
           {/* 数据管理面板 */}
           {settingsPanel === "data" && (
-            <div className="py-2 h-[60vh] overflow-y-auto">
+            <div className="py-2 max-h-[calc(85vh-180px)] sm:max-h-[60vh] overflow-y-auto">
               <CardContent className="text-sm font-medium mb-2 text-muted-foreground color-green-500">{t('dataManagement.cloudSyncDescription2')}</CardContent>
               <DataImportExport 
                 onDataChanged={handleDataChanged}
@@ -1278,7 +1278,7 @@ export function Sidebar({ className }: { className?: string }) {
 
           {/* AI设置面板 */}
           {settingsPanel === "ai" && (
-            <ScrollArea className="h-[60vh] pr-4">
+            <ScrollArea className="max-h-[calc(85vh-180px)] sm:max-h-[60vh] pr-4">
               <div className="py-2">
                 <AISettings />
               </div>
@@ -1287,7 +1287,7 @@ export function Sidebar({ className }: { className?: string }) {
 
           {/* MCP 设置面板 */}
           {settingsPanel === "mcp" && (
-            <ScrollArea className="h-[60vh] pr-4">
+            <ScrollArea className="max-h-[calc(85vh-180px)] sm:max-h-[60vh] pr-4">
               <div className="py-2">
                 <MCPSettingsPanel />
               </div>
@@ -1296,7 +1296,7 @@ export function Sidebar({ className }: { className?: string }) {
 
           {/* 云存储设置面板 */}
           {settingsPanel === "cloud-storage" && (
-            <ScrollArea className="h-[60vh] pr-4">
+            <ScrollArea className="max-h-[calc(85vh-180px)] sm:max-h-[60vh] pr-4">
               <div className="py-2">
                 <CloudStorageSettings />
               </div>
@@ -1307,14 +1307,14 @@ export function Sidebar({ className }: { className?: string }) {
 
           {/* 用户偏好设置面板 */}
           {settingsPanel === "preferences" && (
-            <ScrollArea className="h-[60vh] pr-4">
+            <ScrollArea className="max-h-[calc(85vh-180px)] sm:max-h-[60vh] pr-4">
               <PreferencesPanel />
             </ScrollArea>
           )}
 
           {/* 关于面板 */}
           {settingsPanel === "about" && (
-            <ScrollArea className="h-[60vh] pr-4">
+            <ScrollArea className="max-h-[calc(85vh-180px)] sm:max-h-[60vh] pr-4">
               <About />
             </ScrollArea>
           )}

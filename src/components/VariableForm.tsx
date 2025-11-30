@@ -96,21 +96,34 @@ export const VariableForm: React.FC<VariableFormProps> = ({
   // Textarea 自适应高度（基于 refs，避免 query DOM）
   const textareasRef = useRef<Record<string, HTMLTextAreaElement | null>>({});
   const mirrorsRef = useRef<Record<string, HTMLDivElement | null>>({});
+  const previousHeightsRef = useRef<Record<string, number>>({});
+  
   const autoResize = useCallback((el: HTMLTextAreaElement | null) => {
     if (!el) return;
-    // 优先使用镜像元素的高度（能正确处理长连续字符换行）
+    
     const name = el.id;
     const mirror = mirrorsRef.current[name];
+    
+    // 计算所需高度
+    let newHeight: number;
     if (mirror) {
-      // 强制至少一行高度
-      const h = Math.max(mirror.scrollHeight, el.scrollHeight);
+      // 优先使用镜像元素的高度（能正确处理长连续字符换行）
+      newHeight = Math.max(mirror.scrollHeight, 44); // 最小44px
+    } else {
+      // 退化处理：使用 scrollHeight
+      // 临时重置高度以获取正确的 scrollHeight
+      const currentHeight = el.style.height;
       el.style.height = 'auto';
-      el.style.height = `${h}px`;
-      return;
+      newHeight = Math.max(el.scrollHeight, 44);
+      el.style.height = currentHeight; // 立即恢复，减少闪烁
     }
-    // 退化处理：无镜像时使用 scrollHeight
-    el.style.height = 'auto';
-    el.style.height = `${el.scrollHeight}px`;
+    
+    // 只有当高度确实需要改变时才更新（避免不必要的重绘）
+    const prevHeight = previousHeightsRef.current[name];
+    if (prevHeight !== newHeight) {
+      el.style.height = `${newHeight}px`;
+      previousHeightsRef.current[name] = newHeight;
+    }
   }, []);
 
   const setTextareaRef = useCallback(
@@ -131,13 +144,21 @@ export const VariableForm: React.FC<VariableFormProps> = ({
     [autoResize]
   );
 
-  // 当字段或变量值变化（程序化赋值）时，统一调整高度
+  // 当字段数量变化时（添加/删除字段）调整高度，但不在值变化时调整
+  const previousFieldCountRef = useRef(0);
   useEffect(() => {
-    const raf = requestAnimationFrame(() => {
-      Object.values(textareasRef.current).forEach((el) => autoResize(el));
-    });
-    return () => cancelAnimationFrame(raf);
-  }, [formFields, variableValues, autoResize]);
+    const currentFieldCount = formFields.length;
+    const prevFieldCount = previousFieldCountRef.current;
+    
+    // 只在字段数量变化时调整高度，避免每次输入都触发
+    if (currentFieldCount !== prevFieldCount) {
+      const raf = requestAnimationFrame(() => {
+        Object.values(textareasRef.current).forEach((el) => autoResize(el));
+      });
+      previousFieldCountRef.current = currentFieldCount;
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [formFields.length, autoResize]);
   
   // 处理变量值变化
   const handleVariableChange = useCallback((name: string, value: string) => {
@@ -296,29 +317,26 @@ export const VariableForm: React.FC<VariableFormProps> = ({
                       value={variableValues[field.name] || ''}
                       onChange={(e) => {
                         handleVariableChange(field.name, e.target.value);
+                        // 使用 requestAnimationFrame 批处理高度调整，避免抖动
                         const el = e.currentTarget;
-                        requestAnimationFrame(() => autoResize(el));
-                      }}
-                      onInput={(e) => {
-                        const el = e.currentTarget as HTMLTextAreaElement;
                         requestAnimationFrame(() => autoResize(el));
                       }}
                       onFocus={() => setFocusedField(field.name)}
                       onBlur={() => setFocusedField(null)}
                       rows={1}
                       style={{ 
-                        overflow: variableValues[field.name] && variableValues[field.name].length > 100 ? 'auto' : 'hidden',
-                        resize: 'vertical', 
+                        overflow: 'hidden', // 避免滚动条闪烁
+                        resize: 'none', // 禁用手动调整大小，避免跳动
                         boxSizing: 'border-box', 
                         minHeight: '44px',
                         maxHeight: '200px',
                         paddingTop: '20px',
-                        paddingBottom: '8px'
+                        paddingBottom: '8px',
+                        transition: 'height 0.05s ease-out' // 添加平滑过渡
                       }}
                       className={cn(
-                        "w-full px-0 border-0 bg-transparent focus:ring-0 focus:outline-none transition-all duration-200 whitespace-pre-wrap break-all text-sm",
-                        "placeholder:text-muted-foreground/60",
-                        "resize-y scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent"
+                        "w-full px-0 border-0 bg-transparent focus:ring-0 focus:outline-none whitespace-pre-wrap break-all text-sm",
+                        "placeholder:text-muted-foreground/60"
                       )}
                     />
                   </div>

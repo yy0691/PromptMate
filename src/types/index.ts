@@ -88,34 +88,10 @@ export interface Settings {
     primary: string;
     accent: string;
   };
+  cloudStorage?: CloudStorageSettings;
 }
 
-export interface RecommendedPrompt {
-  id: string;
-  title: string;
-  content: string;
-  category: string;
-  tags: string[];
-}
-
-// 云存储相关类型定义
-export type CloudStorageProvider = 'none' | 'webdav' | 'onedrive';
-
-export interface WebDAVConfig {
-  url: string;
-  username: string;
-  password: string;
-  remotePath: string;
-}
-
-export interface OneDriveConfig {
-  clientId: string;
-  accessToken?: string;
-  refreshToken?: string;
-  remotePath: string;
-  expiresAt?: string;
-}
-
+// 云存储配置
 export interface CloudStorageSettings {
   enabled: boolean;
   provider: CloudStorageProvider;
@@ -126,6 +102,26 @@ export interface CloudStorageSettings {
   onedrive?: OneDriveConfig;
 }
 
+export type CloudStorageProvider = 'none' | 'webdav' | 'onedrive';
+
+// WebDAV配置（支持坚果云等）
+export interface WebDAVConfig {
+  url: string;
+  username: string;
+  password: string;
+  remotePath: string;
+}
+
+// OneDrive配置
+export interface OneDriveConfig {
+  clientId: string;
+  accessToken?: string;
+  refreshToken?: string;
+  remotePath: string;
+  expiresAt?: string;
+}
+
+// 云存储同步状态
 export interface CloudSyncStatus {
   syncing: boolean;
   lastSync?: string;
@@ -133,9 +129,10 @@ export interface CloudSyncStatus {
   filesCount?: number;
 }
 
-export interface CloudFileInfo {
-  name: string;
-  size: number;
-  lastModified: string;
-  path: string;
+export interface RecommendedPrompt {
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  tags: string[];
 }

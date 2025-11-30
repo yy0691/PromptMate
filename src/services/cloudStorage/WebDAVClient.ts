@@ -1,23 +1,15 @@
 /**
- * WebDAV 客户端实现
- * 支持坚果云、ownCloud、NextCloud 等标准 WebDAV 服务
+ * WebDAV客户端服务
+ * 支持坚果云、ownCloud、NextCloud等WebDAV协议的云存储服务
  */
-import { CloudFileInfo } from '../../types';
 
-export interface WebDAVClientConfig {
-  url: string;
-  username: string;
-  password: string;
-  timeout?: number;
-}
+import { WebDAVConfig } from '@/types';
 
 export class WebDAVClient {
-  private config: WebDAVClientConfig;
-  private baseURL: string;
+  private config: WebDAVConfig;
 
-  constructor(config: WebDAVClientConfig) {
+  constructor(config: WebDAVConfig) {
     this.config = config;
-    this.baseURL = config.url.replace(/\/$/, '');
   }
 
   /**
@@ -25,9 +17,9 @@ export class WebDAVClient {
    */
   async testConnection(): Promise<boolean> {
     try {
-      const response = await this.makeRequest('PROPFIND', '/', {
-        'Depth': '0',
-        'Content-Type': 'application/xml'
+      const response = await fetch(this.config.url, {
+        method: 'PROPFIND',
+        headers: this.getHeaders(),
       });
       return response.ok;
     } catch (error) {
@@ -39,18 +31,24 @@ export class WebDAVClient {
   /**
    * 上传文件
    */
-  async uploadFile(path: string, content: string | Buffer): Promise<void> {
+  async uploadFile(remotePath: string, content: string): Promise<boolean> {
     try {
-      // 确保远程目录存在
-      await this.ensureDirectoryExists(this.getDirectoryPath(path));
+      const url = this.joinPath(this.config.url, this.config.remotePath, remotePath);
+      
+      // 确保目录存在
+      await this.ensureDirectory(this.getDirectoryPath(url));
 
-      const response = await this.makeRequest('PUT', path, {
-        'Content-Type': 'application/octet-stream'
-      }, content);
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: this.getHeaders(),
+        body: content,
+      });
 
       if (!response.ok) {
-        throw new Error(`上传文件失败: ${response.status} ${response.statusText}`);
+        throw new Error(`上传失败: ${response.status} ${response.statusText}`);
       }
+
+      return true;
     } catch (error) {
       console.error('WebDAV上传文件失败:', error);
       throw error;
@@ -60,15 +58,17 @@ export class WebDAVClient {
   /**
    * 下载文件
    */
-  async downloadFile(path: string): Promise<string> {
+  async downloadFile(remotePath: string): Promise<string> {
     try {
-      const response = await this.makeRequest('GET', path);
+      const url = this.joinPath(this.config.url, this.config.remotePath, remotePath);
       
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: this.getHeaders(),
+      });
+
       if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error('文件不存在');
-        }
-        throw new Error(`下载文件失败: ${response.status} ${response.statusText}`);
+        throw new Error(`下载失败: ${response.status} ${response.statusText}`);
       }
 
       return await response.text();
@@ -79,55 +79,26 @@ export class WebDAVClient {
   }
 
   /**
-   * 检查文件是否存在
-   */
-  async fileExists(path: string): Promise<boolean> {
-    try {
-      const response = await this.makeRequest('HEAD', path);
-      return response.ok;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  /**
-   * 获取文件信息
-   */
-  async getFileInfo(path: string): Promise<CloudFileInfo | null> {
-    try {
-      const response = await this.makeRequest('PROPFIND', path, {
-        'Depth': '0',
-        'Content-Type': 'application/xml'
-      }, this.buildPropfindXML());
-
-      if (!response.ok) {
-        return null;
-      }
-
-      const xmlText = await response.text();
-      return this.parseFileInfoFromXML(xmlText, path);
-    } catch (error) {
-      console.error('获取文件信息失败:', error);
-      return null;
-    }
-  }
-
-  /**
    * 列出目录内容
    */
-  async listDirectory(path: string): Promise<CloudFileInfo[]> {
+  async listDirectory(remotePath: string = ''): Promise<WebDAVFile[]> {
     try {
-      const response = await this.makeRequest('PROPFIND', path, {
-        'Depth': '1',
-        'Content-Type': 'application/xml'
-      }, this.buildPropfindXML());
+      const url = this.joinPath(this.config.url, this.config.remotePath, remotePath);
+      
+      const response = await fetch(url, {
+        method: 'PROPFIND',
+        headers: {
+          ...this.getHeaders(),
+          'Depth': '1',
+        },
+      });
 
       if (!response.ok) {
         throw new Error(`列出目录失败: ${response.status} ${response.statusText}`);
       }
 
       const xmlText = await response.text();
-      return this.parseDirectoryListFromXML(xmlText);
+      return this.parseDirectoryListing(xmlText);
     } catch (error) {
       console.error('WebDAV列出目录失败:', error);
       throw error;
@@ -137,13 +108,16 @@ export class WebDAVClient {
   /**
    * 删除文件
    */
-  async deleteFile(path: string): Promise<void> {
+  async deleteFile(remotePath: string): Promise<boolean> {
     try {
-      const response = await this.makeRequest('DELETE', path);
+      const url = this.joinPath(this.config.url, this.config.remotePath, remotePath);
       
-      if (!response.ok && response.status !== 404) {
-        throw new Error(`删除文件失败: ${response.status} ${response.statusText}`);
-      }
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: this.getHeaders(),
+      });
+
+      return response.ok;
     } catch (error) {
       console.error('WebDAV删除文件失败:', error);
       throw error;
@@ -151,160 +125,183 @@ export class WebDAVClient {
   }
 
   /**
-   * 创建目录
+   * 检查文件是否存在
    */
-  async createDirectory(path: string): Promise<void> {
+  async fileExists(remotePath: string): Promise<boolean> {
     try {
-      const response = await this.makeRequest('MKCOL', path);
+      const url = this.joinPath(this.config.url, this.config.remotePath, remotePath);
       
-      if (!response.ok && response.status !== 405) { // 405表示目录已存在
-        throw new Error(`创建目录失败: ${response.status} ${response.statusText}`);
-      }
+      const response = await fetch(url, {
+        method: 'HEAD',
+        headers: this.getHeaders(),
+      });
+
+      return response.ok;
     } catch (error) {
-      console.error('WebDAV创建目录失败:', error);
-      throw error;
+      return false;
+    }
+  }
+
+  /**
+   * 获取文件信息
+   */
+  async getFileInfo(remotePath: string): Promise<WebDAVFile | null> {
+    try {
+      const url = this.joinPath(this.config.url, this.config.remotePath, remotePath);
+      
+      const response = await fetch(url, {
+        method: 'PROPFIND',
+        headers: {
+          ...this.getHeaders(),
+          'Depth': '0',
+        },
+      });
+
+      if (!response.ok) {
+        return null;
+      }
+
+      const xmlText = await response.text();
+      const files = this.parseDirectoryListing(xmlText);
+      return files.length > 0 ? files[0] : null;
+    } catch (error) {
+      console.error('WebDAV获取文件信息失败:', error);
+      return null;
     }
   }
 
   /**
    * 确保目录存在
    */
-  private async ensureDirectoryExists(dirPath: string): Promise<void> {
-    if (!dirPath || dirPath === '/') return;
+  private async ensureDirectory(dirUrl: string): Promise<void> {
+    try {
+      const response = await fetch(dirUrl, {
+        method: 'MKCOL',
+        headers: this.getHeaders(),
+      });
 
-    const pathParts = dirPath.split('/').filter(part => part);
-    let currentPath = '';
-
-    for (const part of pathParts) {
-      currentPath += `/${part}`;
-      try {
-        await this.createDirectory(currentPath);
-      } catch (error) {
-        // 忽略创建失败，可能目录已存在
+      // 如果返回405，说明目录已存在
+      if (response.status === 405 || response.ok) {
+        return;
       }
+
+      // 递归创建父目录
+      const parentDir = this.getDirectoryPath(dirUrl);
+      if (parentDir !== dirUrl) {
+        await this.ensureDirectory(parentDir);
+        await this.ensureDirectory(dirUrl);
+      }
+    } catch (error) {
+      console.error('创建目录失败:', error);
     }
+  }
+
+  /**
+   * 获取请求头
+   */
+  private getHeaders(): Record<string, string> {
+    const auth = btoa(`${this.config.username}:${this.config.password}`);
+    return {
+      'Authorization': `Basic ${auth}`,
+      'Content-Type': 'application/json',
+    };
+  }
+
+  /**
+   * 拼接路径
+   */
+  private joinPath(...parts: string[]): string {
+    return parts
+      .map(part => part.replace(/^\/+|\/+$/g, ''))
+      .filter(Boolean)
+      .join('/');
   }
 
   /**
    * 获取目录路径
    */
-  private getDirectoryPath(filePath: string): string {
-    const lastSlashIndex = filePath.lastIndexOf('/');
-    return lastSlashIndex > 0 ? filePath.substring(0, lastSlashIndex) : '';
+  private getDirectoryPath(path: string): string {
+    const parts = path.split('/');
+    parts.pop();
+    return parts.join('/');
   }
 
   /**
-   * 发送 HTTP 请求
+   * 解析目录列表XML
    */
-  private async makeRequest(
-    method: string,
-    path: string,
-    headers: Record<string, string> = {},
-    body?: string | Buffer
-  ): Promise<Response> {
-    const url = `${this.baseURL}${path.startsWith('/') ? path : '/' + path}`;
-    
-    const requestHeaders = {
-      'Authorization': `Basic ${btoa(`${this.config.username}:${this.config.password}`)}`,
-      'User-Agent': 'PromptMate/1.0.0',
-      ...headers
-    };
+  private parseDirectoryListing(xmlText: string): WebDAVFile[] {
+    const files: WebDAVFile[] = [];
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(xmlText, 'text/xml');
+    const responses = doc.getElementsByTagNameNS('DAV:', 'response');
 
-    const requestInit: RequestInit = {
-      method,
-      headers: requestHeaders
-    };
-
-    // 添加超时控制（兼容性更好的实现）
-    if (this.config.timeout) {
-      const controller = new AbortController();
-      setTimeout(() => controller.abort(), this.config.timeout);
-      requestInit.signal = controller.signal;
-    }
-
-    if (body) {
-      requestInit.body = body;
-    }
-
-    return fetch(url, requestInit);
-  }
-
-  /**
-   * 构建 PROPFIND XML
-   */
-  private buildPropfindXML(): string {
-    return `<?xml version="1.0"?>
-<d:propfind xmlns:d="DAV:">
-  <d:prop>
-    <d:displayname/>
-    <d:getcontentlength/>
-    <d:getlastmodified/>
-    <d:resourcetype/>
-  </d:prop>
-</d:propfind>`;
-  }
-
-  /**
-   * 解析文件信息 XML
-   */
-  private parseFileInfoFromXML(xmlText: string, path: string): CloudFileInfo | null {
-    try {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(xmlText, 'text/xml');
+    for (let i = 0; i < responses.length; i++) {
+      const response = responses[i];
+      const href = response.getElementsByTagNameNS('DAV:', 'href')[0]?.textContent || '';
+      const propstat = response.getElementsByTagNameNS('DAV:', 'propstat')[0];
       
-      const response = doc.querySelector('response');
-      if (!response) return null;
+      if (!propstat) continue;
 
-      const displayName = response.querySelector('displayname')?.textContent || '';
-      const contentLength = response.querySelector('getcontentlength')?.textContent || '0';
-      const lastModified = response.querySelector('getlastmodified')?.textContent || '';
+      const prop = propstat.getElementsByTagNameNS('DAV:', 'prop')[0];
+      if (!prop) continue;
 
-      return {
-        name: displayName || path.split('/').pop() || '',
-        size: parseInt(contentLength, 10),
-        lastModified,
-        path
-      };
-    } catch (error) {
-      console.error('解析文件信息XML失败:', error);
-      return null;
-    }
-  }
-
-  /**
-   * 解析目录列表 XML
-   */
-  private parseDirectoryListFromXML(xmlText: string): CloudFileInfo[] {
-    try {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(xmlText, 'text/xml');
+      const resourceType = prop.getElementsByTagNameNS('DAV:', 'resourcetype')[0];
+      const isDirectory = resourceType?.getElementsByTagNameNS('DAV:', 'collection').length > 0;
       
-      const responses = doc.querySelectorAll('response');
-      const files: CloudFileInfo[] = [];
+      const getLastModified = prop.getElementsByTagNameNS('DAV:', 'getlastmodified')[0]?.textContent || '';
+      const getContentLength = prop.getElementsByTagNameNS('DAV:', 'getcontentlength')[0]?.textContent || '0';
+      const getContentType = prop.getElementsByTagNameNS('DAV:', 'getcontenttype')[0]?.textContent || '';
 
-      responses.forEach(response => {
-        const href = response.querySelector('href')?.textContent || '';
-        const displayName = response.querySelector('displayname')?.textContent || '';
-        const contentLength = response.querySelector('getcontentlength')?.textContent || '0';
-        const lastModified = response.querySelector('getlastmodified')?.textContent || '';
-        const resourceType = response.querySelector('resourcetype');
-        
-        // 跳过目录本身和集合类型
-        if (resourceType?.querySelector('collection')) return;
-        if (!displayName) return;
-
-        files.push({
-          name: displayName,
-          size: parseInt(contentLength, 10),
-          lastModified,
-          path: href
-        });
+      files.push({
+        path: decodeURIComponent(href),
+        name: this.getFileName(href),
+        isDirectory,
+        size: parseInt(getContentLength, 10),
+        lastModified: getLastModified ? new Date(getLastModified).toISOString() : '',
+        contentType: getContentType,
       });
-
-      return files;
-    } catch (error) {
-      console.error('解析目录列表XML失败:', error);
-      return [];
     }
+
+    return files;
+  }
+
+  /**
+   * 从路径获取文件名
+   */
+  private getFileName(path: string): string {
+    const parts = decodeURIComponent(path).split('/').filter(Boolean);
+    return parts[parts.length - 1] || '';
   }
 }
+
+/**
+ * WebDAV文件信息
+ */
+export interface WebDAVFile {
+  path: string;
+  name: string;
+  isDirectory: boolean;
+  size: number;
+  lastModified: string;
+  contentType: string;
+}
+
+/**
+ * 预定义的WebDAV服务商配置
+ */
+export const WebDAVProviders = {
+  jianguoyun: {
+    name: '坚果云',
+    url: 'https://dav.jianguoyun.com/dav/',
+    description: '使用坚果云账号邮箱和应用密码登录',
+    helpUrl: 'https://help.jianguoyun.com/?p=2064',
+  },
+  custom: {
+    name: '自定义WebDAV',
+    url: '',
+    description: '输入您自己的WebDAV服务器地址',
+    helpUrl: '',
+  },
+};
+
+
