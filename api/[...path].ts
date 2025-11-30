@@ -112,23 +112,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    // 构建请求路径（Vercel 使用 query.path 参数）
+    // 构建请求路径
+    // Vercel catch-all 路由会将路径作为 query.path 数组传递
+    // 例如 /api/auth/login/email -> query.path = ['auth', 'login', 'email']
     const pathArray = Array.isArray(req.query.path) 
       ? req.query.path 
       : req.query.path 
         ? [req.query.path] 
         : [];
     
-    const path = '/' + pathArray.join('/');
+    // 路径需要包含 /api 前缀才能匹配注册的路由
+    const path = '/api/' + pathArray.join('/');
+    
+    console.log('[Vercel API] Request:', req.method, path, 'query:', JSON.stringify(req.query));
     
     // 创建模拟请求对象用于路由匹配
     const mockReq = createMockRequest(req, path);
     const route = matchRoute(mockReq);
     
     if (!route) {
-      sendError(res, 404, 'Not Found', 'NOT_FOUND');
+      console.log('[Vercel API] No route found for:', req.method, path);
+      sendError(res, 404, `Route not found: ${req.method} ${path}`, 'NOT_FOUND');
       return;
     }
+    
+    console.log('[Vercel API] Matched route:', route.method, route.path);
 
     const ip = getIp(req);
     
