@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,26 +22,41 @@ import {
 import { CloudStorageSettings as CloudStorageSettingsType, CloudStorageProvider, CloudSyncStatus } from '@/types';
 import { WebDAVProviders } from '@/services/cloudStorage/WebDAVClient';
 import { toast } from 'sonner';
+import { useSettings } from '@/hooks/useSettings';
 
 interface CloudStorageSettingsProps {
-  settings: CloudStorageSettingsType | undefined;
-  onSettingsChange: (settings: CloudStorageSettingsType) => void;
+  settings?: CloudStorageSettingsType | undefined;
+  onSettingsChange?: (settings: CloudStorageSettingsType) => void;
   onTestConnection?: () => Promise<boolean>;
   onManualSync?: () => Promise<void>;
   onUpload?: () => Promise<void>;
   onDownload?: () => Promise<void>;
   syncStatus?: CloudSyncStatus;
+  className?: string;
 }
 
 export const CloudStorageSettings: React.FC<CloudStorageSettingsProps> = ({
-  settings,
-  onSettingsChange,
+  settings: propSettings,
+  onSettingsChange: propOnSettingsChange,
   onTestConnection,
   onManualSync,
   onUpload,
   onDownload,
   syncStatus,
+  className,
 }) => {
+  // 使用 useSettings hook 作为后备方案
+  const { settings: appSettings, updateSettings } = useSettings();
+  
+  // 如果没有传入 props，使用内部状态管理
+  const settings = propSettings ?? appSettings.cloudStorage;
+  const onSettingsChange = useCallback((newSettings: CloudStorageSettingsType) => {
+    if (propOnSettingsChange) {
+      propOnSettingsChange(newSettings);
+    } else {
+      updateSettings({ cloudStorage: newSettings });
+    }
+  }, [propOnSettingsChange, updateSettings]);
   const [localSettings, setLocalSettings] = useState<CloudStorageSettingsType>({
     enabled: false,
     provider: 'none',
