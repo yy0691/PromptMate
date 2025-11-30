@@ -5,6 +5,10 @@ node_modules
 /release
 /doc.env
 .env.local
+.env*
+.env.*
+/server/.env*
+/server/.env.*
 /@docs/.obsidian
 .DS_Store
 PromptMate_browser-extension.zip
@@ -17,3 +21,4 @@ src/build-info.json
 *.local
 .DS_Store
 .obsidian
+.vercel

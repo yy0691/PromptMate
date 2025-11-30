@@ -5,12 +5,12 @@
 
 import { VercelResponse } from '@vercel/node';
 
-// 扩展 VercelResponse 以兼容 ServerResponse 接口
-interface CompatibleResponse extends VercelResponse {
+// 兼容 VercelResponse 的类型，包含可能需要的额外属性
+type CompatibleResponse = VercelResponse & {
   statusCode?: number;
-  setHeader(name: string, value: string | number | string[]): void;
-  end(chunk?: any): void;
-}
+  setHeader?(name: string, value: string | number | string[]): void;
+  end?(chunk?: any): void;
+};
 
 export function sendJson(res: CompatibleResponse, statusCode: number, payload: unknown) {
   const data = JSON.stringify(payload);

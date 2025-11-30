@@ -899,7 +899,7 @@
       "closeWindowFailedDesc":"关闭窗口时发生错误"
     },
     "search":{
-      "searchPlaceholder":"搜索提示词...",
+      "searchplaceholder":"搜索提示词...",
       "search_noResults":"未找到相关内容",
       "search_suggestions":"搜索建议"
     },

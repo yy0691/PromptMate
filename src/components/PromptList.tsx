@@ -502,6 +502,15 @@ export const PromptList = memo(function PromptList({
                         : "hover:border-primary/30 hover:shadow-md"
                       )}
                       onClick={() => handleSelectPrompt(prompt)}
+                      onContextMenu={(e) => {
+                        // 如果右键点击的不是标签区域，确保事件能够冒泡到外层的 ContextMenu
+                        const target = e.target as HTMLElement;
+                        const isTagArea = target.closest('[data-tag-badge]') || target.closest('[data-tag-context-menu]');
+                        if (!isTagArea) {
+                          // 允许事件冒泡到外层的 ContextMenuTrigger
+                          // 不阻止默认行为，让外层的 ContextMenu 处理
+                        }
+                      }}
                       tabIndex={0}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
@@ -629,14 +638,21 @@ export const PromptList = memo(function PromptList({
                     <div className="flex flex-wrap gap-2 text-[8px] max-w-[calc(100%-40px)] overflow-hidden">
                       {prompt.tags.slice(0, 3).map((tag) => (
                         <ContextMenu key={tag}>
-                          <ContextMenuTrigger>
-                            <Badge 
-                              variant="secondary" 
-                              className="cursor-pointer text-nowrap text-[8px] py-0 px-1.5 font-normal h-5 bg-secondary/70"
-                              onClick={(e) => handleTagClick(e, tag)}
-                            >
-                              {tag}
-                            </Badge>
+                          <ContextMenuTrigger asChild>
+                            <div data-tag-context-menu="true">
+                              <Badge 
+                                variant="secondary" 
+                                className="cursor-pointer text-nowrap text-[8px] py-0 px-1.5 font-normal h-5 bg-secondary/70"
+                                onClick={(e) => handleTagClick(e, tag)}
+                                data-tag-badge="true"
+                                onContextMenu={(e) => {
+                                  // 标签的右键菜单，阻止冒泡到外层
+                                  e.stopPropagation();
+                                }}
+                              >
+                                {tag}
+                              </Badge>
+                            </div>
                           </ContextMenuTrigger>
                           <ContextMenuContent>
                             <ContextMenuItem onClick={() => handleTagClick(null, tag)}>

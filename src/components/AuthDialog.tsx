@@ -98,9 +98,8 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
     setLoading(true);
     try {
       await register(registerEmail, registerPassword, registerNickname);
-      // 注册成功后切换到登录标签
-      setActiveTab('login');
-      setLoginEmail(registerEmail);
+      // 注册成功后关闭弹窗，返回原界面
+      onOpenChange(false);
       // 重置注册表单
       setRegisterEmail('');
       setRegisterPassword('');
@@ -143,13 +142,54 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
           throw new Error('无法打开弹出窗口，请检查浏览器弹窗设置');
         }
 
-        // 监听弹出窗口关闭
+        // 监听来自弹窗的消息
+        const handleMessage = async (event: MessageEvent) => {
+          // 验证消息来源
+          if (event.origin !== window.location.origin) {
+            return;
+          }
+
+          if (event.data.type === 'oauth-callback') {
+            window.removeEventListener('message', handleMessage);
+            popup.close();
+            
+            const { code, error } = event.data;
+            if (error) {
+              toast({
+                title: t('auth.oauth.failed'),
+                description: error,
+                variant: 'destructive',
+              });
+              setOAuthLoading(null);
+              return;
+            }
+
+            if (code) {
+              try {
+                const redirectUri = `${window.location.origin}/auth/callback`;
+                await handleOAuthLoginCallback(provider, code, redirectUri);
+                onOpenChange(false); // 关闭登录对话框
+              } catch (error: any) {
+                toast({
+                  title: t('auth.oauth.failed'),
+                  description: error.message || t('auth.oauth.failedDesc'),
+                  variant: 'destructive',
+                });
+              } finally {
+                setOAuthLoading(null);
+              }
+            }
+          }
+        };
+
+        window.addEventListener('message', handleMessage);
+
+        // 监听弹出窗口关闭（用户手动关闭）
         const checkClosed = setInterval(() => {
           if (popup.closed) {
             clearInterval(checkClosed);
+            window.removeEventListener('message', handleMessage);
             setOAuthLoading(null);
-            // 检查 URL 中是否有回调参数（浏览器环境）
-            checkBrowserOAuthCallback(provider);
           }
         }, 500);
       }
@@ -228,16 +268,34 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
     if (!(window as any).electronAPI) {
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get('code');
-      if (code) {
-        // 尝试从 state 参数推断 provider，或默认使用 google
-        const state = urlParams.get('state') || '';
-        let provider: OAuthProvider = 'google';
-        if (state.includes('github')) {
-          provider = 'github';
-        } else if (state.includes('linuxdo')) {
-          provider = 'linuxdo';
+      const error = urlParams.get('error');
+      
+      if (code || error) {
+        // 如果是在弹窗中（有 opener），向主窗口发送消息
+        if (window.opener && !window.opener.closed) {
+          window.opener.postMessage(
+            {
+              type: 'oauth-callback',
+              code: code || undefined,
+              error: error || undefined,
+            },
+            window.location.origin
+          );
+          // 不要关闭窗口，让主窗口来关闭
+          return;
         }
-        checkBrowserOAuthCallback(provider);
+        
+        // 如果不是弹窗，直接在当前窗口处理（兼容旧逻辑）
+        if (code) {
+          const state = urlParams.get('state') || '';
+          let provider: OAuthProvider = 'google';
+          if (state.includes('github')) {
+            provider = 'github';
+          } else if (state.includes('linuxdo')) {
+            provider = 'linuxdo';
+          }
+          checkBrowserOAuthCallback(provider);
+        }
       }
     }
   }, []);
@@ -421,6 +479,63 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
                 )}
               </Button>
             </form>
+
+            {/* OAuth注册选项 */}
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">{t('auth.or')}</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handleOAuthLogin('google')}
+                disabled={oauthLoading !== null}
+                className="w-full"
+              >
+                {oauthLoading === 'google' ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Mail className="mr-2 h-4 w-4" />
+                )}
+                Google
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handleOAuthLogin('github')}
+                disabled={oauthLoading !== null}
+                className="w-full"
+              >
+                {oauthLoading === 'github' ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Github className="mr-2 h-4 w-4" />
+                )}
+                GitHub
+              </Button>
+            </div>
+
+            {/* Linux.do 登录按钮 */}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleOAuthLogin('linuxdo')}
+              disabled={oauthLoading !== null}
+              className="w-full"
+            >
+              {oauthLoading === 'linuxdo' ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Globe className="mr-2 h-4 w-4" />
+              )}
+              Linux.do
+            </Button>
           </TabsContent>
         </Tabs>
       </DialogContent>

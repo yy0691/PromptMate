@@ -112,7 +112,7 @@ function AppContent() {
   }
 
   return (
-    <main className="min-h-screen flex flex-col" data-testid="main-app">
+    <main className="h-screen flex flex-col overflow-hidden" data-testid="main-app">
       <Header />
       <div className="flex-1 flex min-h-0 overflow-hidden app-content">
         <Routes>

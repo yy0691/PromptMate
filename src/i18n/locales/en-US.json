@@ -884,7 +884,7 @@
       "closeWindowFailedDesc": "Error occurred while closing window"
     },
     "search": {
-      "searchPlaceholder": "Search prompts...",
+      "searchplaceholder": "Search prompts...",
       "search_noResults": "No relevant content found",
       "search_suggestions": "Search suggestions"
     },

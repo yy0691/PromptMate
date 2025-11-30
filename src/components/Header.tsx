@@ -158,7 +158,7 @@ export function Header() {
         <div className="relative w-full max-w-2xl">
           <Input
             type="search"
-            placeholder={t("Header.search.searchPlaceholder")}
+            placeholder={t("Header.search.searchplaceholder")}
               className="w-full pl-10 titlebar-no-drag h-8 !text-[14px] focus-visible:ring-1 focus-visible:ring-ring/50"
             onChange={(e) => setSearchTerm(e.target.value)}
           />

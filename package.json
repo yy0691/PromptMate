@@ -149,6 +149,7 @@
     "@types/react": "^18.3.20",
     "@types/react-dom": "^18.3.6",
     "@types/react-window": "^1.8.8",
+    "@vercel/node": "^5.5.13",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.20",
     "concurrently": "^8.2.2",

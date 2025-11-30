@@ -92,6 +92,13 @@ export default defineConfig(({ mode }) => ({
   server: {
     port: 5173,
     strictPort: false, // 不锁定端口，允许自动选择
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8787',
+        changeOrigin: true,
+        rewrite: (path) => path
+      }
+    }
   },
   test: {
     globals: true,
