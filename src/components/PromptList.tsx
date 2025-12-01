@@ -458,10 +458,10 @@ export const PromptList = memo(function PromptList({
       <ScrollArea className="flex-1">
         <ContextMenu>
           <ContextMenuTrigger asChild>
-            <div className="p-4 min-h-full">
+            <div className="p-4 w-full" style={{ minHeight: '100%', height: '100%' }}>
           {filteredPrompts.length === 0 ? (
             // *** MODIFICATION START ***
-            <div className="flex flex-col items-center justify-center h-full text-center pt-16">
+            <div className="flex flex-col items-center justify-center min-h-[calc(100vh-300px)] text-center pt-16">
               <div className="p-8 rounded-lg bg-muted/50 max-w-md">
                 {getEmptyStateContent().icon}
                 <h3 className="text-lg font-medium mb-2">{getEmptyStateContent().title}</h3>

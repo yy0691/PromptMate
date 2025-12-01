@@ -157,8 +157,14 @@ export const PromptFormFields: React.FC<PromptFormFieldsProps> = ({
             {t('prompts.promptCategory')}
           </Label>
           <Select
-            value={state.category}
-            onValueChange={(value) => onFieldChange('category', value)}
+            value={state.category && categories.some(cat => cat.id === state.category) 
+              ? state.category 
+              : categories[0]?.id || ""}
+            onValueChange={(value) => {
+              if (value) {
+                onFieldChange('category', value);
+              }
+            }}
           >
             <SelectTrigger>
               <SelectValue placeholder={t('prompteditform.promptCategoryPlaceholder')} />

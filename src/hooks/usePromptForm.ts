@@ -52,28 +52,32 @@ export const usePromptForm = (options: PromptFormOptions) => {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // 获取默认分类的辅助函数
+  const getDefaultCategory = useCallback(() => {
+    if (initialData?.category) return initialData.category;
+    if (defaultCategory) return defaultCategory;
+    if (activeCategory) return activeCategory;
+    if (categories[0]?.id) return categories[0].id;
+    return "general";
+  }, [initialData?.category, defaultCategory, activeCategory, categories]);
+
   // 获取初始表单数据
   const getInitialFormData = (): PromptFormData => {
     if (mode === 'edit' && prompt) {
+      // 修复：如果 prompt.category 为空，使用默认分类
+      const category = prompt.category && prompt.category.trim() 
+        ? prompt.category 
+        : getDefaultCategory();
+      
       return {
         title: prompt.title,
         content: prompt.content,
-        category: prompt.category,
+        category: category,
         tags: prompt.tags.join(", "),
         images: prompt.images || [],
         isFavorite: prompt.isFavorite,
       };
     }
-    
-    // 修复默认分类逻辑：defaultCategory 应该有最高优先级
-    // 只有在没有指定 defaultCategory 时才使用 activeCategory
-    const getDefaultCategory = () => {
-      if (initialData?.category) return initialData.category;
-      if (defaultCategory) return defaultCategory;
-      if (activeCategory) return activeCategory;
-      if (categories[0]?.id) return categories[0].id;
-      return "general";
-    };
     
     return {
       title: initialData?.title || "",
@@ -98,10 +102,15 @@ export const usePromptForm = (options: PromptFormOptions) => {
   // 监听 prompt 变化，重新初始化表单数据
   useEffect(() => {
     if (mode === 'edit' && prompt) {
+      // 修复：如果 prompt.category 为空，使用默认分类
+      const category = prompt.category && prompt.category.trim() 
+        ? prompt.category 
+        : getDefaultCategory();
+      
       const newFormData = {
         title: prompt.title,
         content: prompt.content,
-        category: prompt.category,
+        category: category,
         tags: prompt.tags.join(", "),
         images: prompt.images || [],
         isFavorite: prompt.isFavorite,
@@ -116,7 +125,7 @@ export const usePromptForm = (options: PromptFormOptions) => {
         isSubmitting: false,
       }));
     }
-  }, [prompt?.id, mode]); // 使用 prompt.id 作为依赖，确保在切换不同提示词时重新初始化
+  }, [prompt?.id, mode, getDefaultCategory]); // 使用 prompt.id 作为依赖，确保在切换不同提示词时重新初始化
 
   // 监听 defaultCategory 变化，重新初始化表单数据（创建模式）
   useEffect(() => {
@@ -186,7 +195,7 @@ export const usePromptForm = (options: PromptFormOptions) => {
       autoSaveStatus: "idle",
       isSubmitting: false,
     });
-  }, [mode, prompt, initialData, defaultCategory, activeCategory, categories]);
+  }, [mode, prompt, initialData, defaultCategory, activeCategory, categories, getDefaultCategory]);
 
   // 表单验证
   const validate = useCallback((): { isValid: boolean; errors: string[] } => {

@@ -43,7 +43,7 @@
     "electron:dev": "concurrently \"vite\" \"npm run server:dev\" \"wait-on http://localhost:5173 http://localhost:5174 http://localhost:5175 && electron .\"",
     "electron:build": "vite build && npm run build:electron && electron-builder",
     "electron:preview": "vite build && npm run build:electron && electron .",
-    "electron:start": "set NODE_ENV=development && electron .",
+    "electron:start": "NODE_ENV=development pnpm exec electron .",
     "server:build": "tsc -p tsconfig.server.json",
     "server:start": "node dist-server/index.js",
     "server:dev": "npm run server:build && node dist-server/index.js",
