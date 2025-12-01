@@ -21,6 +21,18 @@ export interface UserPreferences {
     theme: 'light' | 'dark' | 'system';
     fontSize: number;
     font: string;
+    // 窗口设置（仅Electron环境）
+    windowBounds?: {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+    };
+    // 分栏宽度设置
+    panelSizes?: {
+      leftPanel: number; // 左侧面板的百分比
+      rightPanel: number; // 右侧面板的百分比
+    };
   };
   // 编辑器偏好
   editor: {
@@ -52,6 +64,11 @@ const DEFAULT_PREFERENCES: UserPreferences = {
     theme: 'system',
     fontSize: 14,
     font: 'system-ui',
+    windowBounds: undefined,
+    panelSizes: {
+      leftPanel: 45,
+      rightPanel: 55,
+    },
   },
   editor: {
     lineNumbers: false,

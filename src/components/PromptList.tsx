@@ -456,9 +456,16 @@ export const PromptList = memo(function PromptList({
 
       {/* 提示词列表 */}
       <ScrollArea className="flex-1">
-        <ContextMenu>
-          <ContextMenuTrigger asChild>
-            <div className="p-4 w-full" style={{ minHeight: '100%', height: '100%' }}>
+        <div className="h-full w-full">
+          <ContextMenu>
+            <ContextMenuTrigger asChild>
+              <div 
+                className="p-4 w-full" 
+                style={{ 
+                  minHeight: '100%',
+                  height: '100%'
+                }}
+              >
           {filteredPrompts.length === 0 ? (
             // *** MODIFICATION START ***
             <div className="flex flex-col items-center justify-center min-h-[calc(100vh-300px)] text-center pt-16">
@@ -483,11 +490,18 @@ export const PromptList = memo(function PromptList({
             </div>
             // *** MODIFICATION END ***
           ) : (
-            <div className={`grid gap-4 grid-layout-transition ${
-              isEditPanelOpen 
-                ? 'grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3' 
-                : 'grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'
-            }`}>
+            <div 
+              className={`grid gap-4 grid-layout-transition ${
+                isEditPanelOpen 
+                  ? 'grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3' 
+                  : 'grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'
+              }`}
+              style={{ 
+                minHeight: '100%',
+                height: '100%',
+                alignContent: 'start'
+              }}
+            >
               {filteredPrompts.map((prompt) => (
                 <HoverCard key={prompt.id}>
                   <HoverCardTrigger asChild>
@@ -762,22 +776,23 @@ export const PromptList = memo(function PromptList({
             </div>
           )}
             </div>
-          </ContextMenuTrigger>
-          <ContextMenuContent>
-            <ContextMenuItem onClick={() => setShowNewPromptDialog(true)}>
-              <Icons.plus className="mr-2 h-4 w-4" />
-              {t('common.create_prompt.title')}
-            </ContextMenuItem>
-            <ContextMenuItem onClick={() => setShowFavorites(!showFavorites)}>
-              <Icons.star className="mr-2 h-4 w-4" />
-              {showFavorites ? t('common.showAll') : t('common.showFavorites')}
-            </ContextMenuItem>
-            <ContextMenuItem onClick={() => setShowRecommended(!showRecommended)}>
-              <Icons.fileText className="mr-2 h-4 w-4" />
-              {showRecommended ? t('common.showAll') : t('common.showRecommended')}
-            </ContextMenuItem>
-          </ContextMenuContent>
-        </ContextMenu>
+            </ContextMenuTrigger>
+            <ContextMenuContent>
+              <ContextMenuItem onClick={() => setShowNewPromptDialog(true)}>
+                <Icons.plus className="mr-2 h-4 w-4" />
+                {t('common.create_prompt.title')}
+              </ContextMenuItem>
+              <ContextMenuItem onClick={() => setShowFavorites(!showFavorites)}>
+                <Icons.star className="mr-2 h-4 w-4" />
+                {showFavorites ? t('common.showAll') : t('common.showFavorites')}
+              </ContextMenuItem>
+              <ContextMenuItem onClick={() => setShowRecommended(!showRecommended)}>
+                <Icons.fileText className="mr-2 h-4 w-4" />
+                {showRecommended ? t('common.showAll') : t('common.showRecommended')}
+              </ContextMenuItem>
+            </ContextMenuContent>
+          </ContextMenu>
+        </div>
       </ScrollArea>
 
 

@@ -144,9 +144,7 @@ export const PromptEditForm: React.FC<PromptEditFormProps> = ({
       <div className="space-y-2">
         <label className="text-sm font-medium">{t('prompts.promptCategory')}</label>
         <Select
-          value={state.category && categories.some(cat => cat.id === state.category) 
-            ? state.category 
-            : categories[0]?.id || ""}
+          value={state.category || categories[0]?.id || ""}
           onValueChange={(value) => {
             if (value) {
               onFieldChange('category', value);

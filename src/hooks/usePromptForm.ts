@@ -102,7 +102,8 @@ export const usePromptForm = (options: PromptFormOptions) => {
   // 监听 prompt 变化，重新初始化表单数据
   useEffect(() => {
     if (mode === 'edit' && prompt) {
-      // 修复：如果 prompt.category 为空，使用默认分类
+      // 修复：如果 prompt.category 为空或无效，使用默认分类
+      // 但只有在 prompt.id 变化时才重新初始化，避免在保存后不必要地重置
       const category = prompt.category && prompt.category.trim() 
         ? prompt.category 
         : getDefaultCategory();
@@ -116,14 +117,20 @@ export const usePromptForm = (options: PromptFormOptions) => {
         isFavorite: prompt.isFavorite,
       };
       
-      setState(prev => ({
-        ...prev,
-        ...newFormData,
-        hasChanges: false,
-        selectedImageIndex: null,
-        imageCaption: "",
-        isSubmitting: false,
-      }));
+      setState(prev => {
+        // 只有在 prompt.id 变化时才完全重置，否则只更新变化的部分
+        if (prev.category !== category || prev.title !== prompt.title || prev.content !== prompt.content) {
+          return {
+            ...prev,
+            ...newFormData,
+            hasChanges: false,
+            selectedImageIndex: null,
+            imageCaption: "",
+            isSubmitting: false,
+          };
+        }
+        return prev;
+      });
     }
   }, [prompt?.id, mode, getDefaultCategory]); // 使用 prompt.id 作为依赖，确保在切换不同提示词时重新初始化
 
@@ -329,12 +336,16 @@ export const usePromptForm = (options: PromptFormOptions) => {
 
     try {
       const tags = state.tags.split(/[,，;；]/).map(tag => tag.trim()).filter(Boolean);
+      // 确保分类不为空，如果为空则使用默认分类
+      const category = state.category && state.category.trim() 
+        ? state.category 
+        : getDefaultCategory();
       
       if (mode === 'create') {
         addPrompt({
           title: state.title,
           content: state.content,
-          category: state.category,
+          category: category,
           tags,
           isFavorite: state.isFavorite || false,
           images: state.images.length > 0 ? state.images : undefined,
@@ -350,7 +361,7 @@ export const usePromptForm = (options: PromptFormOptions) => {
         updatePrompt(prompt.id, {
           title: state.title,
           content: state.content,
-          category: state.category,
+          category: category,
           tags,
           images: state.images.length > 0 ? state.images : undefined,
         });
@@ -376,7 +387,7 @@ export const usePromptForm = (options: PromptFormOptions) => {
     } finally {
       setState(prev => ({ ...prev, isSubmitting: false }));
     }
-  }, [validate, state, mode, prompt, addPrompt, updatePrompt, toast, resetForm, onSuccess]);
+  }, [validate, state, mode, prompt, addPrompt, updatePrompt, toast, resetForm, onSuccess, getDefaultCategory]);
 
   // 取消操作
   const cancelForm = useCallback(() => {
