@@ -46,9 +46,9 @@ export function DataImportExport({
   const { t } = useTranslation();
   const { prompts, categories, allTags } = usePrompts();
   
-  // 主要状态管理 - 如果是内联模式，默认显示数据管理
+  // 主要状态管理 - 如果是内联模式，默认显示云同步（包含数据管理）
   const [activeCategory, setActiveCategory] = useState<SettingsCategory>(
-    inline ? SettingsCategory.DATA_MANAGEMENT : SettingsCategory.CLOUD_SYNC
+    inline ? SettingsCategory.CLOUD_SYNC : SettingsCategory.CLOUD_SYNC
   );
   const [exportedData, setExportedData] = useState("");
   const [importData, setImportData] = useState("");
@@ -909,8 +909,13 @@ export function DataImportExport({
     <div className={`flex ${inline ? 'h-full' : 'h-full min-h-0'}`}>
       {!inline && renderSidebar()}
       {inline ? (
-        <div className="flex-1 overflow-y-auto p-4">
-          {renderDataManagementContent()}
+        <div className="flex-1 h-full overflow-hidden flex flex-col">
+          <div className="flex-1 overflow-y-auto p-4">
+            {activeCategory === SettingsCategory.CLOUD_SYNC && renderCloudSyncContent()}
+            {activeCategory === SettingsCategory.DATA_MANAGEMENT && renderDataManagementContent()}
+            {activeCategory === SettingsCategory.BACKUP_RESTORE && renderBackupRestoreContent()}
+            {activeCategory === SettingsCategory.ADVANCED && renderAdvancedContent()}
+          </div>
         </div>
       ) : (
         renderMainContent()
@@ -921,8 +926,53 @@ export function DataImportExport({
   // 如果是内联模式，直接渲染内容
   if (inline) {
     return (
-      <div className="data-import-export-inline">
-        {renderContent()}
+      <div className="data-import-export-inline h-full flex flex-col">
+        {/* 内联模式下的侧边栏导航 */}
+        <div className="flex-shrink-0 border-b p-2">
+          <div className="flex gap-2 flex-wrap">
+            <Button
+              variant={activeCategory === SettingsCategory.CLOUD_SYNC ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setActiveCategory(SettingsCategory.CLOUD_SYNC)}
+            >
+              <Icons.cloud className="mr-2 h-4 w-4" />
+              {t('dataManagement.cloudSync')}
+            </Button>
+            <Button
+              variant={activeCategory === SettingsCategory.DATA_MANAGEMENT ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setActiveCategory(SettingsCategory.DATA_MANAGEMENT)}
+            >
+              <Icons.database className="mr-2 h-4 w-4" />
+              {t('dataManagement.dataManagement')}
+            </Button>
+            <Button
+              variant={activeCategory === SettingsCategory.BACKUP_RESTORE ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setActiveCategory(SettingsCategory.BACKUP_RESTORE)}
+            >
+              <Icons.archive className="mr-2 h-4 w-4" />
+              {t('dataManagement.backupRestore')}
+            </Button>
+            <Button
+              variant={activeCategory === SettingsCategory.ADVANCED ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setActiveCategory(SettingsCategory.ADVANCED)}
+            >
+              <Icons.settings className="mr-2 h-4 w-4" />
+              {t('dataManagement.advanced')}
+            </Button>
+          </div>
+        </div>
+        {/* 内容区域 */}
+        <div className="flex-1 min-h-0 overflow-hidden">
+          <div className="h-full overflow-y-auto p-4">
+            {activeCategory === SettingsCategory.CLOUD_SYNC && renderCloudSyncContent()}
+            {activeCategory === SettingsCategory.DATA_MANAGEMENT && renderDataManagementContent()}
+            {activeCategory === SettingsCategory.BACKUP_RESTORE && renderBackupRestoreContent()}
+            {activeCategory === SettingsCategory.ADVANCED && renderAdvancedContent()}
+          </div>
+        </div>
         
         {/* 确认重置对话框 */}
         <Dialog open={showConfirmReset} onOpenChange={setShowConfirmReset}>

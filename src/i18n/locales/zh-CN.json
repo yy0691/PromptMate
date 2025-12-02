@@ -1223,7 +1223,12 @@
       "cancelledDesc": "OAuth登录已取消",
       "failed": "OAuth登录失败",
       "failedDesc": "无法完成OAuth登录，请重试"
-    }
+    },
+    "userInfo": "用户信息",
+    "notLoggedIn": "未登录",
+    "pleaseLogin": "请先登录",
+    "pleaseLoginToSync": "请先登录以使用云同步功能",
+    "loggedIn": "已登录"
   },
   "marketplace": {
     "title": "模板市场",

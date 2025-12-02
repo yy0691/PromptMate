@@ -45,7 +45,6 @@ import { PreferencesPanel } from "./PreferencesPanel";
 import { CardContent } from "./ui/card";
 import { useTranslation } from 'react-i18next';
 import { MCPSettingsPanel } from '@/components/promptx/MCPSettingsPanel';
-import { CloudStorageSettings } from "./CloudStorageSettings";
 import { UserProfilePanel } from "./UserProfilePanel";
 import { Separator } from "@/components/ui/separator";
 
@@ -91,7 +90,7 @@ export function Sidebar({ className }: { className?: string }) {
   const [sidebarMode, setSidebarMode] = useState<SidebarMode>(
     preferences.ui.sidebarExpanded ? "expanded" : "collapsed"
   );
-  const [settingsPanel, setSettingsPanel] = useState<"appearance" | "data" | "ai" | "mcp" | "cloud-storage" | "about" | "preferences" | "user">("appearance");
+  const [settingsPanel, setSettingsPanel] = useState<"user" | "appearance" | "data" | "ai" | "mcp" | "about" | "preferences">("user");
   const [showCategoryManager, setShowCategoryManager] = useState(false);
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
@@ -122,7 +121,7 @@ export function Sidebar({ className }: { className?: string }) {
     if (!showSettings) {
       // 延迟重置面板，确保动画完成后再切换
       const timer = setTimeout(() => {
-        setSettingsPanel("appearance");
+        setSettingsPanel("user");
       }, 300);
       return () => clearTimeout(timer);
     }
@@ -1076,7 +1075,7 @@ export function Sidebar({ className }: { className?: string }) {
                 variant="ghost"
                 size="icon"
                 onClick={() => {
-                  setSettingsPanel("appearance");
+                  setSettingsPanel("user");
                   setShowSettings(true);
                 }}
                 className={cn(
@@ -1106,12 +1105,12 @@ export function Sidebar({ className }: { className?: string }) {
         }}
       >
         <DialogContent className={cn(
-          "transition-all duration-300",
+          "transition-all duration-300 flex flex-col overflow-hidden",
           isFullscreen 
-            ? "fixed left-0 top-0 w-screen h-screen max-w-none max-h-none m-0 rounded-none translate-x-0 translate-y-0" 
-            : `sm:max-w-[720px] max-w-[90vw] ${settingsPanel === "data" ? 'max-h-[85vh]' : 'max-h-[85vh]'}`
+            ? "fixed left-0 top-0 w-screen h-screen max-w-none max-h-none m-0 rounded-none translate-x-0 translate-y-0 p-0" 
+            : `sm:max-w-[720px] max-w-[90vw] h-[85vh] max-h-[85vh] p-6`
         )}>
-          <DialogHeader className="flex flex-row items-center justify-between">
+          <DialogHeader className="flex flex-row items-center justify-between flex-shrink-0">
             <div>
               <div className="flex items-center justify-between w-full">
                 <DialogTitle>{t('common.appSettings')}</DialogTitle>
@@ -1138,7 +1137,20 @@ export function Sidebar({ className }: { className?: string }) {
           </DialogHeader>
           
           {/* 设置导航按钮 */}
-          <div className="flex flex-wrap gap-2 mb-6 border-b pb-3">
+          <div className="flex flex-wrap gap-2 mb-4 border-b pb-3 flex-shrink-0">
+            <Button 
+              variant={settingsPanel === "user" ? "default" : "ghost"} 
+              onClick={() => setSettingsPanel("user")}
+              className={cn(
+                "flex items-center transition-all",
+                settingsPanel === "user" 
+                  ? "bg-primary text-primary-foreground shadow-sm font-medium" 
+                  : "hover:bg-muted"
+              )}
+            >
+              <Icons.user className="w-4 h-4 mr-2" />
+              {t('auth.userInfo')}
+            </Button>
             <Button 
               variant={settingsPanel === "appearance" ? "default" : "ghost"} 
               onClick={() => setSettingsPanel("appearance")}
@@ -1191,39 +1203,14 @@ export function Sidebar({ className }: { className?: string }) {
               <Icons.zap className="w-4 h-4 mr-2" />
               MCP设置
             </Button>
-            <Button 
-              variant={settingsPanel === "cloud-storage" ? "default" : "ghost"} 
-              onClick={() => setSettingsPanel("cloud-storage")}
-              className={cn(
-                "flex items-center transition-all",
-                settingsPanel === "cloud-storage" 
-                  ? "bg-primary text-primary-foreground shadow-sm font-medium" 
-                  : "hover:bg-muted"
-              )}
-            >
-              <Icons.cloud className="w-4 h-4 mr-2" />
-              {t('dataManagement.cloudSync')}
-            </Button>
-            <Button 
-              variant={settingsPanel === "user" ? "default" : "ghost"} 
-              onClick={() => setSettingsPanel("user")}
-              className={cn(
-                "flex items-center transition-all",
-                settingsPanel === "user" 
-                  ? "bg-primary text-primary-foreground shadow-sm font-medium" 
-                  : "hover:bg-muted"
-              )}
-            >
-              <Icons.user className="w-4 h-4 mr-2" />
-              {t('auth.userInfo') || '用户信息'}
-            </Button>
             {/* PromptX settings tab removed; use main view via sidebar button */}
           </div>
           
           {/* 外观设置面板 */}
           {settingsPanel === "appearance" && (
-            <ScrollArea className="max-h-[calc(85vh-240px)] sm:max-h-[60vh] pr-4">
-              <div className="px-1 py-2 space-y-8">
+            <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+              <ScrollArea className="flex-1">
+                <div className="pr-4 py-2 space-y-6">
                 
                 {/* 语言设置 */}
                 <div className="space-y-3">
@@ -1260,7 +1247,7 @@ export function Sidebar({ className }: { className?: string }) {
                       </h3>
                       <Separator className="flex-1" />
                     </div>
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-3 gap-3">
                       {themePresets
                         .filter(theme => theme.isDefault)
                         .map((theme) => (
@@ -1274,7 +1261,7 @@ export function Sidebar({ className }: { className?: string }) {
                     </div>
                   </div>
                   
-                  <Separator className="my-6" />
+                  <Separator className="my-4" />
                   
                   {/* 自定义主题部分 */}
                   <div className="space-y-3 mt-4">
@@ -1284,7 +1271,7 @@ export function Sidebar({ className }: { className?: string }) {
                       </h3>
                       <Separator className="flex-1" />
                     </div>
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-3 gap-3">
                       {themePresets
                         .filter(theme => !theme.isDefault)
                         .map((theme) => (
@@ -1327,69 +1314,79 @@ export function Sidebar({ className }: { className?: string }) {
                   />
                 </div>
               </div>
-            </ScrollArea>
+              </ScrollArea>
+            </div>
           )}
           
           {/* 数据管理面板 */}
           {settingsPanel === "data" && (
-            <div className="py-2 max-h-[calc(85vh-180px)] sm:max-h-[60vh] overflow-y-auto">
-              <DataImportExport 
-                onDataChanged={handleDataChanged}
-                inline={true}
-              />
+            <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+              <ScrollArea className="flex-1">
+                <div className="pr-4">
+                  <DataImportExport 
+                    onDataChanged={handleDataChanged}
+                    inline={true}
+                  />
+                </div>
+              </ScrollArea>
             </div>
           )}
 
           {/* AI设置面板 */}
           {settingsPanel === "ai" && (
-            <ScrollArea className="max-h-[calc(85vh-180px)] sm:max-h-[60vh] pr-4">
-              <div className="py-2">
-                <AISettings />
-              </div>
-            </ScrollArea>
+            <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+              <ScrollArea className="flex-1">
+                <div className="pr-4 py-2">
+                  <AISettings />
+                </div>
+              </ScrollArea>
+            </div>
           )}
 
           {/* MCP 设置面板 */}
           {settingsPanel === "mcp" && (
-            <ScrollArea className="max-h-[calc(85vh-180px)] sm:max-h-[60vh] pr-4">
-              <div className="py-2">
-                <MCPSettingsPanel />
-              </div>
-            </ScrollArea>
-          )}
-
-          {/* 云存储设置面板 */}
-          {settingsPanel === "cloud-storage" && (
-            <ScrollArea className="max-h-[calc(85vh-180px)] sm:max-h-[60vh] pr-4">
-              <div className="py-2">
-                <CloudStorageSettings/>
-              </div>
-            </ScrollArea>
+            <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+              <ScrollArea className="flex-1">
+                <div className="pr-4 py-2">
+                  <MCPSettingsPanel />
+                </div>
+              </ScrollArea>
+            </div>
           )}
 
           {/* PromptX settings panel removed; use main view via sidebar button */}
 
           {/* 用户偏好设置面板 */}
           {settingsPanel === "preferences" && (
-            <ScrollArea className="max-h-[calc(85vh-180px)] sm:max-h-[60vh] pr-4">
-              <PreferencesPanel />
-            </ScrollArea>
+            <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+              <ScrollArea className="flex-1">
+                <div className="pr-4">
+                  <PreferencesPanel />
+                </div>
+              </ScrollArea>
+            </div>
           )}
 
           {/* 用户信息面板 */}
           {settingsPanel === "user" && (
-            <ScrollArea className="max-h-[calc(85vh-180px)] sm:max-h-[60vh] pr-4">
-              <div className="py-2">
-                <UserProfilePanel />
-              </div>
-            </ScrollArea>
+            <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+              <ScrollArea className="flex-1">
+                <div className="pr-4 py-2">
+                  <UserProfilePanel />
+                </div>
+              </ScrollArea>
+            </div>
           )}
 
           {/* 关于面板 */}
           {settingsPanel === "about" && (
-            <ScrollArea className="max-h-[calc(85vh-180px)] sm:max-h-[60vh] pr-4">
-              <About />
-            </ScrollArea>
+            <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+              <ScrollArea className="flex-1">
+                <div className="pr-4">
+                  <About />
+                </div>
+              </ScrollArea>
+            </div>
           )}
         </DialogContent>
       </Dialog>

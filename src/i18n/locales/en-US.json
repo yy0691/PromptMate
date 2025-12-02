@@ -1325,7 +1325,12 @@
       "cancelledDesc": "OAuth login cancelled",
       "failed": "OAuth login failed",
       "failedDesc": "Unable to complete OAuth login, please try again"
-    }
+    },
+    "userInfo": "User Info",
+    "notLoggedIn": "Not Logged In",
+    "pleaseLogin": "Please Login",
+    "pleaseLoginToSync": "Please login to use cloud sync features",
+    "loggedIn": "Logged In"
   },
   "marketplace": {
     "title": "Template Marketplace",
