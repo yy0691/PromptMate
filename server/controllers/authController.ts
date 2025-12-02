@@ -9,6 +9,11 @@ import {
   signUpWithEmail,
   upsertProfile,
 } from '../services/supabaseClient';
+import {
+  exchangeLinuxdoCode,
+  getLinuxdoUserInfo,
+  isLinuxdoConfigured,
+} from '../services/linuxdoOAuth';
 import { sendError, sendJson, sendNoContent } from '../utils/response';
 import { assertObject, assertString } from '../utils/validation';
 
@@ -104,10 +109,61 @@ export async function oauthCallback(context: RequestContext) {
   try {
     const body = assertObject(context.body, 'body');
     const provider = assertString(body.provider, 'provider');
-    void provider;
     const code = assertString(body.code, 'code');
     const redirectUri = assertString(body.redirect_uri, 'redirect_uri');
 
+    // Linuxdo 使用独立的授权流程
+    if (provider.toLowerCase() === 'linuxdo') {
+      if (!isLinuxdoConfigured()) {
+        throw new Error('Linuxdo OAuth is not configured');
+      }
+
+      // 1. 使用授权码交换访问令牌
+      const linuxdoToken = await exchangeLinuxdoCode(code, redirectUri);
+
+      // 2. 使用访问令牌获取用户信息
+      const linuxdoUser = await getLinuxdoUserInfo(linuxdoToken.access_token);
+
+      // 3. 在 Supabase 中创建或查找用户
+      // 使用 Linuxdo 的用户邮箱作为唯一标识
+      const email = linuxdoUser.email || `${linuxdoUser.username}@linux.do`;
+      
+      // 尝试通过邮箱查找现有用户，如果不存在则创建
+      // 这里我们需要使用 Supabase Admin API 来创建用户
+      const { createOrGetLinuxdoUser } = await import('../services/linuxdoOAuth');
+      const supabaseUser = await createOrGetLinuxdoUser(linuxdoUser, email);
+
+      // 4. 获取或创建用户资料
+      let profile = await fetchProfile(supabaseUser.id);
+      if (!profile) {
+        profile = await upsertProfile(supabaseUser.id, {
+          nickname: linuxdoUser.name || linuxdoUser.username,
+          avatar_url: linuxdoUser.avatar_template 
+            ? `https://linux.do${linuxdoUser.avatar_template.replace('{size}', '128')}`
+            : undefined,
+        });
+      }
+
+      // 5. 生成 Supabase 会话令牌
+      // 由于 Linuxdo 用户已经通过 OAuth 验证，我们需要为他们创建一个 Supabase 会话
+      // 这里使用 Supabase Admin API 来生成自定义令牌
+      const { generateSupabaseSession } = await import('../services/linuxdoOAuth');
+      const session = await generateSupabaseSession(supabaseUser.id, email);
+
+      sendJson(context.res, 200, {
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+        expires_in: session.expires_in || 3600,
+        user: {
+          id: supabaseUser.id,
+          email: email,
+          nickname: profile?.nickname || linuxdoUser.name || linuxdoUser.username,
+        },
+      });
+      return;
+    }
+
+    // Google 和 GitHub 使用 Supabase 的标准流程
     const result = await exchangeOAuthCode(code, redirectUri);
     if (!result.access_token || !result.refresh_token || !result.user) {
       throw new Error('OAuth callback failed');
@@ -129,6 +185,7 @@ export async function oauthCallback(context: RequestContext) {
       },
     });
   } catch (error: any) {
+    console.error('[OAuth Callback] Error:', error);
     sendError(context.res, 400, error.message ?? 'OAuth exchange failed', 'INVALID_PARAMS');
   }
 }

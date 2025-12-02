@@ -95,7 +95,16 @@ export default defineConfig(({ mode }) => ({
       '/api': {
         target: 'http://localhost:8787',
         changeOrigin: true,
-        rewrite: (path) => path
+        rewrite: (path) => path,
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, res) => {
+            console.error('代理错误:', err);
+            // 如果后端服务未运行，返回友好的错误信息
+            if (err.code === 'ECONNREFUSED') {
+              console.warn('⚠️  后端服务未运行，请执行: cd server && npm run dev');
+            }
+          });
+        }
       }
     }
   },

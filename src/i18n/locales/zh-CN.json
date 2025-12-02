@@ -479,6 +479,15 @@
     "dataOperationsDescription": "导入、导出和管理您的数据",
     "importDataPlaceholder": "请粘贴JSON格式的数据...",
     "selectFile": "选择文件",
+    "promptImportExport": "提示词导入导出",
+    "promptImportExportDescription": "导入或导出提示词数据，支持JSON格式",
+    "importPrompts": "导入提示词",
+    "exportPromptsHint": "将当前所有提示词导出为JSON文件",
+    "importPromptsHint": "从JSON文件导入提示词，新提示词将与现有提示词合并",
+    "importDataPreview": "导入数据预览",
+    "confirmImport": "确认导入",
+    "importPromptsSuccess": "提示词已成功导入",
+    "importPromptsFailed": "提示词导入失败，请检查文件格式",
     "backupRestoreDescription": "备份和恢复您的数据",
     "autoBackup": "自动备份",
     "autoBackupDescription": "定期自动备份您的数据",
@@ -911,6 +920,12 @@
       "minimize":"最小化",
       "maximize":"最大化",
       "close":"关闭"
+    },
+    "user": {
+      "login": "登录",
+      "logout": "退出登录",
+      "guest": "访客",
+      "noNickname": "未设置昵称"
     }
   },
   "prompteditform":{
@@ -1208,14 +1223,6 @@
       "cancelledDesc": "OAuth登录已取消",
       "failed": "OAuth登录失败",
       "failedDesc": "无法完成OAuth登录，请重试"
-    }
-  },
-  "Header": {
-    "user": {
-      "login": "登录",
-      "logout": "退出登录",
-      "guest": "访客",
-      "noNickname": "未设置昵称"
     }
   },
   "marketplace": {

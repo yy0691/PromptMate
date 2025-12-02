@@ -42,13 +42,16 @@ export function FontSelector({ value, onChange }: FontSelectorProps = {}) {
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 border rounded-lg p-1 bg-background">
+      {/* 字体选择 */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="flex gap-2 items-center">
-            <Type className="h-4 w-4" />
-            <span>{currentFont}</span>
-            <ChevronDown className="h-4 w-4" />
+          <Button variant="ghost" className="flex gap-2 items-center flex-1 justify-between min-w-[160px]">
+            <div className="flex items-center gap-2">
+              <Type className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm">{currentFont}</span>
+            </div>
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -80,20 +83,24 @@ export function FontSelector({ value, onChange }: FontSelectorProps = {}) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <div className="flex items-center border rounded-md">
+      {/* 分隔线 */}
+      <div className="h-6 w-px bg-border" />
+
+      {/* 字号调节 - 紧凑布局 */}
+      <div className="flex items-center border rounded-md bg-background">
         <Button 
           variant="ghost" 
           size="sm" 
-          className="px-2 h-8"
+          className="px-2.5 h-8 hover:bg-muted"
           onClick={() => handleFontSizeChange(-1)}
         >
           -
         </Button>
-        <span className="px-2 text-sm">{settings.fontSize}px</span>
+        <span className="px-3 text-sm font-medium min-w-[3rem] text-center">{settings.fontSize}px</span>
         <Button 
           variant="ghost" 
           size="sm" 
-          className="px-2 h-8"
+          className="px-2.5 h-8 hover:bg-muted"
           onClick={() => handleFontSizeChange(1)}
         >
           +

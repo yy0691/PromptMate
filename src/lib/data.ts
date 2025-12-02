@@ -423,6 +423,71 @@ export const exportPromptsToFile = () => {
   linkElement.click();
 };
 
+// 导入提示词从文件（仅导入提示词数据）
+export const importPromptsFromFile = async (jsonData: string): Promise<boolean> => {
+  try {
+    console.log("[DEBUG] importPromptsFromFile: Starting import.");
+    const data = JSON.parse(jsonData);
+    const isDatabaseMode = databaseClient.isAvailable();
+
+    // 如果数据是提示词数组
+    let promptsToImport: Prompt[] = [];
+    if (Array.isArray(data)) {
+      promptsToImport = data;
+    } else if (data.prompts && Array.isArray(data.prompts)) {
+      // 如果是包含prompts字段的对象
+      promptsToImport = data.prompts;
+    } else {
+      throw new Error("无法识别的提示词文件格式");
+    }
+
+    // 处理分类映射和创建
+    console.log("[DEBUG] importPromptsFromFile: Mapping prompts to categories.");
+    const { mappedPrompts, newCategories } = await mapPromptsToCategories(promptsToImport, isDatabaseMode);
+
+    // 如果创建了新分类，则更新分类列表
+    if (newCategories.length > 0) {
+      console.log(`[DEBUG] importPromptsFromFile: ${newCategories.length} new categories created.`);
+      const existingCategories = loadCategories();
+      const updatedCategories = [...existingCategories, ...newCategories];
+      saveCategories(updatedCategories);
+      console.log("[DEBUG] importPromptsFromFile: Saved updated categories to localStorage.");
+    }
+
+    // 为导入的提示词生成新ID，并使用映射后的分类ID
+    const newPrompts = mappedPrompts.map(p => ({
+      ...p,
+      id: generateId(),
+    }));
+
+    // 如果是数据库模式，将新提示词逐条写入数据库
+    if (isDatabaseMode) {
+      console.log("[DEBUG] importPromptsFromFile: Database mode detected. Writing new prompts to DB.");
+      for (const prompt of newPrompts) {
+        try {
+          await databaseClient.createPrompt(prompt);
+          console.log(`[DEBUG] DB_WRITE: Prompt '${prompt.title}' (${prompt.id}) created with category ID '${prompt.category}'.`);
+        } catch (error: any) {
+          console.error(`[DEBUG] DB_WRITE: Failed to create prompt '${prompt.title}' (${prompt.id}):`, error.message);
+        }
+      }
+    }
+
+    // 与localStorage中现有的提示词合并
+    const existingPrompts = loadPrompts();
+    console.log("[DEBUG] importPromptsFromFile: Existing prompts count:", existingPrompts.length);
+    console.log("[DEBUG] importPromptsFromFile: Imported prompts count:", newPrompts.length);
+    const allPrompts = [...existingPrompts, ...newPrompts];
+    console.log("[DEBUG] importPromptsFromFile: Total prompts to save to localStorage:", allPrompts.length);
+    savePrompts(allPrompts);
+    
+    return true;
+  } catch (error) {
+    console.error("导入提示词时出错:", error);
+    return false;
+  }
+};
+
 // 导出分类到文件
 export const exportCategoriesToFile = () => {
   const categories = loadCategories();

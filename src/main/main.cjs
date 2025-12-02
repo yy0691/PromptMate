@@ -578,15 +578,74 @@ const defaultPrompts = [
   }
 ];
 
+// 读取用户偏好设置中的窗口位置
+function getWindowBounds() {
+  try {
+    const preferencesPath = path.join(userDataPath, 'config', 'promptmate-user-preferences.json');
+    if (fs.existsSync(preferencesPath)) {
+      const preferencesData = fs.readFileSync(preferencesPath, 'utf8');
+      const preferences = JSON.parse(preferencesData);
+      if (preferences?.ui?.windowBounds) {
+        const bounds = preferences.ui.windowBounds;
+        // 验证窗口位置是否在屏幕范围内
+        const { screen } = require('electron');
+        const displays = screen.getAllDisplays();
+        const isBoundsValid = displays.some(display => {
+          return bounds.x >= display.bounds.x && 
+                 bounds.y >= display.bounds.y &&
+                 bounds.x + bounds.width <= display.bounds.x + display.bounds.width &&
+                 bounds.y + bounds.height <= display.bounds.y + display.bounds.height;
+        });
+        if (isBoundsValid) {
+          return bounds;
+        }
+      }
+    }
+  } catch (error) {
+    console.error('读取窗口位置失败:', error);
+  }
+  return null;
+}
+
+// 保存窗口位置到用户偏好设置
+function saveWindowBounds(bounds) {
+  try {
+    const preferencesPath = path.join(userDataPath, 'config', 'promptmate-user-preferences.json');
+    let preferences = {};
+    if (fs.existsSync(preferencesPath)) {
+      const preferencesData = fs.readFileSync(preferencesPath, 'utf8');
+      preferences = JSON.parse(preferencesData);
+    }
+    
+    if (!preferences.ui) {
+      preferences.ui = {};
+    }
+    
+    preferences.ui.windowBounds = bounds;
+    
+    // 确保目录存在
+    const configDir = path.dirname(preferencesPath);
+    if (!fs.existsSync(configDir)) {
+      fs.mkdirSync(configDir, { recursive: true });
+    }
+    
+    fs.writeFileSync(preferencesPath, JSON.stringify(preferences, null, 2));
+  } catch (error) {
+    console.error('保存窗口位置失败:', error);
+  }
+}
+
 // 创建主窗口
 function createWindow() {
   const preloadPath = path.join(__dirname, 'preload.cjs');
   console.log('Preload script path:', preloadPath);
   console.log('Preload script exists:', fs.existsSync(preloadPath));
   
-  mainWindow = new BrowserWindow({
-    width: 1100,
-    height: 700,
+  // 尝试读取保存的窗口位置
+  const savedBounds = getWindowBounds();
+  const windowOptions = {
+    width: savedBounds?.width || 1100,
+    height: savedBounds?.height || 700,
     minWidth: 800,
     minHeight: 600,
     frame: false,  // 隐藏默认窗口边框
@@ -602,7 +661,15 @@ function createWindow() {
       enableRemoteModule: false,  // 禁用远程模块
       worldSafeExecuteJavaScript: true  // 启用安全的JavaScript执行
     }
-  });
+  };
+  
+  // 如果有保存的位置，设置窗口位置
+  if (savedBounds) {
+    windowOptions.x = savedBounds.x;
+    windowOptions.y = savedBounds.y;
+  }
+  
+  mainWindow = new BrowserWindow(windowOptions);
 
   // 根据环境加载应用（开发环境或生产环境）
   const isDev = process.env.NODE_ENV === 'development';
@@ -691,6 +758,24 @@ function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
+
+  // 保存窗口位置和大小
+  let saveBoundsTimeout = null;
+  const saveBounds = () => {
+    if (saveBoundsTimeout) {
+      clearTimeout(saveBoundsTimeout);
+    }
+    saveBoundsTimeout = setTimeout(() => {
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        const bounds = mainWindow.getBounds();
+        saveWindowBounds(bounds);
+      }
+    }, 500);
+  };
+
+  // 监听窗口移动和调整大小
+  mainWindow.on('move', saveBounds);
+  mainWindow.on('resize', saveBounds);
 
   // 拦截所有外部链接，在系统默认浏览器中打开
   const { shell } = require('electron');

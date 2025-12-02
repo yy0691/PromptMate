@@ -370,6 +370,7 @@ export const PromptList = memo(function PromptList({
   // *** MODIFICATION END ***
 
   return (
+    <>
     <div className="flex flex-col h-full card-container-transition">
       {/* 当前分类/模式指示器 */}
       <div className="bg-muted/30 px-4 py-2 text-sm flex items-center w-full sticky top-0 z-20 border-b border-border/40">
@@ -456,16 +457,16 @@ export const PromptList = memo(function PromptList({
 
       {/* 提示词列表 */}
       <ScrollArea className="flex-1">
-        <div className="h-full w-full">
-          <ContextMenu>
-            <ContextMenuTrigger asChild>
-              <div 
-                className="p-4 w-full" 
-                style={{ 
-                  minHeight: '100%',
-                  height: '100%'
-                }}
-              >
+        <ContextMenu>
+          <ContextMenuTrigger asChild>
+            <div 
+              className="p-4 w-full" 
+              style={{ 
+                minHeight: 'calc(100vh - 200px)',
+                width: '100%',
+                height: '100%'
+              }}
+            >
           {filteredPrompts.length === 0 ? (
             // *** MODIFICATION START ***
             <div className="flex flex-col items-center justify-center min-h-[calc(100vh-300px)] text-center pt-16">
@@ -499,7 +500,8 @@ export const PromptList = memo(function PromptList({
               style={{ 
                 minHeight: '100%',
                 height: '100%',
-                alignContent: 'start'
+                  alignContent: 'start',
+                  width: '100%'
               }}
             >
               {filteredPrompts.map((prompt) => (
@@ -776,28 +778,26 @@ export const PromptList = memo(function PromptList({
             </div>
           )}
             </div>
-            </ContextMenuTrigger>
-            <ContextMenuContent>
-              <ContextMenuItem onClick={() => setShowNewPromptDialog(true)}>
-                <Icons.plus className="mr-2 h-4 w-4" />
-                {t('common.create_prompt.title')}
-              </ContextMenuItem>
-              <ContextMenuItem onClick={() => setShowFavorites(!showFavorites)}>
-                <Icons.star className="mr-2 h-4 w-4" />
-                {showFavorites ? t('common.showAll') : t('common.showFavorites')}
-              </ContextMenuItem>
-              <ContextMenuItem onClick={() => setShowRecommended(!showRecommended)}>
-                <Icons.fileText className="mr-2 h-4 w-4" />
-                {showRecommended ? t('common.showAll') : t('common.showRecommended')}
-              </ContextMenuItem>
-            </ContextMenuContent>
-          </ContextMenu>
-        </div>
+          </ContextMenuTrigger>
+          <ContextMenuContent>
+            <ContextMenuItem onClick={() => setShowNewPromptDialog(true)}>
+              <Icons.plus className="mr-2 h-4 w-4" />
+              {t('common.create_prompt.title')}
+            </ContextMenuItem>
+            <ContextMenuItem onClick={() => setShowFavorites(!showFavorites)}>
+              <Icons.star className="mr-2 h-4 w-4" />
+              {showFavorites ? t('common.showAll') : t('common.showFavorites')}
+            </ContextMenuItem>
+            <ContextMenuItem onClick={() => setShowRecommended(!showRecommended)}>
+              <Icons.fileText className="mr-2 h-4 w-4" />
+              {showRecommended ? t('common.showAll') : t('common.showRecommended')}
+            </ContextMenuItem>
+          </ContextMenuContent>
+        </ContextMenu>
       </ScrollArea>
+    </div>
 
-
-
-      {/* 版本管理对话框 */}
+    {/* 版本管理对话框 */}
       {enhancementPrompt && (
         <PromptVersionManager
           prompt={enhancementPrompt}
@@ -926,6 +926,6 @@ export const PromptList = memo(function PromptList({
         tagName={tagToDelete}
         affectedPromptsCount={tagAffectedCount}
       />
-    </div>
+    </>
   );
 });

@@ -473,6 +473,15 @@
     "dataOperationsDescription": "Import, export and manage your data",
     "importDataPlaceholder": "Please paste JSON formatted data...",
     "selectFile": "Select File",
+    "promptImportExport": "Prompt Import & Export",
+    "promptImportExportDescription": "Import or export prompt data, supports JSON format",
+    "importPrompts": "Import Prompts",
+    "exportPromptsHint": "Export all current prompts as a JSON file",
+    "importPromptsHint": "Import prompts from a JSON file, new prompts will be merged with existing ones",
+    "importDataPreview": "Import Data Preview",
+    "confirmImport": "Confirm Import",
+    "importPromptsSuccess": "Prompts imported successfully",
+    "importPromptsFailed": "Failed to import prompts, please check the file format",
     "backupRestoreDescription": "Backup and restore your data",
     "autoBackup": "Auto Backup",
     "autoBackupDescription": "Automatically backup your data periodically",
@@ -896,6 +905,12 @@
       "minimize": "Minimize",
       "maximize": "Maximize",
       "close": "Close"
+    },
+    "user": {
+      "login": "Login",
+      "logout": "Logout",
+      "guest": "Guest",
+      "noNickname": "No nickname"
     }
   },
   "prompteditform": {
@@ -1072,39 +1087,6 @@
   "exported": "Exported successfully",
   "imported": "Imported successfully",
   "updated": "Updated successfully"
-},
-"Header": {
-  "title": "PromptMate",
-  "message": {
-    "debug": "Debug Info",
-    "debugDesc": "electronAPI is not available, please check preload script",
-    "functionUnavailable": "Function Unavailable",
-    "functionUnavailableDesc": "Window control functions are not available in current environment",
-    "operationFailed": "Operation Failed",
-    "operationFailedDesc": "Error occurred while minimizing window",
-    "destructive": "Destructive",
-    "minimizeWindow": "Minimize window",
-    "minimizeWindowFailed": "Failed to minimize window",
-    "maximizeWindow": "Maximize/restore window",
-    "maximizeWindowFailed": "Failed to maximize/restore window",
-    "closeWindow": "Close window",
-    "closeWindowFailed": "Failed to close window",
-    "closeWindowFailedDesc": "Error occurred while closing window"
-  },
-  "search": {
-    "searchPlaceholder": "Search prompts...",
-    "search_noResults": "No relevant content found",
-    "search_suggestions": "Search suggestions"
-  },
-  "button": {
-    "dark": "Switch to dark mode",
-    "light": "Switch to light mode",
-    "cancelPinWindow": "Unpin window",
-    "pinWindow": "Pin window on top",
-    "minimize": "Minimize",
-    "maximize": "Maximize",
-    "close": "Close"
-  }
 },
 "prompteditform": {
   "title": "Edit Prompt",
@@ -1343,14 +1325,6 @@
       "cancelledDesc": "OAuth login cancelled",
       "failed": "OAuth login failed",
       "failedDesc": "Unable to complete OAuth login, please try again"
-    }
-  },
-  "Header": {
-    "user": {
-      "login": "Login",
-      "logout": "Logout",
-      "guest": "Guest",
-      "noNickname": "No nickname"
     }
   },
   "marketplace": {

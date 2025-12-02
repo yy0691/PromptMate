@@ -73,31 +73,34 @@ export async function signInWithEmail(email: string, password: string) {
   return result;
 }
 
+import { buildLinuxdoOAuthUrl, isLinuxdoConfigured } from './linuxdoOAuth';
+
 export function buildOAuthUrl(provider: string, redirectUri: string): string {
-  // Provider 映射：将前端的 provider 名称映射到 Supabase 配置的 provider 名称
-  const providerMap: Record<string, string> = {
-    'linuxdo': 'slack', // Linuxdo 在 Supabase 中配置为 Slack (OIDC)
-  };
+  const providerLower = provider.toLowerCase();
 
-  // 获取实际的 Supabase provider 名称
-  const supabaseProvider = providerMap[provider.toLowerCase()] || provider;
+  // Linuxdo 使用独立的授权服务
+  if (providerLower === 'linuxdo') {
+    if (!isLinuxdoConfigured()) {
+      throw new Error('Linuxdo OAuth is not configured. Please set LINUXDO_CLIENT_ID and LINUXDO_CLIENT_SECRET in environment variables.');
+    }
+    return buildLinuxdoOAuthUrl(redirectUri);
+  }
 
-  // 对于 Supabase 支持的标准 OAuth 提供商（google, github 等）
-  // 使用 Supabase 的统一授权端点
+  // Google 和 GitHub 使用 Supabase 的统一授权端点
+  // Supabase 会使用环境变量中配置的客户端 ID 和密钥
   const standardProviders = ['google', 'github', 'facebook', 'twitter', 'discord', 'slack'];
 
-  if (standardProviders.includes(supabaseProvider.toLowerCase())) {
+  if (standardProviders.includes(providerLower)) {
     const query = new URLSearchParams({
-      provider: supabaseProvider,
+      provider: providerLower,
       redirect_to: redirectUri,
     });
     return `${supabaseUrl}/auth/v1/authorize?${query.toString()}`;
   }
 
-  // 对于其他自定义 OAuth 提供商，也使用 Supabase 端点
-  // Supabase 会根据配置的自定义提供商进行处理
+  // 对于其他提供商，也使用 Supabase 端点
   const query = new URLSearchParams({
-    provider: supabaseProvider,
+    provider: providerLower,
     redirect_to: redirectUri,
   });
   return `${supabaseUrl}/auth/v1/authorize?${query.toString()}`;

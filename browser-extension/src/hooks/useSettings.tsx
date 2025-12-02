@@ -84,7 +84,7 @@ export function useSettings() {
     }
     
     // 确保字体设置被正确应用
-    console.log(`字体已应用: ${fontName} (${fontSize}px)`);
+    // console.log(`字体已应用: ${fontName} (${fontSize}px)`);
   }, []);
 
   // 应用主题

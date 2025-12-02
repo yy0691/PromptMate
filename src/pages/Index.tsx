@@ -1,4 +1,4 @@
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useState, useEffect, Dispatch, SetStateAction, useRef, useCallback } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { PromptList } from "@/components/PromptList";
 import { PromptEditorModular } from "@/components/PromptEditorModular";
@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { useTranslation } from "react-i18next";
+import { useUserPreferences } from "@/hooks/useUserPreferences";
 
 interface IndexProps {
   sidebarOpen?: boolean;
@@ -131,6 +132,9 @@ function ContentArea({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
 export function Index({ sidebarOpen: propsSidebarOpen, setSidebarOpen: propSetSidebarOpen, onToggleSidebarRef }: IndexProps) {
   const [localSidebarOpen, setLocalSidebarOpen] = useState(true);
   const { selectedPrompt } = usePrompts();
+  const { preferences, updatePreference, loading: preferencesLoading } = useUserPreferences();
+  const panelGroupRef = useRef<{ getLayout: () => number[] } | null>(null);
+  const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   // 使用props传递的状态或本地状态
   const sidebarOpen = propsSidebarOpen !== undefined ? propsSidebarOpen : localSidebarOpen;
@@ -148,6 +152,35 @@ export function Index({ sidebarOpen: propsSidebarOpen, setSidebarOpen: propSetSi
     }
   }, [onToggleSidebarRef]);
 
+  // 处理面板大小变化
+  const handlePanelResize = useCallback((sizes: number[]) => {
+    if (sizes.length >= 2 && !preferencesLoading) {
+      // 防抖保存
+      if (resizeTimeoutRef.current) {
+        clearTimeout(resizeTimeoutRef.current);
+      }
+      resizeTimeoutRef.current = setTimeout(() => {
+        updatePreference('ui', {
+          panelSizes: {
+            leftPanel: sizes[0],
+            rightPanel: sizes[1],
+          },
+        });
+      }, 300);
+    }
+  }, [updatePreference, preferencesLoading]) as (sizes: number[]) => void;
+
+  // 获取保存的面板大小
+  const getPanelSizes = () => {
+    if (preferences?.ui?.panelSizes) {
+      return [
+        preferences.ui.panelSizes.leftPanel,
+        preferences.ui.panelSizes.rightPanel,
+      ];
+    }
+    return [45, 55]; // 默认值
+  };
+
   return (
     <div className="flex flex-1 min-h-0">
       {/* 左侧边栏 */}
@@ -156,9 +189,18 @@ export function Index({ sidebarOpen: propsSidebarOpen, setSidebarOpen: propSetSi
       {/* 中间内容区域 */}
       {selectedPrompt ? (
         // 使用 ResizablePanelGroup 实现可拖拽调节宽度
-        <ResizablePanelGroup direction="horizontal" className="flex-1 min-h-0">
+        <ResizablePanelGroup 
+          direction="horizontal" 
+          className="flex-1 min-h-0"
+          onLayout={handlePanelResize}
+        >
           {/* 左侧：提示词列表 */}
-          <ResizablePanel defaultSize={45} minSize={25} maxSize={65}>
+          <ResizablePanel 
+            defaultSize={getPanelSizes()[0]} 
+            minSize={25} 
+            maxSize={65}
+            id="left-panel"
+          >
             <div className="h-full border-r">
               <ScrollArea className="h-full">
                 <ContentArea onToggleSidebar={toggleSidebar} />
@@ -170,7 +212,12 @@ export function Index({ sidebarOpen: propsSidebarOpen, setSidebarOpen: propSetSi
           <ResizableHandle withHandle />
           
           {/* 右侧：编辑面板 */}
-          <ResizablePanel defaultSize={55} minSize={35} maxSize={75}>
+          <ResizablePanel 
+            defaultSize={getPanelSizes()[1]} 
+            minSize={35} 
+            maxSize={75}
+            id="right-panel"
+          >
             <div className="h-full bg-background shadow-lg animate-slide-in-panel">
               <PromptEditorModular />
             </div>

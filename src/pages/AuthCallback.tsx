@@ -40,8 +40,18 @@ export function AuthCallback() {
           throw new Error('未收到授权码，请重试');
         }
 
-        // 构建重定向 URI（必须与请求时一致）
+        // 检测是否为 Electron 环境
         const isElectron = !!(window as any).electronAPI;
+
+        // 特殊处理：Electron + Linuxdo 需要转发到自定义协议
+        if (isElectron && provider === 'linuxdo') {
+          // Electron + Linuxdo：转发到自定义协议
+          const redirectUri = 'promptmate://oauth';
+          window.location.href = `${redirectUri}?code=${encodeURIComponent(code)}&provider=${provider}`;
+          return;
+        }
+
+        // 构建重定向 URI（必须与请求时一致）
         const redirectUri = isElectron
           ? 'promptmate://oauth'
           : `${window.location.origin}/auth/callback`;

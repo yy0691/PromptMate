@@ -144,11 +144,10 @@ export const PromptEditForm: React.FC<PromptEditFormProps> = ({
       <div className="space-y-2">
         <label className="text-sm font-medium">{t('prompts.promptCategory')}</label>
         <Select
-          value={state.category || categories[0]?.id || ""}
+          value={state.category || ""}
           onValueChange={(value) => {
-            if (value) {
+            console.log('🔄 分类选择变化:', { oldCategory: state.category, newCategory: value });
               onFieldChange('category', value);
-            }
           }}
         >
           <SelectTrigger>

@@ -22,11 +22,11 @@ export function useSettings() {
   const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>('light');
   const { toast } = useToast();
 
-  console.log("[DEBUG] useSettings: Initial settings loaded:", settings);
+  // console.log("[DEBUG] useSettings: Initial settings loaded:", settings);
 
   // 定义辅助函数
   const applyFont = useCallback((fontName: string, fontSize: number) => {
-    console.log(`[DEBUG] applyFont: Applying font '${fontName}' with size ${fontSize}px.`);
+    // console.log(`[DEBUG] applyFont: Applying font '${fontName}' with size ${fontSize}px.`);
     const fontFamily = FONT_FAMILIES[fontName as keyof typeof FONT_FAMILIES] || fontName;
     document.documentElement.style.setProperty('--app-font', fontFamily, 'important');
     document.documentElement.style.setProperty('--app-font-size', `${fontSize}px`, 'important');
@@ -58,7 +58,7 @@ export function useSettings() {
     }
     
     // 确保字体设置被正确应用
-    console.log(`字体已应用: ${fontName} (${fontSize}px)`);
+    // console.log(`字体已应用: ${fontName} (${fontSize}px)`);
   }, []);
 
   const applyTheme = useCallback((theme: ThemeType, currentSettings: Settings) => {

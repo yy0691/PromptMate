@@ -152,15 +152,10 @@ export const usePromptEditor = (options: PromptEditorOptions = {}) => {
     try {
       updateState({ autoSaveStatus: "saving" });
       
-      // 确保分类不为空，如果为空则使用默认分类
-      const category = state.category && state.category.trim() 
-        ? state.category 
-        : (categories[0]?.id || "general");
-      
       const payload = {
         title: state.title,
         content: state.content,
-        category: category,
+        category: state.category,
         tags: state.tags.split(/[,，;；]/).map((tag) => tag.trim()).filter(Boolean),
         images: state.images
       };

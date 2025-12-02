@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { exportAllData, importAllData, exportPromptsToFile, resetToDefaults } from "@/lib/data";
+import { exportAllData, importAllData, exportPromptsToFile, importPromptsFromFile, resetToDefaults, loadPrompts, loadCategories, getAllTags } from "@/lib/data";
 import { Icons } from "@/components/ui/icons";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -19,6 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { usePrompts } from "@/hooks/usePrompts";
 
 interface DataImportExportProps {
   open?: boolean;
@@ -43,12 +44,22 @@ export function DataImportExport({
 }: DataImportExportProps) {
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { prompts, categories, allTags } = usePrompts();
   
-  // 主要状态管理
-  const [activeCategory, setActiveCategory] = useState<SettingsCategory>(SettingsCategory.CLOUD_SYNC);
+  // 主要状态管理 - 如果是内联模式，默认显示数据管理
+  const [activeCategory, setActiveCategory] = useState<SettingsCategory>(
+    inline ? SettingsCategory.DATA_MANAGEMENT : SettingsCategory.CLOUD_SYNC
+  );
   const [exportedData, setExportedData] = useState("");
   const [importData, setImportData] = useState("");
   const [showConfirmReset, setShowConfirmReset] = useState(false);
+  
+  // 数据统计
+  const dataStats = {
+    totalPrompts: prompts.length,
+    totalCategories: categories.length,
+    totalTags: allTags.length
+  };
   
   // 同步相关状态
   const { syncStatus, syncSettings, pendingConflict, manualSync, resolveConflict, toggleSync, updateSyncSettings } = useDataSync();
@@ -203,6 +214,49 @@ export function DataImportExport({
         toast({
           title: t('dataManagement.message.importFileError'),
           description: t('dataManagement.message.importFileErrorDesc'),
+          variant: "destructive",
+        });
+      }
+    };
+    
+    reader.readAsText(file);
+  };
+
+  // 从文件导入提示词
+  const handleImportPromptsFromFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    
+    reader.onload = async (e) => {
+      try {
+        const content = e.target?.result as string;
+        const success = await importPromptsFromFile(content);
+        
+        if (success) {
+          toast({
+            title: t('dataManagement.importPromptsSuccess') || '导入成功',
+            description: t('dataManagement.importPromptsSuccess') || '提示词已成功导入',
+            variant: "success",
+          });
+          
+          // 重置文件输入
+          event.target.value = '';
+          // 触发数据刷新
+          onDataChanged?.();
+        } else {
+          toast({
+            title: t('dataManagement.importPromptsFailed') || '导入失败',
+            description: t('dataManagement.importPromptsFailed') || '提示词导入失败，请检查文件格式',
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        console.error('导入提示词出错:', error);
+        toast({
+          title: t('dataManagement.message.importFileError') || '导入错误',
+          description: error instanceof Error ? error.message : t('dataManagement.message.importFileErrorDesc') || '文件读取失败',
           variant: "destructive",
         });
       }
@@ -575,22 +629,79 @@ export function DataImportExport({
         <CardContent>
           <div className="grid grid-cols-3 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">0</div>
+              <div className="text-2xl font-bold text-blue-600">{dataStats.totalPrompts}</div>
               <div className="text-sm text-muted-foreground">{t('dataManagement.totalPrompts')}</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">0</div>
+              <div className="text-2xl font-bold text-green-600">{dataStats.totalCategories}</div>
               <div className="text-sm text-muted-foreground">{t('dataManagement.totalCategories')}</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">0</div>
+              <div className="text-2xl font-bold text-purple-600">{dataStats.totalTags}</div>
               <div className="text-sm text-muted-foreground">{t('dataManagement.totalTags')}</div>
           </div>
         </div>
         </CardContent>
       </Card>
 
-      {/* 数据操作 */}
+      {/* 提示词导入导出 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Icons.fileExport className="h-5 w-5" />
+            {t('dataManagement.promptImportExport') || '提示词导入导出'}
+          </CardTitle>
+          <CardDescription>
+            {t('dataManagement.promptImportExportDescription') || '导入或导出提示词数据，支持JSON格式'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* 导出提示词 */}
+          <div className="space-y-2">
+            <Label>{t('dataManagement.exportPrompts') || '导出提示词'}</Label>
+            <Button 
+              onClick={handleExportPrompts} 
+              className="w-full h-12"
+              variant="default"
+            >
+              <Icons.fileExport className="mr-2 h-4 w-4" />
+              {t('dataManagement.exportPrompts') || '导出提示词到文件'}
+            </Button>
+            <p className="text-xs text-muted-foreground">
+              {t('dataManagement.exportPromptsHint') || '将当前所有提示词导出为JSON文件'}
+            </p>
+          </div>
+          
+          <Separator />
+          
+          {/* 导入提示词 */}
+          <div className="space-y-2">
+            <Label>{t('dataManagement.importPrompts') || '导入提示词'}</Label>
+            <div className="flex space-x-2">
+              <Button
+                variant="outline"
+                onClick={() => document.getElementById('prompt-file-upload')?.click()}
+                className="flex-1"
+              >
+                <Icons.fileUp className="mr-2 h-4 w-4" />
+                {t('dataManagement.selectFile') || '选择文件'}
+              </Button>
+              <input
+                id="prompt-file-upload"
+                type="file"
+                accept=".json"
+                className="hidden"
+                onChange={handleImportPromptsFromFile}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {t('dataManagement.importPromptsHint') || '从JSON文件导入提示词，新提示词将与现有提示词合并'}
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 完整数据导入导出 */}
       <Card>
         <CardHeader>
           <CardTitle>{t('dataManagement.dataOperations')}</CardTitle>
@@ -604,48 +715,54 @@ export function DataImportExport({
               <Icons.fileJson className="h-6 w-6 mb-2" />
               {t('dataManagement.exportData')}
             </Button>
-            <Button onClick={handleExportPrompts} variant="outline" className="h-20 flex-col">
-              <Icons.fileExport className="h-6 w-6 mb-2" />
-              {t('dataManagement.exportPrompts')}
+            <Button 
+              variant="outline" 
+              onClick={() => document.getElementById('file-upload')?.click()}
+              className="h-20 flex-col"
+            >
+              <Icons.fileUp className="h-6 w-6 mb-2" />
+              {t('dataManagement.importData')}
             </Button>
           </div>
           
-          <Separator />
+          <input
+            id="file-upload"
+            type="file"
+            accept=".json"
+            className="hidden"
+            onChange={handleImportFromFile}
+          />
           
-          <div className="space-y-2">
-            <Label>{t('dataManagement.importData')}</Label>
-            <Textarea
-              value={importData}
-              onChange={(e) => setImportData(e.target.value)}
-              className="h-32 font-mono text-xs"
-              placeholder={t('dataManagement.importDataPlaceholder')}
-            />
-            <div className="flex space-x-2">
-              <Button
-                variant="outline"
-                onClick={() => document.getElementById('file-upload')?.click()}
-                className="flex-1"
-              >
-                <Icons.fileUp className="mr-2 h-4 w-4" />
-                {t('dataManagement.selectFile')}
-              </Button>
-              <input
-                id="file-upload"
-                type="file"
-                accept=".json"
-                className="hidden"
-                onChange={handleImportFromFile}
-              />
-              <Button 
-                onClick={handleImport} 
-                className="flex-1"
-                disabled={!importData.trim()}
-              >
-                <Icons.check className="mr-2 h-4 w-4" />
-                {t('dataManagement.importData')}
-              </Button>
-            </div>
-          </div>
+          {importData && (
+            <>
+              <Separator />
+              <div className="space-y-2">
+                <Label>{t('dataManagement.importDataPreview') || '导入数据预览'}</Label>
+                <Textarea
+                  value={importData}
+                  onChange={(e) => setImportData(e.target.value)}
+                  className="h-32 font-mono text-xs"
+                  placeholder={t('dataManagement.importDataPlaceholder')}
+                />
+                <div className="flex space-x-2">
+                  <Button 
+                    onClick={handleImport} 
+                    className="flex-1"
+                    disabled={!importData.trim()}
+                  >
+                    <Icons.check className="mr-2 h-4 w-4" />
+                    {t('dataManagement.confirmImport') || '确认导入'}
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    onClick={() => setImportData("")}
+                  >
+                    {t('common.clear') || '清空'}
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
         </div>
@@ -790,8 +907,14 @@ export function DataImportExport({
   // 渲染主内容
   const renderContent = () => (
     <div className={`flex ${inline ? 'h-full' : 'h-full min-h-0'}`}>
-      {renderSidebar()}
-      {renderMainContent()}
+      {!inline && renderSidebar()}
+      {inline ? (
+        <div className="flex-1 overflow-y-auto p-4">
+          {renderDataManagementContent()}
+        </div>
+      ) : (
+        renderMainContent()
+      )}
     </div>
   );
 

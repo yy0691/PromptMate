@@ -46,6 +46,8 @@ import { CardContent } from "./ui/card";
 import { useTranslation } from 'react-i18next';
 import { MCPSettingsPanel } from '@/components/promptx/MCPSettingsPanel';
 import { CloudStorageSettings } from "./CloudStorageSettings";
+import { UserProfilePanel } from "./UserProfilePanel";
+import { Separator } from "@/components/ui/separator";
 
 // 侧边栏显示模式类型
 type SidebarMode = "expanded" | "collapsed";
@@ -89,7 +91,7 @@ export function Sidebar({ className }: { className?: string }) {
   const [sidebarMode, setSidebarMode] = useState<SidebarMode>(
     preferences.ui.sidebarExpanded ? "expanded" : "collapsed"
   );
-  const [settingsPanel, setSettingsPanel] = useState<"appearance" | "data" | "ai" | "mcp" | "cloud-storage" | "about" | "preferences">("appearance");
+  const [settingsPanel, setSettingsPanel] = useState<"appearance" | "data" | "ai" | "mcp" | "cloud-storage" | "about" | "preferences" | "user">("appearance");
   const [showCategoryManager, setShowCategoryManager] = useState(false);
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
@@ -579,7 +581,8 @@ export function Sidebar({ className }: { className?: string }) {
     <div 
       ref={sidebarRef}
       className={cn(
-        "h-[calc(100vh-3rem)] border-r relative transition-all duration-300 flex-shrink-0 bg-background flex flex-col",
+        "h-[calc(100vh-3rem)] border-r transition-all duration-300 flex-shrink-0 bg-background flex flex-col",
+        "overflow-y-auto",
         isCollapsed && "w-[60px]",
         !isCollapsed && "sidebar-dynamic-width",
         className
@@ -1106,7 +1109,7 @@ export function Sidebar({ className }: { className?: string }) {
           "transition-all duration-300",
           isFullscreen 
             ? "fixed left-0 top-0 w-screen h-screen max-w-none max-h-none m-0 rounded-none translate-x-0 translate-y-0" 
-            : `sm:max-w-[650px] md:max-w-[750px] ${settingsPanel === "data" ? 'max-h-[85vh]' : 'max-h-[85vh]'}`
+            : `sm:max-w-[720px] max-w-[90vw] ${settingsPanel === "data" ? 'max-h-[85vh]' : 'max-h-[85vh]'}`
         )}>
           <DialogHeader className="flex flex-row items-center justify-between">
             <div>
@@ -1135,78 +1138,129 @@ export function Sidebar({ className }: { className?: string }) {
           </DialogHeader>
           
           {/* 设置导航按钮 */}
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="flex flex-wrap gap-2 mb-6 border-b pb-3">
             <Button 
-              variant={settingsPanel === "appearance" ? "default" : "outline"} 
+              variant={settingsPanel === "appearance" ? "default" : "ghost"} 
               onClick={() => setSettingsPanel("appearance")}
-              className="flex items-center"
+              className={cn(
+                "flex items-center transition-all",
+                settingsPanel === "appearance" 
+                  ? "bg-primary text-primary-foreground shadow-sm font-medium" 
+                  : "hover:bg-muted"
+              )}
             >
               <Icons.palette className="mr-2 h-4 w-4" />
               {t('common.appearance')}
             </Button>
             <Button 
-              variant={settingsPanel === "data" ? "default" : "outline"} 
+              variant={settingsPanel === "data" ? "default" : "ghost"} 
               onClick={() => setSettingsPanel("data")}
-              className="flex items-center"
+              className={cn(
+                "flex items-center transition-all",
+                settingsPanel === "data" 
+                  ? "bg-primary text-primary-foreground shadow-sm font-medium" 
+                  : "hover:bg-muted"
+              )}
             >
               <Icons.fileJson className="mr-2 h-4 w-4" />
               {t('dataManagement.title')}
             </Button>
             <Button 
-              variant={settingsPanel === "ai" ? "default" : "outline"} 
+              variant={settingsPanel === "ai" ? "default" : "ghost"} 
               onClick={() => setSettingsPanel("ai")}
-              className="flex items-center"
+              className={cn(
+                "flex items-center transition-all",
+                settingsPanel === "ai" 
+                  ? "bg-primary text-primary-foreground shadow-sm font-medium" 
+                  : "hover:bg-muted"
+              )}
             >
               <Icons.star className="w-4 h-4 mr-2" />
               {t('common.aiSettings')}
             </Button>
             <Button 
-              variant={settingsPanel === "mcp" ? "default" : "outline"} 
+              variant={settingsPanel === "mcp" ? "default" : "ghost"} 
               onClick={() => setSettingsPanel("mcp")}
-              className="flex items-center"
+              className={cn(
+                "flex items-center transition-all",
+                settingsPanel === "mcp" 
+                  ? "bg-primary text-primary-foreground shadow-sm font-medium" 
+                  : "hover:bg-muted"
+              )}
             >
               <Icons.zap className="w-4 h-4 mr-2" />
               MCP设置
             </Button>
             <Button 
-              variant={settingsPanel === "cloud-storage" ? "default" : "outline"} 
+              variant={settingsPanel === "cloud-storage" ? "default" : "ghost"} 
               onClick={() => setSettingsPanel("cloud-storage")}
-              className="flex items-center"
+              className={cn(
+                "flex items-center transition-all",
+                settingsPanel === "cloud-storage" 
+                  ? "bg-primary text-primary-foreground shadow-sm font-medium" 
+                  : "hover:bg-muted"
+              )}
             >
               <Icons.cloud className="w-4 h-4 mr-2" />
               {t('dataManagement.cloudSync')}
+            </Button>
+            <Button 
+              variant={settingsPanel === "user" ? "default" : "ghost"} 
+              onClick={() => setSettingsPanel("user")}
+              className={cn(
+                "flex items-center transition-all",
+                settingsPanel === "user" 
+                  ? "bg-primary text-primary-foreground shadow-sm font-medium" 
+                  : "hover:bg-muted"
+              )}
+            >
+              <Icons.user className="w-4 h-4 mr-2" />
+              {t('auth.userInfo') || '用户信息'}
             </Button>
             {/* PromptX settings tab removed; use main view via sidebar button */}
           </div>
           
           {/* 外观设置面板 */}
           {settingsPanel === "appearance" && (
-            <ScrollArea className="max-h-[calc(85vh-180px)] sm:max-h-[60vh] pr-4">
-              <div className="py-2 space-y-6">
+            <ScrollArea className="max-h-[calc(85vh-240px)] sm:max-h-[60vh] pr-4">
+              <div className="px-1 py-2 space-y-8">
                 
                 {/* 语言设置 */}
-                <div className="space-y-2">
-                  <Label>{t('common.language')}</Label>
-                  <LanguageSelector />
+                <div className="space-y-3">
+                  <Label className="text-base font-semibold">{t('common.language')}</Label>
+                  <div className="mt-1">
+                    <LanguageSelector />
+                  </div>
                 </div>
 
-                {/* 字体设置 */}
-                <div className="space-y-2">
-                  <Label htmlFor="font">{t('settings.fontSize')}</Label>
-                  <FontSelector
-                    value={settings.font}
-                    onChange={(font) => updateSettings({ font })}
-                  />
+                <Separator />
+
+                {/* 字体设置 - 合并字体选择和字号调节 */}
+                <div className="space-y-3">
+                  <Label htmlFor="font" className="text-base font-semibold">{t('settings.typography') || '字体设置'}</Label>
+                  <div className="mt-1">
+                    <FontSelector
+                      value={settings.font}
+                      onChange={(font) => updateSettings({ font })}
+                    />
+                  </div>
                 </div>
+
+                <Separator />
                 
                 {/* 主题设置 */}
-                <div className="space-y-2">
-                  <Label>{t('settings.theme')}</Label>
+                <div className="space-y-4">
+                  <Label className="text-base font-semibold">{t('settings.theme')}</Label>
                   
                   {/* 系统主题部分 */}
-                  <div>
-                    <h3 className="text-sm font-medium mb-2">{t('settings.default_theme')}</h3>
-                    <div className="grid grid-cols-3 gap-6  px-2">
+                  <div className="space-y-3 mt-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                        {t('settings.default_theme')}
+                      </h3>
+                      <Separator className="flex-1" />
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
                       {themePresets
                         .filter(theme => theme.isDefault)
                         .map((theme) => (
@@ -1220,10 +1274,17 @@ export function Sidebar({ className }: { className?: string }) {
                     </div>
                   </div>
                   
+                  <Separator className="my-6" />
+                  
                   {/* 自定义主题部分 */}
-                  <div>
-                    <h3 className="text-sm font-medium mb-2">{t('custom_theme.title')}</h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 px-2">
+                  <div className="space-y-3 mt-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                        {t('custom_theme.title')}
+                      </h3>
+                      <Separator className="flex-1" />
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
                       {themePresets
                         .filter(theme => !theme.isDefault)
                         .map((theme) => (
@@ -1237,28 +1298,31 @@ export function Sidebar({ className }: { className?: string }) {
                       
                       {/* 自定义主题按钮 */}
                       <div 
-                        className="flex flex-col items-center justify-center rounded-lg overflow-hidden border cursor-pointer h-32 hover:shadow-md hover:scale-102 transition-all"
+                        className="flex flex-col items-center justify-center rounded-lg overflow-hidden border-2 border-dashed border-muted-foreground/30 cursor-pointer h-[132px] hover:border-primary hover:bg-muted/50 transition-all bg-muted/20"
                         onClick={() => setShowThemeCustomizer(true)}
                       >
-                        <div className="w-12 h-12 rounded-full flex items-center justify-center bg-muted">
-                          <Icons.palette className="h-6 w-6 text-primary" />
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center bg-background border border-muted-foreground/20 mb-2">
+                          <Icons.palette className="h-5 w-5 text-muted-foreground" />
                         </div>
-                        <span className="mt-2 text-sm font-medium">{t('custom_theme.title')}</span>
-                        <span className="text-xs text-muted-foreground">{t('custom_theme.create')}</span>
+                        <span className="text-xs font-medium text-muted-foreground">{t('custom_theme.create')}</span>
                       </div>
                     </div>
                   </div>
                 </div>
+
+                <Separator />
                 
                 {/* 窗口置顶设置 */}
                 <div className="flex items-center justify-between space-x-2">
-                  <Label htmlFor="always-on-top" className="flex-1">{t('common.alwaysOnTop')}</Label>
+                  <div className="space-y-0.5">
+                    <Label htmlFor="always-on-top" className="text-base font-semibold">{t('common.alwaysOnTop')}</Label>
+                    <p className="text-xs text-muted-foreground">{t('common.alwaysOnTopDesc') || '保持窗口始终在其他窗口之上'}</p>
+                  </div>
                   <Switch 
                     id="always-on-top"
                     checked={settings.alwaysOnTop}
                     onCheckedChange={(checked) => {
                       updateSettings({ alwaysOnTop: checked });
-                      // 简化置顶逻辑，只改变设置
                     }}
                   />
                 </div>
@@ -1269,9 +1333,9 @@ export function Sidebar({ className }: { className?: string }) {
           {/* 数据管理面板 */}
           {settingsPanel === "data" && (
             <div className="py-2 max-h-[calc(85vh-180px)] sm:max-h-[60vh] overflow-y-auto">
-              <CardContent className="text-sm font-medium mb-2 text-muted-foreground color-green-500">{t('dataManagement.cloudSyncDescription2')}</CardContent>
               <DataImportExport 
                 onDataChanged={handleDataChanged}
+                inline={true}
               />
             </div>
           )}
@@ -1309,6 +1373,15 @@ export function Sidebar({ className }: { className?: string }) {
           {settingsPanel === "preferences" && (
             <ScrollArea className="max-h-[calc(85vh-180px)] sm:max-h-[60vh] pr-4">
               <PreferencesPanel />
+            </ScrollArea>
+          )}
+
+          {/* 用户信息面板 */}
+          {settingsPanel === "user" && (
+            <ScrollArea className="max-h-[calc(85vh-180px)] sm:max-h-[60vh] pr-4">
+              <div className="py-2">
+                <UserProfilePanel />
+              </div>
             </ScrollArea>
           )}
 

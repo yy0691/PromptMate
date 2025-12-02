@@ -365,7 +365,12 @@ function usePromptsState() {
 
       // 如果更新的是当前选中的提示词，也要更新selectedPrompt
       if (selectedPrompt && selectedPrompt.id === id) {
-        const updatedSelected = { ...selectedPrompt, ...updates };
+        const updatedSelected = { 
+          ...selectedPrompt, 
+          ...updates, 
+          updatedAt: new Date().toISOString() 
+        };
+        console.log('🔄 更新 selectedPrompt:', { id, oldCategory: selectedPrompt.category, newCategory: updates.category, updatedSelected });
         setSelectedPrompt(updatedSelected);
       }
 

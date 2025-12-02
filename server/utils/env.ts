@@ -8,6 +8,13 @@ export interface EnvConfig {
   supabaseServiceKey: string;
   corsOrigins: string[];
   auditAdminSecret?: string;
+  // OAuth 提供商配置
+  googleClientId?: string;
+  googleClientSecret?: string;
+  githubClientId?: string;
+  githubClientSecret?: string;
+  linuxdoClientId?: string;
+  linuxdoClientSecret?: string;
 }
 
 const defaultEnvPath = path.resolve(process.cwd(), 'server/.env');
@@ -60,5 +67,12 @@ export function loadEnv(): EnvConfig {
       .map((value) => value.trim())
       .filter((value) => value.length > 0),
     auditAdminSecret: mergedEnv.AUDIT_ADMIN_SECRET,
+    // OAuth 提供商配置（从环境变量读取，Vercel 中已配置）
+    googleClientId: mergedEnv.GOOGLE_CLIENT_ID,
+    googleClientSecret: mergedEnv.GOOGLE_CLIENT_SECRET,
+    githubClientId: mergedEnv.GITHUB_CLIENT_ID,
+    githubClientSecret: mergedEnv.GITHUB_CLIENT_SECRET,
+    linuxdoClientId: mergedEnv.LINUXDO_CLIENT_ID,
+    linuxdoClientSecret: mergedEnv.LINUXDO_CLIENT_SECRET,
   };
 }
