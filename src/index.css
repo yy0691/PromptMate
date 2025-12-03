@@ -6,6 +6,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 防止横向滚动 */
+@layer base {
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+  
+  * {
+    max-width: 100%;
+  }
+}
+
 /* 思源黑体 - Noto Sans SC */
 @font-face {
   font-family: 'Noto Sans SC';
