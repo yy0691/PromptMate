@@ -23,11 +23,13 @@ import {
   updateMarketplacePrompt,
 } from './controllers/marketplaceController';
 
-import { healthCheck } from './controllers/healthController';
+import { healthCheck, testEndpoint } from './controllers/healthController';
 
 export function initRoutes() {
   // 健康检查端点（无需认证）
   registerRoute('GET', '/api/health', healthCheck);
+  // 测试端点（无需认证）
+  registerRoute('GET', '/api/test', testEndpoint);
   
   registerRoute('POST', '/api/auth/register/email', registerWithEmail, { rateLimitKey: 'auth:strict' });
   registerRoute('POST', '/api/auth/login/email', loginWithEmail, { rateLimitKey: 'auth:strict' });

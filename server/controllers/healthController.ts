@@ -14,3 +14,12 @@ export async function healthCheck(context: RequestContext) {
   });
 }
 
+export async function testEndpoint(context: RequestContext) {
+  sendJson(context.res, 200, {
+    message: 'Test API is working!',
+    method: context.req.method,
+    url: context.req.url,
+    timestamp: new Date().toISOString(),
+  });
+}
+
