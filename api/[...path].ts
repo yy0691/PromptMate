@@ -150,13 +150,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.log('[Vercel API] Raw req.url:', req.url);
     
     // 优先从 req.query.path 获取路径
+    // Vercel catch-all 路由会将路径段作为 query.path 传递
+    // 例如 /api/auth/oauth/url -> query.path = ['auth', 'oauth', 'url'] 或 'auth/oauth/url'
     if (req.query.path) {
       if (Array.isArray(req.query.path)) {
         pathArray = req.query.path as string[];
         console.log('[Vercel API] Using query.path (array):', pathArray);
       } else if (typeof req.query.path === 'string') {
-        pathArray = [req.query.path];
-        console.log('[Vercel API] Using query.path (string):', pathArray);
+        // 如果 query.path 是字符串，可能是单个段（如 'test'）或多个段（如 'auth/oauth/url'）
+        // 需要分割成数组
+        if (req.query.path.includes('/')) {
+          pathArray = req.query.path.split('/').filter(Boolean);
+          console.log('[Vercel API] Using query.path (string with slashes), split to:', pathArray);
+        } else {
+          pathArray = [req.query.path];
+          console.log('[Vercel API] Using query.path (single string):', pathArray);
+        }
       }
     }
     
