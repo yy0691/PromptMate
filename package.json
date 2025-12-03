@@ -29,7 +29,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run build:info && vite build && npm run build:electron",
+    "build": "npm run build:info && vite build",
     "build:info": "node scripts/build-info.js",
     "build:electron": "node -e \"const fs=require('fs');const path=require('path');const srcDir='src/main';const destDir='dist-electron/main';if(!fs.existsSync(destDir))fs.mkdirSync(destDir,{recursive:true});fs.readdirSync(srcDir).forEach(file=>{if(file.endsWith('.cjs'))fs.copyFileSync(path.join(srcDir,file),path.join(destDir,file));});\"",
     "build:dev": "vite build --mode development",
