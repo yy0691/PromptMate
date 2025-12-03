@@ -100,13 +100,23 @@ function createContext(
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // 立即输出日志，确保函数被调用
+  console.log('[Vercel API] ===== Function called =====');
+  console.log('[Vercel API] Method:', req.method);
+  console.log('[Vercel API] URL:', req.url);
+  console.log('[Vercel API] Query:', JSON.stringify(req.query));
+  console.log('[Vercel API] Headers:', JSON.stringify(req.headers));
+  
   // 初始化路由
   try {
+    console.log('[Vercel API] Initializing routes...');
     initRoutesOnce();
     const routes = getRoutes();
     console.log('[Vercel API] Routes initialized, total routes:', routes.length);
     if (routes.length === 0) {
       console.error('[Vercel API] WARNING: No routes registered!');
+    } else {
+      console.log('[Vercel API] Registered routes:', routes.map(r => `${r.method} ${r.path.toString()}`).slice(0, 5));
     }
   } catch (error) {
     console.error('[Vercel API] Route initialization error:', error);
@@ -120,6 +130,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // 处理 OPTIONS 预检请求
   if (req.method === 'OPTIONS') {
+    console.log('[Vercel API] Handling OPTIONS request');
     res.status(204).end();
     return;
   }
