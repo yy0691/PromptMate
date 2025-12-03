@@ -101,6 +101,11 @@ function createContext(
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // 立即输出日志，确保函数被调用
+  // 使用 process.stdout.write 确保日志立即输出
+  process.stdout.write('[Vercel API] ===== Function called =====\n');
+  process.stdout.write(`[Vercel API] Method: ${req.method}\n`);
+  process.stdout.write(`[Vercel API] URL: ${req.url}\n`);
+  process.stdout.write(`[Vercel API] Query: ${JSON.stringify(req.query)}\n`);
   console.log('[Vercel API] ===== Function called =====');
   console.log('[Vercel API] Method:', req.method);
   console.log('[Vercel API] URL:', req.url);
@@ -141,42 +146,57 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // 例如 /api/auth/login/email -> query.path = ['auth', 'login', 'email']
     let pathArray: string[] = [];
     
+    console.log('[Vercel API] Raw query.path:', req.query.path, 'type:', typeof req.query.path, 'isArray:', Array.isArray(req.query.path));
+    console.log('[Vercel API] Raw req.url:', req.url);
+    
     // 优先从 req.query.path 获取路径
     if (req.query.path) {
       if (Array.isArray(req.query.path)) {
         pathArray = req.query.path as string[];
+        console.log('[Vercel API] Using query.path (array):', pathArray);
       } else if (typeof req.query.path === 'string') {
         pathArray = [req.query.path];
+        console.log('[Vercel API] Using query.path (string):', pathArray);
       }
     }
     
     // 如果 pathArray 为空，尝试从 req.url 中提取路径
     if (pathArray.length === 0 && req.url) {
+      console.log('[Vercel API] query.path is empty, extracting from req.url');
       try {
         // 尝试解析完整 URL
         const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
         const pathSegments = url.pathname.split('/').filter(Boolean);
+        console.log('[Vercel API] Parsed pathname segments:', pathSegments);
         // 移除 'api' 前缀（如果存在）
         if (pathSegments[0] === 'api') {
           pathArray = pathSegments.slice(1);
         } else {
           pathArray = pathSegments;
         }
+        console.log('[Vercel API] Extracted pathArray from URL:', pathArray);
       } catch (e) {
+        console.log('[Vercel API] URL parsing failed, trying string split:', e);
         // 如果 URL 解析失败，尝试简单字符串解析
         const urlPath = req.url.split('?')[0];
         const pathSegments = urlPath.split('/').filter(Boolean);
+        console.log('[Vercel API] Split path segments:', pathSegments);
         if (pathSegments[0] === 'api') {
           pathArray = pathSegments.slice(1);
         } else {
           pathArray = pathSegments;
         }
+        console.log('[Vercel API] Extracted pathArray from string:', pathArray);
       }
     }
     
     // 路径需要包含 /api 前缀才能匹配注册的路由
     const path = '/api/' + pathArray.join('/');
     const pathname = path.split('?')[0]; // 移除查询字符串
+    
+    console.log('[Vercel API] Final pathArray:', pathArray);
+    console.log('[Vercel API] Final path:', path);
+    console.log('[Vercel API] Final pathname:', pathname);
     
     console.log('[Vercel API] Request URL:', req.url);
     console.log('[Vercel API] Request:', req.method, pathname, 'query:', JSON.stringify(req.query));
