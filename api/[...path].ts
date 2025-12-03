@@ -7,10 +7,11 @@
  */
 
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { matchRoute } from '../server/router';
+import { getRoutes } from '../server/router';
 import { initRoutes } from '../server/registerRoutes';
 import { getUserFromToken } from '../server/services/supabaseClient';
 import { sendError } from '../server/utils/response-vercel';
+import type { RouteDefinition } from '../server/types';
 
 // 初始化路由（只执行一次）
 let routesInitialized = false;
@@ -59,7 +60,7 @@ function createMockRequest(req: VercelRequest, path: string): any {
 }
 
 // 提取路径参数
-function extractParams(route: any, path: string): Record<string, string> {
+function extractParams(route: RouteDefinition, path: string): Record<string, string> {
   const match = route.path.exec(path);
   const params: Record<string, string> = {};
   if (match && route.keys) {
@@ -74,7 +75,7 @@ function extractParams(route: any, path: string): Record<string, string> {
 function createContext(
   req: VercelRequest,
   res: VercelResponse,
-  route: any,
+  route: RouteDefinition,
   path: string,
   body: unknown,
   user: any,
@@ -123,16 +124,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     
     // 路径需要包含 /api 前缀才能匹配注册的路由
     const path = '/api/' + pathArray.join('/');
+    const pathname = path.split('?')[0]; // 移除查询字符串
     
-    console.log('[Vercel API] Request:', req.method, path, 'query:', JSON.stringify(req.query));
+    console.log('[Vercel API] Request:', req.method, pathname, 'query:', JSON.stringify(req.query));
     
-    // 创建模拟请求对象用于路由匹配
-    const mockReq = createMockRequest(req, path);
-    const route = matchRoute(mockReq);
+    // 直接匹配路由（不依赖 IncomingMessage 类型）
+    const method = req.method?.toUpperCase();
+    const routes = getRoutes();
+    let route: RouteDefinition | undefined;
+    
+    for (const r of routes) {
+      if (r.method !== method) continue;
+      const match = r.path.exec(pathname);
+      if (match) {
+        route = r;
+        break;
+      }
+    }
     
     if (!route) {
-      console.log('[Vercel API] No route found for:', req.method, path);
-      sendError(res, 404, `Route not found: ${req.method} ${path}`, 'NOT_FOUND');
+      console.log('[Vercel API] No route found for:', req.method, pathname);
+      sendError(res, 404, `Route not found: ${req.method} ${pathname}`, 'NOT_FOUND');
       return;
     }
     
