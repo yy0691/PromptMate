@@ -137,11 +137,11 @@ export const usePromptForm = (options: PromptFormOptions) => {
   // 监听 defaultCategory 变化，重新初始化表单数据（创建模式）
   useEffect(() => {
     if (mode === 'create' && defaultCategory) {
-      console.log('🔄 defaultCategory 变化，重新初始化表单:', {
-        oldCategory: state.category,
-        newDefaultCategory: defaultCategory,
-        activeCategory
-      });
+      // console.log('🔄 defaultCategory 变化，重新初始化表单:', {
+      //  oldCategory: state.category,
+      //  newDefaultCategory: defaultCategory,
+      //  activeCategory
+      //});
       
       setState(prev => ({
         ...prev,

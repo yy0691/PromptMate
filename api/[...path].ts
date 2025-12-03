@@ -103,8 +103,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // 初始化路由
   try {
     initRoutesOnce();
+    const routes = getRoutes();
+    console.log('[Vercel API] Routes initialized, total routes:', routes.length);
+    if (routes.length === 0) {
+      console.error('[Vercel API] WARNING: No routes registered!');
+    }
   } catch (error) {
     console.error('[Vercel API] Route initialization error:', error);
+    console.error('[Vercel API] Error stack:', error instanceof Error ? error.stack : 'No stack');
     sendError(res, 500, 'Failed to initialize routes', 'INIT_ERROR');
     return;
   }
@@ -122,16 +128,40 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // 构建请求路径
     // Vercel catch-all 路由会将路径作为 query.path 数组传递
     // 例如 /api/auth/login/email -> query.path = ['auth', 'login', 'email']
-    const pathArray = Array.isArray(req.query.path) 
+    let pathArray = Array.isArray(req.query.path) 
       ? req.query.path 
       : req.query.path 
         ? [req.query.path] 
         : [];
     
+    // 如果 pathArray 为空，尝试从 req.url 中提取路径
+    if (pathArray.length === 0 && req.url) {
+      try {
+        const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+        const pathSegments = url.pathname.split('/').filter(Boolean);
+        // 移除 'api' 前缀（如果存在）
+        if (pathSegments[0] === 'api') {
+          pathArray = pathSegments.slice(1);
+        } else {
+          pathArray = pathSegments;
+        }
+      } catch (e) {
+        // 如果 URL 解析失败，尝试简单字符串解析
+        const urlPath = req.url.split('?')[0];
+        const pathSegments = urlPath.split('/').filter(Boolean);
+        if (pathSegments[0] === 'api') {
+          pathArray = pathSegments.slice(1);
+        } else {
+          pathArray = pathSegments;
+        }
+      }
+    }
+    
     // 路径需要包含 /api 前缀才能匹配注册的路由
     const path = '/api/' + pathArray.join('/');
     const pathname = path.split('?')[0]; // 移除查询字符串
     
+    console.log('[Vercel API] Request URL:', req.url);
     console.log('[Vercel API] Request:', req.method, pathname, 'query:', JSON.stringify(req.query));
     console.log('[Vercel API] Path array:', pathArray, 'Full path:', path);
     console.log('[Vercel API] Available routes:', getRoutes().map(r => `${r.method} ${r.path}`));
@@ -143,15 +173,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     
     for (const r of routes) {
       if (r.method !== method) continue;
+      // 重置正则表达式的 lastIndex，确保每次匹配都从头开始
+      r.path.lastIndex = 0;
       const match = r.path.exec(pathname);
       if (match) {
         route = r;
+        console.log('[Vercel API] Route matched:', r.method, r.path, 'with pathname:', pathname);
         break;
       }
     }
     
     if (!route) {
       console.log('[Vercel API] No route found for:', req.method, pathname);
+      console.log('[Vercel API] Tried routes:', routes.filter(r => r.method === method).map(r => r.path.toString()));
       sendError(res, 404, `Route not found: ${req.method} ${pathname}`, 'NOT_FOUND');
       return;
     }
