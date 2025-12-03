@@ -161,36 +161,43 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
     
     // 如果 pathArray 为空，尝试从 req.url 中提取路径
+    // Vercel catch-all 路由的 req.url 格式可能是 '/api/auth/oauth/url' 或 '/api/auth/oauth/url?provider=google'
     if (pathArray.length === 0 && req.url) {
-      console.log('[Vercel API] query.path is empty, extracting from req.url');
+      console.log('[Vercel API] query.path is empty, extracting from req.url:', req.url);
       try {
-        // 尝试解析完整 URL
-        const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-        const pathSegments = url.pathname.split('/').filter(Boolean);
-        console.log('[Vercel API] Parsed pathname segments:', pathSegments);
+        // 先移除查询字符串
+        const urlPath = req.url.split('?')[0];
+        const pathSegments = urlPath.split('/').filter(Boolean);
+        console.log('[Vercel API] Split path segments:', pathSegments);
         // 移除 'api' 前缀（如果存在）
         if (pathSegments[0] === 'api') {
           pathArray = pathSegments.slice(1);
         } else {
           pathArray = pathSegments;
         }
-        console.log('[Vercel API] Extracted pathArray from URL:', pathArray);
+        console.log('[Vercel API] Extracted pathArray from string:', pathArray);
       } catch (e) {
-        console.log('[Vercel API] URL parsing failed, trying string split:', e);
-        // 如果 URL 解析失败，尝试简单字符串解析
+        console.error('[Vercel API] URL parsing failed:', e);
+        // 如果解析失败，尝试直接使用 req.url
         const urlPath = req.url.split('?')[0];
         const pathSegments = urlPath.split('/').filter(Boolean);
-        console.log('[Vercel API] Split path segments:', pathSegments);
         if (pathSegments[0] === 'api') {
           pathArray = pathSegments.slice(1);
         } else {
           pathArray = pathSegments;
         }
-        console.log('[Vercel API] Extracted pathArray from string:', pathArray);
+        console.log('[Vercel API] Fallback pathArray:', pathArray);
       }
     }
     
     // 路径需要包含 /api 前缀才能匹配注册的路由
+    // 确保 pathArray 不为空
+    if (pathArray.length === 0) {
+      console.error('[Vercel API] ERROR: pathArray is empty! req.url:', req.url, 'req.query:', JSON.stringify(req.query));
+      sendError(res, 500, 'Failed to parse request path', 'PATH_PARSE_ERROR');
+      return;
+    }
+    
     const path = '/api/' + pathArray.join('/');
     const pathname = path.split('?')[0]; // 移除查询字符串
     
@@ -216,22 +223,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const match = r.path.exec(pathname);
       if (match) {
         route = r;
-        console.log('[Vercel API] Route matched:', r.method, r.path, 'with pathname:', pathname);
+        console.log('[Vercel API] Route matched:', r.method, r.path.toString(), 'with pathname:', pathname);
         break;
       }
     }
     
     if (!route) {
-      console.log('[Vercel API] No route found for:', req.method, pathname);
+      console.error('[Vercel API] No route found for:', req.method, pathname);
       const matchingMethodRoutes = routes.filter(r => r.method === method);
       console.log('[Vercel API] Tried routes:', matchingMethodRoutes.map(r => `${r.method} ${r.path.toString()}`));
       console.log('[Vercel API] Testing each route:');
       matchingMethodRoutes.forEach(r => {
         r.path.lastIndex = 0;
         const testMatch = r.path.exec(pathname);
-        console.log(`  - ${r.path.toString()}: ${testMatch ? 'MATCH' : 'NO MATCH'}`);
+        console.log(`  - ${r.method} ${r.path.toString()}: ${testMatch ? 'MATCH' : 'NO MATCH'}`);
         if (testMatch) {
           console.log(`    Match groups:`, testMatch);
+        } else {
+          // 尝试不匹配的情况
+          console.log(`    Test pathname: "${pathname}"`);
         }
       });
       sendError(res, 404, `Route not found: ${req.method} ${pathname}`, 'NOT_FOUND');

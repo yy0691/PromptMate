@@ -29,7 +29,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run build:info && vite build",
+    "build": "npm run build:info && vite build && npm run build:api",
     "build:api": "node -e \"const fs=require('fs');const path=require('path');try{const apiDir='api';const distApiDir='dist/api';if(!fs.existsSync(apiDir)){console.error('API directory not found:',apiDir);process.exit(1);}if(!fs.existsSync(distApiDir))fs.mkdirSync(distApiDir,{recursive:true});const files=fs.readdirSync(apiDir).filter(f=>f.endsWith('.ts'));if(files.length===0){console.warn('No .ts files found in api directory');}files.forEach(file=>{const src=path.join(apiDir,file);const dest=path.join(distApiDir,file);fs.copyFileSync(src,dest);console.log('Copied:',file);});console.log('API files copied successfully');}catch(e){console.error('Error copying API files:',e.message);process.exit(1);}\"",
     "build:info": "node scripts/build-info.js",
     "build:electron": "node -e \"const fs=require('fs');const path=require('path');const srcDir='src/main';const destDir='dist-electron/main';if(!fs.existsSync(destDir))fs.mkdirSync(destDir,{recursive:true});fs.readdirSync(srcDir).forEach(file=>{if(file.endsWith('.cjs'))fs.copyFileSync(path.join(srcDir,file),path.join(destDir,file));});\"",
