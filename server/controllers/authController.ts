@@ -130,7 +130,7 @@ export async function oauthCallback(context: RequestContext) {
       
       // 尝试通过邮箱查找现有用户，如果不存在则创建
       // 这里我们需要使用 Supabase Admin API 来创建用户
-      const { createOrGetLinuxdoUser } = await import('../services/linuxdoOAuth');
+      const { createOrGetLinuxdoUser } = await import('../services/linuxdoOAuth.js');
       const supabaseUser = await createOrGetLinuxdoUser(linuxdoUser, email);
 
       // 4. 获取或创建用户资料
@@ -147,7 +147,7 @@ export async function oauthCallback(context: RequestContext) {
       // 5. 生成 Supabase 会话令牌
       // 由于 Linuxdo 用户已经通过 OAuth 验证，我们需要为他们创建一个 Supabase 会话
       // 这里使用 Supabase Admin API 来生成自定义令牌
-      const { generateSupabaseSession } = await import('../services/linuxdoOAuth');
+      const { generateSupabaseSession } = await import('../services/linuxdoOAuth.js');
       const session = await generateSupabaseSession(supabaseUser.id, email);
 
       sendJson(context.res, 200, {

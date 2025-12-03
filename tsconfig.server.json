@@ -5,13 +5,15 @@
     "lib": ["ES2020", "DOM"],
     "moduleResolution": "Node",
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "strict": false,
     "skipLibCheck": true,
     "outDir": "dist-server",
     "rootDir": "server",
     "types": ["node"],
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": false
   },
   "include": ["server/**/*.ts"]
 }

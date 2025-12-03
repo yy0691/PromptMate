@@ -101,7 +101,13 @@ function createContext(
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // 初始化路由
-  initRoutesOnce();
+  try {
+    initRoutesOnce();
+  } catch (error) {
+    console.error('[Vercel API] Route initialization error:', error);
+    sendError(res, 500, 'Failed to initialize routes', 'INIT_ERROR');
+    return;
+  }
   
   const origin = req.headers.origin;
   setCorsHeaders(res, origin);
@@ -127,6 +133,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const pathname = path.split('?')[0]; // 移除查询字符串
     
     console.log('[Vercel API] Request:', req.method, pathname, 'query:', JSON.stringify(req.query));
+    console.log('[Vercel API] Path array:', pathArray, 'Full path:', path);
+    console.log('[Vercel API] Available routes:', getRoutes().map(r => `${r.method} ${r.path}`));
     
     // 直接匹配路由（不依赖 IncomingMessage 类型）
     const method = req.method?.toUpperCase();

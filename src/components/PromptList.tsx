@@ -111,7 +111,7 @@ const PromptDetailDialog = memo(function PromptDetailDialog({
           <div className="space-y-4 p-1">
             <div>
               <h4 className="text-sm font-medium mb-2">{t('common.promptContent')}</h4>
-              <div className="p-4 rounded-md bg-muted/50 text-sm whitespace-pre-wrap markdown-body">
+              <div className="p-4 rounded-md bg-muted/50 text-sm whitespace-pre-wrap markdown-body" style={{ backgroundColor: 'hsl(var(--muted) / 0.5)' }}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{prompt.content}</ReactMarkdown>
               </div>
             </div>
@@ -711,10 +711,11 @@ export const PromptList = memo(function PromptList({
                     </Card>
                   </HoverCardTrigger>
                   <HoverCardContent 
-                    className="w-96 max-h-80 p-4" 
+                    className="w-96 max-h-80 p-4 bg-popover" 
                     side="top"
                     align="center"
                     sideOffset={8}
+                    style={{ backgroundColor: 'hsl(var(--popover))' }}
                   >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
@@ -751,7 +752,13 @@ export const PromptList = memo(function PromptList({
                         </div>
                       </div>
                       
-                      <div className="text-xs text-muted-foreground max-h-48 overflow-y-auto prose prose-sm max-w-none">
+                      <div 
+                        className="text-xs text-muted-foreground max-h-48 overflow-y-auto prose prose-sm max-w-none" 
+                        style={{ 
+                          backgroundColor: 'transparent',
+                          color: 'hsl(var(--popover-foreground))'
+                        }}
+                      >
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
                           {prompt.content}
                         </ReactMarkdown>

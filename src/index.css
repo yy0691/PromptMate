@@ -382,8 +382,8 @@
 }
 
 .markdown-body {
-  color: var(--card-foreground);
-  background: transparent;
+  color: hsl(var(--card-foreground));
+  background: transparent !important;
   font-size: 1em;
   line-height: 1.7;
   word-break: break-word;
