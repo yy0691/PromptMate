@@ -210,18 +210,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const path = '/api/' + pathArray.join('/');
     const pathname = path.split('?')[0]; // 移除查询字符串
     
-    console.log('[Vercel API] Final pathArray:', pathArray);
+    console.log('[Vercel API] ===== PATH PARSING =====');
+    console.log('[Vercel API] Final pathArray:', JSON.stringify(pathArray));
     console.log('[Vercel API] Final path:', path);
     console.log('[Vercel API] Final pathname:', pathname);
-    
     console.log('[Vercel API] Request URL:', req.url);
-    console.log('[Vercel API] Request:', req.method, pathname, 'query:', JSON.stringify(req.query));
-    console.log('[Vercel API] Path array:', pathArray, 'Full path:', path);
+    console.log('[Vercel API] Request method:', req.method);
+    console.log('[Vercel API] Full query:', JSON.stringify(req.query));
     
     // 直接匹配路由（不依赖 IncomingMessage 类型）
     const method = req.method?.toUpperCase();
     const routes = getRoutes();
-    console.log('[Vercel API] Available routes:', routes.map(r => `${r.method} ${r.path.toString()}`));
+    console.log('[Vercel API] ===== ROUTE MATCHING =====');
+    console.log('[Vercel API] Total routes:', routes.length);
+    console.log('[Vercel API] Available routes:', routes.map(r => `${r.method} ${r.path.toString()}`).slice(0, 10));
     console.log('[Vercel API] Matching routes for method:', method, 'pathname:', pathname);
     let route: RouteDefinition | undefined;
     
@@ -232,25 +234,28 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const match = r.path.exec(pathname);
       if (match) {
         route = r;
-        console.log('[Vercel API] Route matched:', r.method, r.path.toString(), 'with pathname:', pathname);
+        console.log('[Vercel API] ✅ Route matched:', r.method, r.path.toString(), 'with pathname:', pathname);
+        console.log('[Vercel API] Match groups:', match);
         break;
       }
     }
     
     if (!route) {
-      console.error('[Vercel API] No route found for:', req.method, pathname);
+      console.error('[Vercel API] ❌ No route found for:', req.method, pathname);
       const matchingMethodRoutes = routes.filter(r => r.method === method);
-      console.log('[Vercel API] Tried routes:', matchingMethodRoutes.map(r => `${r.method} ${r.path.toString()}`));
+      console.log('[Vercel API] Tried routes (method match):', matchingMethodRoutes.length);
       console.log('[Vercel API] Testing each route:');
-      matchingMethodRoutes.forEach(r => {
+      matchingMethodRoutes.forEach((r, idx) => {
         r.path.lastIndex = 0;
         const testMatch = r.path.exec(pathname);
-        console.log(`  - ${r.method} ${r.path.toString()}: ${testMatch ? 'MATCH' : 'NO MATCH'}`);
+        const status = testMatch ? '✅ MATCH' : '❌ NO MATCH';
+        console.log(`  [${idx + 1}] ${status} - ${r.method} ${r.path.toString()}`);
         if (testMatch) {
-          console.log(`    Match groups:`, testMatch);
+          console.log(`      Match groups:`, testMatch);
         } else {
-          // 尝试不匹配的情况
-          console.log(`    Test pathname: "${pathname}"`);
+          // 显示为什么没有匹配
+          console.log(`      Pathname: "${pathname}"`);
+          console.log(`      Regex: ${r.path.toString()}`);
         }
       });
       sendError(res, 404, `Route not found: ${req.method} ${pathname}`, 'NOT_FOUND');
