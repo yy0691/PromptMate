@@ -1,4 +1,5 @@
 import { usePrompts } from "@/hooks/usePrompts";
+import { useUserPreferences } from "@/hooks/useUserPreferences";
 import { Button } from "@/components/ui/button";
 import { Plus, Star, Search, X, Copy, Edit, Trash, MoreVertical, Menu, Ghost } from "lucide-react"; // Import Ghost
 import { Input } from "@/components/ui/input";
@@ -168,6 +169,8 @@ export const PromptList = memo(function PromptList({
   isEditPanelOpen?: boolean;
 }) {
   const { toast } = useToast();
+  const { preferences } = useUserPreferences();
+  const enableHoverPreview = preferences.features.enableHoverPreview;
   const {
     prompts,
     categories,
@@ -504,9 +507,8 @@ export const PromptList = memo(function PromptList({
                   width: '100%'
               }}
             >
-              {filteredPrompts.map((prompt) => (
-                <HoverCard key={prompt.id}>
-                  <HoverCardTrigger asChild>
+              {filteredPrompts.map((prompt) => {
+                const cardElement = (
                     <Card 
                       className={cn(
                         "prompt-card cursor-pointer p-0.5",
@@ -709,79 +711,92 @@ export const PromptList = memo(function PromptList({
                     )}
                   </CardFooter>
                     </Card>
-                  </HoverCardTrigger>
-                  <HoverCardContent 
-                    className="w-96 max-h-80 p-4 bg-popover" 
-                    side="top"
-                    align="center"
-                    sideOffset={8}
-                    style={{ backgroundColor: 'hsl(var(--popover))' }}
-                  >
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-semibold text-sm">{prompt.title}</h4>
-                        <div className="flex items-center gap-1">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleCopyPrompt(prompt.id);
-                            }}
-                            title={t('common.copyPrompt')}
-                          >
-                            <Icons.copy className="h-3 w-3" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleToggleFavorite(e, prompt.id);
-                            }}
-                            title={prompt.isFavorite ? t('common.unfavorite') : t('common.favorite')}
-                          >
-                            {prompt.isFavorite ? (
-                              <Icons.starFilled className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                            ) : (
-                              <Icons.star className="h-3 w-3" />
-                            )}
-                          </Button>
-                        </div>
-                      </div>
-                      
-                      <div 
-                        className="text-xs text-muted-foreground max-h-48 overflow-y-auto prose prose-sm max-w-none" 
-                        style={{ 
-                          backgroundColor: 'transparent',
-                          color: 'hsl(var(--popover-foreground))'
-                        }}
+                );
+
+                // 如果启用了快速预览，使用 HoverCard 包裹
+                if (enableHoverPreview) {
+                  return (
+                    <HoverCard key={prompt.id}>
+                      <HoverCardTrigger asChild>
+                        {cardElement}
+                      </HoverCardTrigger>
+                      <HoverCardContent 
+                        className="w-96 max-h-80 p-4 bg-popover" 
+                        side="top"
+                        align="center"
+                        sideOffset={8}
+                        style={{ backgroundColor: 'hsl(var(--popover))' }}
                       >
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {prompt.content}
-                        </ReactMarkdown>
-                      </div>
-                      
-                      {prompt.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1">
-                          {prompt.tags.slice(0, 5).map((tag) => (
-                            <Badge key={tag} variant="secondary" className="text-xs px-1.5 py-0.5">
-                              {tag}
-                            </Badge>
-                          ))}
-                          {prompt.tags.length > 5 && (
-                            <Badge variant="outline" className="text-xs px-1.5 py-0.5">
-                              +{prompt.tags.length - 5}
-                            </Badge>
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <h4 className="font-semibold text-sm">{prompt.title}</h4>
+                            <div className="flex items-center gap-1">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleCopyPrompt(prompt.id);
+                                }}
+                                title={t('common.copyPrompt')}
+                              >
+                                <Icons.copy className="h-3 w-3" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleToggleFavorite(e, prompt.id);
+                                }}
+                                title={prompt.isFavorite ? t('common.unfavorite') : t('common.favorite')}
+                              >
+                                {prompt.isFavorite ? (
+                                  <Icons.starFilled className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                                ) : (
+                                  <Icons.star className="h-3 w-3" />
+                                )}
+                              </Button>
+                            </div>
+                          </div>
+                          
+                          <div 
+                            className="text-xs text-muted-foreground max-h-48 overflow-y-auto prose prose-sm max-w-none" 
+                            style={{ 
+                              backgroundColor: 'transparent',
+                              color: 'hsl(var(--popover-foreground))'
+                            }}
+                          >
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                              {prompt.content}
+                            </ReactMarkdown>
+                          </div>
+                          
+                          {prompt.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-1">
+                              {prompt.tags.slice(0, 5).map((tag) => (
+                                <Badge key={tag} variant="secondary" className="text-xs px-1.5 py-0.5">
+                                  {tag}
+                                </Badge>
+                              ))}
+                              {prompt.tags.length > 5 && (
+                                <Badge variant="outline" className="text-xs px-1.5 py-0.5">
+                                  +{prompt.tags.length - 5}
+                                </Badge>
+                              )}
+                            </div>
                           )}
                         </div>
-                      )}
-                    </div>
-                  </HoverCardContent>
-                </HoverCard>
-              ))}
+                      </HoverCardContent>
+                    </HoverCard>
+                  );
+                }
+
+                // 如果未启用快速预览，直接返回卡片
+                return <React.Fragment key={prompt.id}>{cardElement}</React.Fragment>;
+              })}
             </div>
           )}
             </div>

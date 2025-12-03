@@ -139,15 +139,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // 构建请求路径
     // Vercel catch-all 路由会将路径作为 query.path 数组传递
     // 例如 /api/auth/login/email -> query.path = ['auth', 'login', 'email']
-    let pathArray = Array.isArray(req.query.path) 
-      ? req.query.path 
-      : req.query.path 
-        ? [req.query.path] 
-        : [];
+    let pathArray: string[] = [];
+    
+    // 优先从 req.query.path 获取路径
+    if (req.query.path) {
+      if (Array.isArray(req.query.path)) {
+        pathArray = req.query.path as string[];
+      } else if (typeof req.query.path === 'string') {
+        pathArray = [req.query.path];
+      }
+    }
     
     // 如果 pathArray 为空，尝试从 req.url 中提取路径
     if (pathArray.length === 0 && req.url) {
       try {
+        // 尝试解析完整 URL
         const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
         const pathSegments = url.pathname.split('/').filter(Boolean);
         // 移除 'api' 前缀（如果存在）
@@ -175,11 +181,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.log('[Vercel API] Request URL:', req.url);
     console.log('[Vercel API] Request:', req.method, pathname, 'query:', JSON.stringify(req.query));
     console.log('[Vercel API] Path array:', pathArray, 'Full path:', path);
-    console.log('[Vercel API] Available routes:', getRoutes().map(r => `${r.method} ${r.path}`));
     
     // 直接匹配路由（不依赖 IncomingMessage 类型）
     const method = req.method?.toUpperCase();
     const routes = getRoutes();
+    console.log('[Vercel API] Available routes:', routes.map(r => `${r.method} ${r.path.toString()}`));
+    console.log('[Vercel API] Matching routes for method:', method, 'pathname:', pathname);
     let route: RouteDefinition | undefined;
     
     for (const r of routes) {
@@ -196,7 +203,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     
     if (!route) {
       console.log('[Vercel API] No route found for:', req.method, pathname);
-      console.log('[Vercel API] Tried routes:', routes.filter(r => r.method === method).map(r => r.path.toString()));
+      const matchingMethodRoutes = routes.filter(r => r.method === method);
+      console.log('[Vercel API] Tried routes:', matchingMethodRoutes.map(r => `${r.method} ${r.path.toString()}`));
+      console.log('[Vercel API] Testing each route:');
+      matchingMethodRoutes.forEach(r => {
+        r.path.lastIndex = 0;
+        const testMatch = r.path.exec(pathname);
+        console.log(`  - ${r.path.toString()}: ${testMatch ? 'MATCH' : 'NO MATCH'}`);
+        if (testMatch) {
+          console.log(`    Match groups:`, testMatch);
+        }
+      });
       sendError(res, 404, `Route not found: ${req.method} ${pathname}`, 'NOT_FOUND');
       return;
     }

@@ -47,6 +47,7 @@ export interface UserPreferences {
     enableVariableHighlight: boolean;
     enableAutoComplete: boolean;
     enableTooltips: boolean;
+    enableHoverPreview: boolean; // 提示词卡片悬浮快速预览
   };
   // 同步偏好
   sync: {
@@ -81,6 +82,7 @@ const DEFAULT_PREFERENCES: UserPreferences = {
     enableVariableHighlight: true,
     enableAutoComplete: true,
     enableTooltips: true,
+    enableHoverPreview: false, // 默认关闭快速预览
   },
   sync: {
     autoSync: false,

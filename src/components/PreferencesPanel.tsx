@@ -376,6 +376,25 @@ export function PreferencesPanel({ className }: PreferencesPanelProps) {
               }
             />
           </div>
+
+          <Separator />
+
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <span className="text-sm font-medium">
+                提示词卡片快速预览
+              </span>
+              <p className="text-xs text-muted-foreground">
+                鼠标悬停在提示词卡片上时显示快速预览
+              </p>
+            </div>
+            <Switch
+              checked={preferences.features.enableHoverPreview}
+              onCheckedChange={(checked) => 
+                updatePreference('features', { enableHoverPreview: checked })
+              }
+            />
+          </div>
         </CardContent>
       </Card>
 
