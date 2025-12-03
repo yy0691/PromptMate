@@ -1,10 +1,10 @@
 {
   "name": "promptmate",
   "private": true,
-  "version": "1.1.11",
+  "version": "1.1.12",
   "type": "commonjs",
   "main": "dist-electron/main/main.cjs",
-  "buildDate": "2025-12-03T01:16:13.308Z",
+  "buildDate": "2025-12-03T02:02:16.484Z",
   "author": {
     "name": "泺源",
     "email": "yuyuan3162021@163.com"
@@ -227,7 +227,7 @@
           ]
         }
       ],
-      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "artifactName": "${productName}-${arch}.${ext}",
       "sign": false
     },
     "win": {
@@ -246,9 +246,26 @@
           ]
         }
       ],
-      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "artifactName": "${productName}-${arch}.${ext}",
       "requestedExecutionLevel": "asInvoker",
       "verifyUpdateCodeSignature": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "installerIcon": "./public/favicon.ico",
+      "uninstallerIcon": "./public/favicon.ico",
+      "installerHeaderIcon": "./public/favicon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "PromptMate",
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true,
+      "menuCategory": false,
+      "displayLanguageSelector": true,
+      "multiLanguageInstaller": true,
+      "packElevateHelper": true
     },
     "linux": {
       "target": [
