@@ -147,17 +147,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     let pathArray: string[] = [];
     
     // Vercel 的 catch-all 路由参数名是文件名中的变量名
-    // [[...slug]].ts -> req.query['[...slug]'] (注意：键名包含方括号！)
-    const slugParam = req.query['[...slug]'];
+    // [...slug].ts -> req.query.slug
+    // 保留对旧版 [[...slug]] 命名的兼容，避免不同构建环境下解析失败
+    const slugParam = (req.query.slug ?? req.query['[...slug]']) as unknown;
     
-    console.log('[Vercel API] Raw query["[...slug]"]:', slugParam, 'type:', typeof slugParam, 'isArray:', Array.isArray(slugParam));
+    console.log('[Vercel API] Raw query.slug:', slugParam, 'type:', typeof slugParam, 'isArray:', Array.isArray(slugParam));
     console.log('[Vercel API] Raw query.path:', req.query.path);
     console.log('[Vercel API] Raw req.url:', req.url);
     console.log('[Vercel API] All query params:', JSON.stringify(req.query));
     
-    // 优先从 req.query['[...slug]'] 获取路径
-    // Vercel catch-all 路由会将路径段作为 query['[...slug]'] 传递
-    // 例如 /api/auth/oauth/url -> query['[...slug]'] = ['auth', 'oauth', 'url']
+    // 优先从 req.query.slug 获取路径
+    // Vercel catch-all 路由会将路径段作为 query.slug 传递
+    // 例如 /api/auth/oauth/url -> query.slug = ['auth', 'oauth', 'url']
     if (slugParam) {
       if (Array.isArray(slugParam)) {
         pathArray = slugParam as string[];
@@ -285,7 +286,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // 解析查询参数
     const query = new URLSearchParams();
     Object.entries(req.query).forEach(([key, value]) => {
-      if (key !== 'path' && key !== '...slug' && key !== '[...slug]' && value) { // 排除 Vercel 路由参数
+      if (key !== 'path' && key !== 'slug' && key !== '...slug' && key !== '[...slug]' && value) { // 排除 Vercel 路由参数
         query.set(key, Array.isArray(value) ? value[0] : String(value));
       }
     });

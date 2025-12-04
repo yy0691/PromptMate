@@ -6,7 +6,7 @@
   "installCommand": "npm install",
   "framework": "vite",
   "functions": {
-    "api/[[...slug]].ts": {
+    "api/[...slug].ts": {
       "runtime": "@vercel/node@5.5.13",
       "maxDuration": 30
     }
@@ -38,4 +38,3 @@
     }
   ]
 }
-
