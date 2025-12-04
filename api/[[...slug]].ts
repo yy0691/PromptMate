@@ -147,30 +147,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     let pathArray: string[] = [];
     
     // Vercel 的 catch-all 路由参数名是文件名中的变量名
-    // [[...slug]].ts -> req.query['...slug']
-    const slugParam = req.query['...slug'];
+    // [[...slug]].ts -> req.query['[...slug]'] (注意：键名包含方括号！)
+    const slugParam = req.query['[...slug]'];
     
-    console.log('[Vercel API] Raw query[...slug]:', slugParam, 'type:', typeof slugParam, 'isArray:', Array.isArray(slugParam));
+    console.log('[Vercel API] Raw query["[...slug]"]:', slugParam, 'type:', typeof slugParam, 'isArray:', Array.isArray(slugParam));
     console.log('[Vercel API] Raw query.path:', req.query.path);
     console.log('[Vercel API] Raw req.url:', req.url);
     console.log('[Vercel API] All query params:', JSON.stringify(req.query));
     
-    // 优先从 req.query['...slug'] 获取路径
-    // Vercel catch-all 路由会将路径段作为 query['...slug'] 传递
-    // 例如 /api/auth/oauth/url -> query['...slug'] = ['auth', 'oauth', 'url']
+    // 优先从 req.query['[...slug]'] 获取路径
+    // Vercel catch-all 路由会将路径段作为 query['[...slug]'] 传递
+    // 例如 /api/auth/oauth/url -> query['[...slug]'] = ['auth', 'oauth', 'url']
     if (slugParam) {
       if (Array.isArray(slugParam)) {
         pathArray = slugParam as string[];
-        console.log('[Vercel API] Using query[...slug] (array):', pathArray);
+        console.log('[Vercel API] Using query["[...slug]"] (array):', pathArray);
       } else if (typeof slugParam === 'string') {
         // 如果 slugParam 是字符串，可能是单个段（如 'test'）或多个段（如 'auth/oauth/url'）
         // 需要分割成数组
         if (slugParam.includes('/')) {
           pathArray = slugParam.split('/').filter(Boolean);
-          console.log('[Vercel API] Using query[...slug] (string with slashes), split to:', pathArray);
+          console.log('[Vercel API] Using query["[...slug]"] (string with slashes), split to:', pathArray);
         } else {
           pathArray = [slugParam];
-          console.log('[Vercel API] Using query[...slug] (single string):', pathArray);
+          console.log('[Vercel API] Using query["[...slug]"] (single string):', pathArray);
         }
       }
     }
@@ -285,7 +285,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // 解析查询参数
     const query = new URLSearchParams();
     Object.entries(req.query).forEach(([key, value]) => {
-      if (key !== 'path' && value) {
+      if (key !== 'path' && key !== '...slug' && key !== '[...slug]' && value) { // 排除 Vercel 路由参数
         query.set(key, Array.isArray(value) ? value[0] : String(value));
       }
     });
