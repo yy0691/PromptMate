@@ -45,7 +45,21 @@ export function AuthCallback() {
         const code = searchParams.get('code') || hashParams.get('code');
         const error = searchParams.get('error') || hashParams.get('error');
         const errorDescription = searchParams.get('error_description') || hashParams.get('error_description');
+        const state = searchParams.get('state') || hashParams.get('state') || '';
         const provider = (searchParams.get('provider') || hashParams.get('provider') || 'google').toLowerCase();
+        let codeVerifier: string | undefined;
+
+        // 尝试从 state 中解析 PKCE 的 code_verifier
+        if (state) {
+          try {
+            const decoded = JSON.parse(atob(state.replace(/-/g, '+').replace(/_/g, '/')));
+            if (decoded?.cv) {
+              codeVerifier = decoded.cv;
+            }
+          } catch (e) {
+            console.warn('Failed to parse state for PKCE', e);
+          }
+        }
 
         // 检查是否有错误
         if (error) {
@@ -81,12 +95,12 @@ export function AuthCallback() {
           : `${window.location.origin}/auth/callback`;
 
         // 弹窗流程：通知父窗口并关闭
-        if (sendMessageToOpener({ type: 'oauth-callback', code, provider })) {
+        if (sendMessageToOpener({ type: 'oauth-callback', code, provider, state })) {
           return;
         }
 
         // 调用认证处理（直接在当前窗口）
-        await handleOAuthCallback(provider as any, code, redirectUri);
+        await handleOAuthCallback(provider as any, code, redirectUri, codeVerifier);
 
         setStatus('success');
         toast({

@@ -26,7 +26,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   refreshAuth: () => Promise<boolean>;
   getAccessToken: () => string | null;
-  handleOAuthCallback: (provider: OAuthProvider, code: string, redirectUri: string) => Promise<void>;
+  handleOAuthCallback: (provider: OAuthProvider, code: string, redirectUri: string, codeVerifier?: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -203,9 +203,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [loadStoredAuth]);
 
   // 处理 OAuth 回调
-  const handleOAuthCallback = useCallback(async (provider: OAuthProvider, code: string, redirectUri: string) => {
+  const handleOAuthCallback = useCallback(async (provider: OAuthProvider, code: string, redirectUri: string, codeVerifier?: string) => {
     try {
-      const authResponse = await authService.oauthCallback(provider, code, redirectUri);
+      const authResponse = await authService.oauthCallback(provider, code, redirectUri, codeVerifier);
       saveAuth(authResponse);
       toast({
         title: '登录成功',

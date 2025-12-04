@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { authService, OAuthProvider } from '@/services/authService';
 import { Loader2, Mail, Github, Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { decodePkceVerifier } from '@/utils/pkce';
 
 interface AuthDialogProps {
   open: boolean;
@@ -154,7 +155,7 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
             cleanupFallback();
             popup.close();
             
-            const { code, error } = event.data;
+            const { code, error, state } = event.data as { code?: string; error?: string; state?: string };
             if (error) {
               toast({
                 title: t('auth.oauth.failed'),
@@ -168,7 +169,8 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
             if (code) {
               try {
                 const redirectUri = `${window.location.origin}/auth/callback`;
-                await handleOAuthLoginCallback(provider, code, redirectUri);
+                const codeVerifier = state ? decodePkceVerifier(state) : undefined;
+                await handleOAuthLoginCallback(provider, code, redirectUri, codeVerifier);
                 onOpenChange(false); // 关闭登录对话框
               } catch (error: any) {
                 toast({
@@ -246,8 +248,8 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
   };
 
   // 处理 OAuth 登录回调
-  const handleOAuthLoginCallback = async (provider: OAuthProvider, code: string, redirectUri: string) => {
-    await handleOAuthCallbackFromAuth(provider, code, redirectUri);
+  const handleOAuthLoginCallback = async (provider: OAuthProvider, code: string, redirectUri: string, codeVerifier?: string) => {
+    await handleOAuthCallbackFromAuth(provider, code, redirectUri, codeVerifier);
   };
 
   // 检查浏览器环境的 OAuth 回调（通过 URL 参数）

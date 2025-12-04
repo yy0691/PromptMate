@@ -107,13 +107,13 @@ class AuthService {
   /**
    * OAuth回调处理
    */
-  async oauthCallback(provider: OAuthProvider, code: string, redirectUri: string): Promise<AuthResponse> {
+  async oauthCallback(provider: OAuthProvider, code: string, redirectUri: string, codeVerifier?: string): Promise<AuthResponse> {
     const response = await fetch(`${this.baseURL}/api/auth/oauth/callback`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ provider, code, redirect_uri: redirectUri }),
+      body: JSON.stringify({ provider, code, redirect_uri: redirectUri, ...(codeVerifier ? { code_verifier: codeVerifier } : {}) }),
     });
 
     if (!response.ok) {

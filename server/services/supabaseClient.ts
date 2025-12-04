@@ -86,24 +86,60 @@ export function buildOAuthUrl(provider: string, redirectUri: string): string {
     return buildLinuxdoOAuthUrl(redirectUri);
   }
 
-  // Google 和 GitHub 使用 Supabase 的统一授权端点
-  // Supabase 会使用环境变量中配置的客户端 ID 和密钥
-  const standardProviders = ['google', 'github', 'facebook', 'twitter', 'discord', 'slack'];
-
+  // Google/GitHub 等标准提供商：使用 PKCE 授权码流程
+  const { codeChallenge, codeVerifier, state } = buildPkceState();
   const query = new URLSearchParams({
     provider: providerLower,
     redirect_to: redirectUri,
-    // 强制使用 PKCE 授权码流程，避免隐式流返回 #access_token 造成前端缺少 code
     flow_type: 'pkce',
     response_type: 'code',
+    code_challenge: codeChallenge,
+    code_challenge_method: 'S256',
+    state,
   });
+
+  // 将 code_verifier 通过 state 回传，前端解码后在回调时提交给后端
   return `${supabaseUrl}/auth/v1/authorize?${query.toString()}`;
 }
 
-export async function exchangeOAuthCode(code: string, redirectUri: string) {
+// 生成 PKCE 所需的 code_verifier / code_challenge，并将 verifier 编码进 state 返回
+function buildPkceState(): { codeChallenge: string; codeVerifier: string; state: string } {
+  const codeVerifier = base64UrlRandomString(64);
+  const codeChallenge = base64UrlEncode(sha256(codeVerifier));
+  const statePayload = {
+    cv: codeVerifier,
+    ts: Date.now(),
+  };
+  const state = base64UrlEncode(Buffer.from(JSON.stringify(statePayload)).toString());
+  return { codeChallenge, codeVerifier, state };
+}
+
+function sha256(input: string): Buffer {
+  const crypto = require('crypto');
+  return crypto.createHash('sha256').update(input).digest();
+}
+
+function base64UrlRandomString(size: number): string {
+  const crypto = require('crypto');
+  return base64UrlEncode(crypto.randomBytes(size));
+}
+
+function base64UrlEncode(buffer: Buffer | string): string {
+  return Buffer.from(buffer)
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+}
+
+export async function exchangeOAuthCode(code: string, redirectUri: string, codeVerifier?: string) {
   const result: AuthResponse = await authRequest('/auth/v1/token?grant_type=authorization_code', {
     method: 'POST',
-    body: JSON.stringify({ code, redirect_to: redirectUri }),
+    body: JSON.stringify({
+      code,
+      redirect_to: redirectUri,
+      ...(codeVerifier ? { code_verifier: codeVerifier } : {}),
+    }),
   });
   return result;
 }

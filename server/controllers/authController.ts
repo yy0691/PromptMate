@@ -111,6 +111,7 @@ export async function oauthCallback(context: RequestContext) {
     const provider = assertString(body.provider, 'provider');
     const code = assertString(body.code, 'code');
     const redirectUri = assertString(body.redirect_uri, 'redirect_uri');
+    const codeVerifier = typeof body.code_verifier === 'string' ? body.code_verifier : undefined;
 
     // Linuxdo 使用独立的授权流程
     if (provider.toLowerCase() === 'linuxdo') {
@@ -164,7 +165,7 @@ export async function oauthCallback(context: RequestContext) {
     }
 
     // Google 和 GitHub 使用 Supabase 的标准流程
-    const result = await exchangeOAuthCode(code, redirectUri);
+    const result = await exchangeOAuthCode(code, redirectUri, codeVerifier);
     if (!result.access_token || !result.refresh_token || !result.user) {
       throw new Error('OAuth callback failed');
     }
