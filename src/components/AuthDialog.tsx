@@ -186,10 +186,15 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
 
         // 监听弹出窗口关闭（用户手动关闭）
         const checkClosed = setInterval(() => {
-          if (popup.closed) {
+          try {
+            if (popup.closed) {
+              clearInterval(checkClosed);
+              window.removeEventListener('message', handleMessage);
+              setOAuthLoading(null);
+            }
+          } catch {
+            // 某些站点启用了 COOP，访问 closed 会触发错误，忽略即可，依赖 postMessage 回调
             clearInterval(checkClosed);
-            window.removeEventListener('message', handleMessage);
-            setOAuthLoading(null);
           }
         }, 500);
       }

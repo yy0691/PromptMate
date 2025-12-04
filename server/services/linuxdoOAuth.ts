@@ -5,9 +5,11 @@
 
 import { env } from '../config';
 
-const LINUXDO_AUTHORIZE_URL = 'https://linux.do/oauth2/authorize';
-const LINUXDO_TOKEN_URL = 'https://linux.do/oauth2/token';
-const LINUXDO_USER_INFO_URL = 'https://linux.do/api/user';
+// 使用 LinuxDo Connect 域名，避免主站 404
+const LINUXDO_BASE_URL = 'https://connect.linux.do';
+const LINUXDO_AUTHORIZE_URL = `${LINUXDO_BASE_URL}/oauth/authorize`;
+const LINUXDO_TOKEN_URL = `${LINUXDO_BASE_URL}/oauth/token`;
+const LINUXDO_USER_INFO_URL = `${LINUXDO_BASE_URL}/api/user`;
 
 interface LinuxdoTokenResponse {
   access_token: string;
