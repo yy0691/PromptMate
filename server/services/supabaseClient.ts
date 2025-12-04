@@ -90,18 +90,12 @@ export function buildOAuthUrl(provider: string, redirectUri: string): string {
   // Supabase 会使用环境变量中配置的客户端 ID 和密钥
   const standardProviders = ['google', 'github', 'facebook', 'twitter', 'discord', 'slack'];
 
-  if (standardProviders.includes(providerLower)) {
-    const query = new URLSearchParams({
-      provider: providerLower,
-      redirect_to: redirectUri,
-    });
-    return `${supabaseUrl}/auth/v1/authorize?${query.toString()}`;
-  }
-
-  // 对于其他提供商，也使用 Supabase 端点
   const query = new URLSearchParams({
     provider: providerLower,
     redirect_to: redirectUri,
+    // 强制使用 PKCE 授权码流程，避免隐式流返回 #access_token 造成前端缺少 code
+    flow_type: 'pkce',
+    response_type: 'code',
   });
   return `${supabaseUrl}/auth/v1/authorize?${query.toString()}`;
 }

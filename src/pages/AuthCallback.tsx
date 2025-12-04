@@ -21,23 +21,48 @@ export function AuthCallback() {
   const [status, setStatus] = useState<AuthStatus>('processing');
   const [errorMessage, setErrorMessage] = useState<string>('');
 
+  // 解析 hash 参数，兼容部分提供商返回在 # 后
+  const parseHashParams = () => {
+    const hash = window.location.hash?.replace(/^#/, '') || '';
+    return new URLSearchParams(hash);
+  };
+
+  // 如果当前页面是弹窗，向父窗口 postMessage 并关闭
+  const sendMessageToOpener = (payload: any) => {
+    if (window.opener && window.opener !== window) {
+      window.opener.postMessage(payload, window.location.origin);
+      window.close();
+      return true;
+    }
+    return false;
+  };
+
   useEffect(() => {
     const processCallback = async () => {
       try {
-        // 从 URL 参数获取授权码和错误信息
-        const code = searchParams.get('code');
-        const error = searchParams.get('error');
-        const errorDescription = searchParams.get('error_description');
-        const provider = searchParams.get('provider') || 'google'; // 默认 Google
+        // 从URL参数或 hash 获取授权码/错误信息
+        const hashParams = parseHashParams();
+        const code = searchParams.get('code') || hashParams.get('code');
+        const error = searchParams.get('error') || hashParams.get('error');
+        const errorDescription = searchParams.get('error_description') || hashParams.get('error_description');
+        const provider = (searchParams.get('provider') || hashParams.get('provider') || 'google').toLowerCase();
 
         // 检查是否有错误
         if (error) {
-          throw new Error(errorDescription || error || '授权失败');
+          const message = errorDescription || error || '授权失败';
+          if (sendMessageToOpener({ type: 'oauth-callback', error: message, provider })) {
+            return;
+          }
+          throw new Error(message);
         }
 
         // 检查是否有授权码
         if (!code) {
-          throw new Error('未收到授权码，请重试');
+          const message = '未收到授权码，请重试';
+          if (sendMessageToOpener({ type: 'oauth-callback', error: message, provider })) {
+            return;
+          }
+          throw new Error(message);
         }
 
         // 检测是否为 Electron 环境
@@ -45,21 +70,24 @@ export function AuthCallback() {
 
         // 特殊处理：Electron + Linuxdo 需要转发到自定义协议
         if (isElectron && provider === 'linuxdo') {
-          // Electron + Linuxdo：转发到自定义协议
           const redirectUri = 'promptmate://oauth';
           window.location.href = `${redirectUri}?code=${encodeURIComponent(code)}&provider=${provider}`;
           return;
         }
 
-        // 构建重定向 URI（必须与请求时一致）
+        // 构建重定向URI（必须与请求时一致）
         const redirectUri = isElectron
           ? 'promptmate://oauth'
           : `${window.location.origin}/auth/callback`;
 
-        // 调用认证处理
+        // 弹窗流程：通知父窗口并关闭
+        if (sendMessageToOpener({ type: 'oauth-callback', code, provider })) {
+          return;
+        }
+
+        // 调用认证处理（直接在当前窗口）
         await handleOAuthCallback(provider as any, code, redirectUri);
 
-        // 成功
         setStatus('success');
         toast({
           title: '登录成功',
@@ -67,7 +95,6 @@ export function AuthCallback() {
           variant: 'success',
         });
 
-        // 延迟跳转到首页
         setTimeout(() => {
           navigate('/', { replace: true });
         }, 1500);
@@ -130,5 +157,3 @@ export function AuthCallback() {
     </div>
   );
 }
-
-
