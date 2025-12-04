@@ -155,9 +155,7 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
           if (event.data.type === 'oauth-callback') {
             window.removeEventListener('message', handleMessage);
             cleanupFallback();
-            try {
-              popup.close();
-            } catch {}
+            // 让回调页面自行关闭，避免在严格 COOP 环境下由父页面调用 close 触发警告
             
             const { code, error, state } = event.data as { code?: string; error?: string; state?: string };
             if (error) {
