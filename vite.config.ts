@@ -9,7 +9,8 @@ const __dirname = dirname(__filename);
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: './',
+  // Electron 打包需要相对路径，Web 部署需要绝对根路径，否则深链路如 /auth/callback 会去 /auth/assets 下找静态文件。
+  base: mode === 'electron' ? './' : '/',
   plugins: [
     react(),
   ],
