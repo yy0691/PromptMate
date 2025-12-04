@@ -151,6 +151,7 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
 
           if (event.data.type === 'oauth-callback') {
             window.removeEventListener('message', handleMessage);
+            cleanupFallback();
             popup.close();
             
             const { code, error } = event.data;
@@ -184,19 +185,27 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
 
         window.addEventListener('message', handleMessage);
 
-        // 监听弹出窗口关闭（用户手动关闭）
-        const checkClosed = setInterval(() => {
-          try {
-            if (popup.closed) {
-              clearInterval(checkClosed);
-              window.removeEventListener('message', handleMessage);
-              setOAuthLoading(null);
-            }
-          } catch {
-            // 某些站点启用了 COOP，访问 closed 会触发错误，忽略即可，依赖 postMessage 回调
-            clearInterval(checkClosed);
+        // 在开启 COOP 的站点上访问 popup.closed 会直接抛错，因此不再轮询 .closed。
+        // 使用“用户重新聚焦主窗口”作为兜底关闭逻辑，避免控制台报错。
+        const cleanupFallback = () => {
+          window.removeEventListener('focus', handleWindowFocus);
+          window.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
+
+        const handleWindowFocus = () => {
+          cleanupFallback();
+          // 如果用户关掉了弹窗且没有触发回调，重置 loading 状态
+          setOAuthLoading((current) => (current ? null : current));
+        };
+
+        const handleVisibilityChange = () => {
+          if (!document.hidden) {
+            handleWindowFocus();
           }
-        }, 500);
+        };
+
+        window.addEventListener('focus', handleWindowFocus);
+        window.addEventListener('visibilitychange', handleVisibilityChange);
       }
     } catch (error: any) {
       toast({
