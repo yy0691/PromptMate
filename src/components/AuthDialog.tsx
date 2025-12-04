@@ -136,14 +136,16 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
           handleOAuthCallback(provider, data);
         });
       } else {
-        // 浏览器环境：打开弹出窗口
-        const popup = window.open(oauthUrl, 'oauth', 'width=500,height=600');
+        // 浏览器环境：新标签页打开（避免被弹窗拦截）
+        const popup = window.open(oauthUrl, '_blank');
 
         if (!popup) {
-          throw new Error('无法打开弹出窗口，请检查浏览器弹窗设置');
+          // 若被阻止，直接在当前窗口跳转
+          window.location.href = oauthUrl;
+          return;
         }
 
-        // 监听来自弹窗的消息
+        // 监听来自新标签页的消息
         const handleMessage = async (event: MessageEvent) => {
           // 验证消息来源
           if (event.origin !== window.location.origin) {
@@ -153,7 +155,9 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
           if (event.data.type === 'oauth-callback') {
             window.removeEventListener('message', handleMessage);
             cleanupFallback();
-            popup.close();
+            try {
+              popup.close();
+            } catch {}
             
             const { code, error, state } = event.data as { code?: string; error?: string; state?: string };
             if (error) {
@@ -187,8 +191,7 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
 
         window.addEventListener('message', handleMessage);
 
-        // 在开启 COOP 的站点上访问 popup.closed 会直接抛错，因此不再轮询 .closed。
-        // 使用“用户重新聚焦主窗口”作为兜底关闭逻辑，避免控制台报错。
+        // 兜底：用户回到原页但未触发回调时清理 loading
         const cleanupFallback = () => {
           window.removeEventListener('focus', handleWindowFocus);
           window.removeEventListener('visibilitychange', handleVisibilityChange);
@@ -196,7 +199,6 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
 
         const handleWindowFocus = () => {
           cleanupFallback();
-          // 如果用户关掉了弹窗且没有触发回调，重置 loading 状态
           setOAuthLoading((current) => (current ? null : current));
         };
 
