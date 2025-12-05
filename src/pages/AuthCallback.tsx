@@ -50,7 +50,9 @@ export function AuthCallback() {
         let codeVerifier: string | undefined;
 
         // 尝试从 state 中解析 PKCE 的 code_verifier
-        if (state) {
+        // 注意：迁移到 Supabase Client SDK 后，state 由 SDK 自动处理，这里不再需要手动解析
+        // 但为了兼容 Linuxdo (后端处理)，保留变量定义
+        if (provider === 'linuxdo' && state) {
           try {
             const decoded = JSON.parse(atob(state.replace(/-/g, '+').replace(/_/g, '/')));
             if (decoded?.cv) {
