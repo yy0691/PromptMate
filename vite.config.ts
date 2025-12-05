@@ -23,21 +23,6 @@ export default defineConfig(({ mode }) => ({
       'node-pty',
       'serialport',
     ], // 排除原生模块，不在浏览器环境中处理
-  },
-  resolve: {
-    alias: {
-      "@": resolve(__dirname, "./src"),
-    },
-  },
-  define: {
-    // 定义环境变量来帮助条件编译
-    __ELECTRON__: mode === 'electron' ? 'true' : 'false'
-  },
-  build: {
-    outDir: 'dist',
-    emptyOutDir: true,
-    assetsInlineLimit: 4096,
-    sourcemap: true,
     minify: 'esbuild',
     // 增加代码块大小警告限制
     chunkSizeWarningLimit: 1000,
@@ -45,7 +30,7 @@ export default defineConfig(({ mode }) => ({
       external: [
         // 将Node.js模块和Electron模块标记为外部依赖
         'fs',
-        'path', 
+        'path',
         'electron',
         'chokidar',
         'fsevents', // macOS 原生模块
