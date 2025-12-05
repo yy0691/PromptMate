@@ -14,6 +14,18 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
   ],
+  resolve: {
+    alias: {
+      "@": resolve(__dirname, "./src"),
+    },
+  },
+  define: {
+    // 定义环境变量来帮助条件编译
+    __ELECTRON__: mode === 'electron' ? 'true' : 'false',
+    // 自动映射 Supabase 环境变量，避免用户必须配置 VITE_ 前缀
+    'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL),
+    'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_KEY),
+  },
   optimizeDeps: {
     exclude: [
       'fsevents', // macOS 原生文件系统事件模块
@@ -23,6 +35,12 @@ export default defineConfig(({ mode }) => ({
       'node-pty',
       'serialport',
     ], // 排除原生模块，不在浏览器环境中处理
+  },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+    assetsInlineLimit: 4096,
+    sourcemap: true,
     minify: 'esbuild',
     // 增加代码块大小警告限制
     chunkSizeWarningLimit: 1000,
