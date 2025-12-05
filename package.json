@@ -30,6 +30,7 @@
   "scripts": {
     "dev": "vite",
     "test:api": "node scripts/test-all-api.js",
+    "import:docs-prompts": "node scripts/import-doc-prompts.js",
     "test:api:local": "node scripts/test-all-api.js http://localhost:8787",
     "test:api:vercel": "node scripts/test-all-api.js https://prompt.luoyuanai.cn",
     "build": "npm run build:info && vite build && npm run build:api",

@@ -27,7 +27,10 @@ async function handleJsonResponse(response: Response) {
   const data = text ? JSON.parse(text) : undefined;
   if (!response.ok) {
     const message = data?.error_description || data?.message || response.statusText;
-    throw new Error(message || 'Supabase request failed');
+    const err = new Error(message || 'Supabase request failed');
+    (err as any).status = response.status;
+    (err as any).payload = data;
+    throw err;
   }
   return data;
 }

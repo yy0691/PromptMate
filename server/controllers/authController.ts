@@ -24,6 +24,13 @@ export async function registerWithEmail(context: RequestContext) {
     const password = assertString(body.password, 'password');
     const nickname = assertString(body.nickname, 'nickname');
 
+    if (!email || !password || !nickname) {
+      throw new Error('Missing required fields');
+    }
+    if (password.length < 6) {
+      throw new Error('Password too short');
+    }
+
     const result = await signUpWithEmail(email, password, nickname);
     
     console.log('[Register] signUpWithEmail result:', JSON.stringify({
@@ -57,8 +64,10 @@ export async function registerWithEmail(context: RequestContext) {
       email_confirmed: false,
     });
   } catch (error: any) {
-    console.error('[Register] Error:', error.message);
-    sendError(context.res, 400, error.message ?? 'Failed to register', 'INVALID_PARAMS');
+    const status = error.status && Number.isInteger(error.status) ? error.status : 400;
+    const message = error?.payload?.error_description || error?.payload?.message || error?.message || 'Failed to register';
+    console.error('[Register] Error:', { message, status, payload: error?.payload });
+    sendError(context.res, status, message, 'INVALID_PARAMS');
   }
 }
 
@@ -90,7 +99,10 @@ export async function loginWithEmail(context: RequestContext) {
       },
     });
   } catch (error: any) {
-    sendError(context.res, 401, error.message ?? 'Invalid credentials', 'UNAUTHORIZED');
+    const status = error.status && Number.isInteger(error.status) ? error.status : 401;
+    const message = error?.payload?.error_description || error?.payload?.message || error?.message || 'Invalid credentials';
+    console.error('[Login] Error:', { message, status, payload: error?.payload });
+    sendError(context.res, status, message, 'UNAUTHORIZED');
   }
 }
 
@@ -169,9 +181,9 @@ export async function oauthCallback(context: RequestContext) {
     if (!result.access_token || !result.refresh_token || !result.user) {
       throw new Error('OAuth callback failed');
     }
-    const profile = await fetchProfile(result.user.id);
+    let profile = await fetchProfile(result.user.id);
     if (!profile) {
-      await upsertProfile(result.user.id, {
+      profile = await upsertProfile(result.user.id, {
         nickname: result.user.user_metadata?.nickname as string | undefined,
       });
     }
@@ -186,8 +198,10 @@ export async function oauthCallback(context: RequestContext) {
       },
     });
   } catch (error: any) {
-    console.error('[OAuth Callback] Error:', error);
-    sendError(context.res, 400, error.message ?? 'OAuth exchange failed', 'INVALID_PARAMS');
+    const status = error.status && Number.isInteger(error.status) ? error.status : 400;
+    const message = error?.payload?.error_description || error?.payload?.message || error?.message || 'OAuth exchange failed';
+    console.error('[OAuth Callback] Error:', { message, status, payload: error?.payload });
+    sendError(context.res, status, message, 'INVALID_PARAMS');
   }
 }
 
