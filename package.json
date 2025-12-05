@@ -119,6 +119,7 @@
     "@reactflow/controls": "^11.2.14",
     "@reactflow/core": "^11.11.4",
     "@reactflow/minimap": "^11.7.14",
+    "@supabase/supabase-js": "^2.86.2",
     "@types/sql.js": "^1.4.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
