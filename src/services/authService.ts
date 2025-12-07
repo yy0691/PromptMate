@@ -109,19 +109,56 @@ class AuthService {
     }
 
     // Google / GitHub 走 Supabase SDK
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: provider as 'google' | 'github',
-      options: {
-        redirectTo: redirectUri,
-        skipBrowserRedirect: true,
-      },
-    });
+    try {
+      // 检查 Supabase 配置
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      
+      if (!supabaseUrl || !supabaseAnonKey) {
+        throw new Error('Supabase 配置缺失。请检查 VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY 环境变量。');
+      }
 
-    if (error) {
-      throw new Error(error.message || '获取授权URL失败');
+      // 优化 OAuth 选项，只包含必要的参数
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: provider as 'google' | 'github',
+        options: {
+          redirectTo: redirectUri,
+          skipBrowserRedirect: true,
+          // 只请求必要的 scope，减少 URL 长度
+          scopes: provider === 'google' ? 'email profile' : undefined,
+          // 不添加额外的 queryParams，避免 URL 过长
+          queryParams: {},
+        },
+      });
+
+      if (error) {
+        console.error('Supabase OAuth 错误:', error);
+        throw new Error(error.message || '获取授权URL失败');
+      }
+
+      if (!data?.url) {
+        throw new Error('未能获取 OAuth 授权 URL');
+      }
+
+      // 检查 URL 长度（Google 对 URL 长度有限制，通常为 2048 字符）
+      if (data.url.length > 2000) {
+        console.warn('OAuth URL 过长，可能导致请求失败:', data.url.length, '字符');
+        console.warn('URL 预览:', data.url.substring(0, 200) + '...');
+      }
+
+      // 检查是否通过代理（可能导致问题）
+      if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
+        console.info('检测到本地环境，如果使用代理（如 Clash、V2Ray），请确保代理不会修改 OAuth 请求');
+      }
+
+      return data.url;
+    } catch (error: any) {
+      // 提供更详细的错误信息
+      if (error.message?.includes('Supabase')) {
+        throw error;
+      }
+      throw new Error(`获取 ${provider} OAuth 授权 URL 失败: ${error.message || '未知错误'}`);
     }
-
-    return data.url;
   }
 
   /**

@@ -40,6 +40,12 @@ export function AuthCallback() {
   useEffect(() => {
     const processCallback = async () => {
       try {
+        // 详细的诊断信息
+        console.log('[OAuth Callback] 开始处理回调');
+        console.log('[OAuth Callback] 当前 URL:', window.location.href);
+        console.log('[OAuth Callback] Search params:', Object.fromEntries(searchParams.entries()));
+        console.log('[OAuth Callback] Hash:', window.location.hash);
+        
         // 从URL参数或 hash 获取授权码/错误信息
         const hashParams = parseHashParams();
         const code = searchParams.get('code') || hashParams.get('code');
@@ -48,6 +54,14 @@ export function AuthCallback() {
         const state = searchParams.get('state') || hashParams.get('state') || '';
         const provider = (searchParams.get('provider') || hashParams.get('provider') || 'google').toLowerCase();
         let codeVerifier: string | undefined;
+
+        console.log('[OAuth Callback] 提取的参数:', {
+          code: code ? `${code.substring(0, 20)}...` : null,
+          error,
+          errorDescription,
+          state: state ? `${state.substring(0, 20)}...` : null,
+          provider,
+        });
 
         // 尝试从 state 中解析 PKCE 的 code_verifier
         // 注意：迁移到 Supabase Client SDK 后，state 由 SDK 自动处理，这里不再需要手动解析
@@ -66,6 +80,7 @@ export function AuthCallback() {
         // 检查是否有错误
         if (error) {
           const message = errorDescription || error || '授权失败';
+          console.error('[OAuth Callback] OAuth 错误:', { error, errorDescription, provider });
           if (sendMessageToOpener({ type: 'oauth-callback', error: message, provider })) {
             return;
           }
@@ -74,12 +89,50 @@ export function AuthCallback() {
 
         // 检查是否有授权码
         if (!code) {
-          const message = '未收到授权码，请重试';
+          // 提供更详细的诊断信息
+          const fullUrl = window.location.href;
+          const urlObj = new URL(fullUrl);
+          const allParams = Object.fromEntries(urlObj.searchParams.entries());
+          const allHashParams = Object.fromEntries(hashParams.entries());
+          
+          console.error('[OAuth Callback] 未找到授权码');
+          console.error('[OAuth Callback] 完整 URL:', fullUrl);
+          console.error('[OAuth Callback] 所有查询参数:', allParams);
+          console.error('[OAuth Callback] 所有 Hash 参数:', allHashParams);
+          console.error('[OAuth Callback] 当前路径:', window.location.pathname);
+          console.error('[OAuth Callback] 当前搜索字符串:', window.location.search);
+          console.error('[OAuth Callback] 当前 Hash:', window.location.hash);
+          
+          // 尝试从 Supabase 的 session 中获取（某些情况下 Supabase 会自动处理）
+          try {
+            const { supabase } = await import('@/lib/supabase');
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+              console.log('[OAuth Callback] 发现现有会话，可能已自动登录');
+              // 如果已有会话，直接使用
+              setStatus('success');
+              toast({
+                title: '登录成功',
+                description: '检测到已有会话，正在跳转...',
+                variant: 'success',
+              });
+              setTimeout(() => {
+                navigate('/', { replace: true });
+              }, 1500);
+              return;
+            }
+          } catch (e) {
+            console.warn('[OAuth Callback] 检查会话失败:', e);
+          }
+          
+          const message = '未收到授权码，请重试。请检查：\n1. Supabase Redirect URLs 配置是否正确\n2. GitHub OAuth App 回调 URL 是否正确\n3. 是否在弹窗中完成授权（需要允许弹窗）';
           if (sendMessageToOpener({ type: 'oauth-callback', error: message, provider })) {
             return;
           }
           throw new Error(message);
         }
+        
+        console.log('[OAuth Callback] 找到授权码，继续处理...');
 
         // 检测是否为 Electron 环境
         const isElectron = !!(window as any).electronAPI;

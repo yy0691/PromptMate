@@ -110,7 +110,14 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
       const redirectUri = isElectron
         ? 'promptmate://oauth'
         : `${window.location.origin}/auth/callback`;
+      
+      console.log(`[OAuth] 开始 ${provider} 登录流程`);
+      console.log(`[OAuth] 重定向 URI: ${redirectUri}`);
+      
       const oauthUrl = await authService.getOAuthUrl(provider, redirectUri);
+      
+      console.log(`[OAuth] 获取到授权 URL，长度: ${oauthUrl.length} 字符`);
+      
       // 打开OAuth授权页面
       if (isElectron && (window as any).electronAPI?.openExternal) {
         // Electron 环境：使用 shell.openExternal 打开外部浏览器
@@ -130,16 +137,26 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
         }
         // 监听来自新标签页的消息
         const handleMessage = async (event: MessageEvent) => {
+          console.log(`[OAuth] 收到消息事件:`, {
+            origin: event.origin,
+            expectedOrigin: window.location.origin,
+            data: event.data,
+          });
+          
           // 验证消息来源
           if (event.origin !== window.location.origin) {
+            console.warn(`[OAuth] 消息来源不匹配: ${event.origin} !== ${window.location.origin}`);
             return;
           }
+          
           if (event.data.type === 'oauth-callback') {
+            console.log(`[OAuth] 收到 OAuth 回调消息:`, event.data);
             window.removeEventListener('message', handleMessage);
             cleanupFallback();
             // 让回调页面自行关闭，避免在严格 COOP 环境下由父页面调用 close 触发警告
             const { code, error, state } = event.data as { code?: string; error?: string; state?: string };
             if (error) {
+              console.error(`[OAuth] ${provider} 回调错误:`, error);
               toast({
                 title: t('auth.oauth.failed'),
                 description: error,
@@ -150,11 +167,13 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
             }
             if (code) {
               try {
+                console.log(`[OAuth] 开始处理授权码，provider: ${provider}`);
                 const redirectUri = `${window.location.origin}/auth/callback`;
                 const codeVerifier = state ? decodePkceVerifier(state) : undefined;
                 await handleOAuthLoginCallback(provider, code, redirectUri, codeVerifier);
                 onOpenChange(false); // 关闭登录对话框
               } catch (error: any) {
+                console.error(`[OAuth] ${provider} 登录处理失败:`, error);
                 toast({
                   title: t('auth.oauth.failed'),
                   description: error.message || t('auth.oauth.failedDesc'),
@@ -163,12 +182,42 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
               } finally {
                 setOAuthLoading(null);
               }
+            } else {
+              console.error(`[OAuth] 回调消息中没有授权码:`, event.data);
+              toast({
+                title: t('auth.oauth.failed'),
+                description: '未收到授权码，请重试',
+                variant: 'destructive',
+              });
+              setOAuthLoading(null);
             }
           }
         };
-        window.addEventListener('message', handleMessage);
+        
+        // 添加超时处理：如果 5 分钟内没有收到回调，清理状态
+        const timeoutId = setTimeout(() => {
+          console.warn(`[OAuth] ${provider} 登录超时，清理状态`);
+          window.removeEventListener('message', handleMessage);
+          cleanupFallback();
+          setOAuthLoading(null);
+          toast({
+            title: t('auth.oauth.failed'),
+            description: '登录超时，请重试',
+            variant: 'destructive',
+          });
+        }, 5 * 60 * 1000); // 5 分钟超时
+        
+        // 包装 handleMessage 以在收到消息时清除超时
+        const wrappedHandleMessage = async (event: MessageEvent) => {
+          clearTimeout(timeoutId);
+          await handleMessage(event);
+        };
+        
+        window.addEventListener('message', wrappedHandleMessage);
         // 兜底：用户回到原页但未触发回调时清理 loading
         const cleanupFallback = () => {
+          clearTimeout(timeoutId);
+          window.removeEventListener('message', wrappedHandleMessage);
           window.removeEventListener('focus', handleWindowFocus);
           window.removeEventListener('visibilitychange', handleVisibilityChange);
         };
@@ -185,10 +234,25 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
         window.addEventListener('visibilitychange', handleVisibilityChange);
       }
     } catch (error: any) {
+      console.error(`[OAuth] ${provider} 登录失败:`, error);
+      
+      // 提供更详细的错误信息
+      let errorMessage = error.message || t('auth.oauth.failedDesc');
+      
+      // 针对常见错误提供解决方案
+      if (error.message?.includes('Supabase 配置缺失')) {
+        errorMessage = 'Supabase 配置缺失。请检查环境变量 VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY。';
+      } else if (error.message?.includes('400') || error.message?.includes('Bad Request')) {
+        errorMessage = 'OAuth 请求格式错误。可能原因：\n1. URL 过长（请检查 Supabase 配置）\n2. 代理修改了请求（如使用 Clash/V2Ray，请尝试关闭代理）\n3. Redirect URI 配置不匹配（请在 Supabase Dashboard 检查）';
+      } else if (error.message?.includes('redirect_uri_mismatch')) {
+        errorMessage = '重定向 URI 不匹配。请在 Supabase Dashboard → Authentication → URL Configuration 中添加正确的 Redirect URL。';
+      }
+      
       toast({
         title: t('auth.oauth.failed'),
-        description: error.message || t('auth.oauth.failedDesc'),
+        description: errorMessage,
         variant: 'destructive',
+        duration: 8000, // 延长显示时间以便用户阅读
       });
       setOAuthLoading(null);
     }
