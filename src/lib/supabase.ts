@@ -10,5 +10,10 @@ if (!supabaseUrl || !supabaseAnonKey) {
 // 防止页面白屏崩溃：如果没有 URL，使用占位符 (会导致 Auth 调用失败但页面能加载)
 export const supabase = createClient(
     supabaseUrl,
-    supabaseAnonKey
+    supabaseAnonKey,
+    {
+        auth: {
+            detectSessionInUrl: false
+        }
+    }
 );
