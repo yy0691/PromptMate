@@ -198,9 +198,7 @@
     "help": "Help",
     "expandSidebar": "Expand Sidebar",
     "collapseSidebar": "Collapse Sidebar",
-    "button":{
-
-    },
+    "button": {},
     "tooltip": {
       "allPrompts": "All",
       "favoritePrompts": "Favorite",
@@ -247,10 +245,10 @@
     }
   },
   "file": {
-    "allPrompts":"All",
-    "favoritePrompts":"Favorite",
-    "workflowPrompts":"Workflow",
-    "categoryPrompts":"Category"
+    "allPrompts": "All",
+    "favoritePrompts": "Favorite",
+    "workflowPrompts": "Workflow",
+    "categoryPrompts": "Category"
   },
   "prompts": {
     "title": "Prompt Management",
@@ -355,46 +353,46 @@
     "edit": "Edit Theme",
     "delete": "Delete Theme",
     "light": {
-        "name": "Default Light",
-        "description": "Standard light theme with a bright and clean design"
-      },
-      "dark": {
-        "name": "Default Dark",
-        "description": "Standard dark theme to reduce eye strain"
-      },
-      "blue": {
-        "name": "Blue Theme",
-        "description": "A professional and stable blue-toned interface"
-      },
-      "purple": {
-        "name": "Purple Theme",
-        "description": "Creative purple tones, suitable for creative work"
-      },
-      "green": {
-        "name": "Green Theme",
-        "description": "Natural green theme, comfortable for the eyes"
-      },
-      "orange": {
-        "name": "Orange Theme",
-        "description": "Vibrant orange theme, full of energy"
-      },
-      "red": {
-        "name": "Red Theme",
-        "description": "Passionate red theme, full of vitality"
-      },
-      "midnight": {
-        "name": "Midnight Blue",
-        "description": "A deep and elegant dark theme"
-      },
-      "coffee": {
-        "name": "Coffee",
-        "description": "A warm and comfortable coffee tone"
-      },
-      "custom": {
-        "name": "Custom Theme",
-        "description": "Customize your exclusive theme to your liking"
-      }
+      "name": "Default Light",
+      "description": "Standard light theme with a bright and clean design"
     },
+    "dark": {
+      "name": "Default Dark",
+      "description": "Standard dark theme to reduce eye strain"
+    },
+    "blue": {
+      "name": "Blue Theme",
+      "description": "A professional and stable blue-toned interface"
+    },
+    "purple": {
+      "name": "Purple Theme",
+      "description": "Creative purple tones, suitable for creative work"
+    },
+    "green": {
+      "name": "Green Theme",
+      "description": "Natural green theme, comfortable for the eyes"
+    },
+    "orange": {
+      "name": "Orange Theme",
+      "description": "Vibrant orange theme, full of energy"
+    },
+    "red": {
+      "name": "Red Theme",
+      "description": "Passionate red theme, full of vitality"
+    },
+    "midnight": {
+      "name": "Midnight Blue",
+      "description": "A deep and elegant dark theme"
+    },
+    "coffee": {
+      "name": "Coffee",
+      "description": "A warm and comfortable coffee tone"
+    },
+    "custom": {
+      "name": "Custom Theme",
+      "description": "Customize your exclusive theme to your liking"
+    }
+  },
   "font": {
     "selectFont": "Select Font",
     "selectSystemFont": "Select System Font",
@@ -441,8 +439,8 @@
     "file": "Import from File",
     "confirmImport": "Confirm Import",
     "confirmReset": "Confirm Reset",
-    "resetWarning":"This operation will delete all custom prompts and categories and restore to default state. This operation cannot be undone.",
-    "cloudSyncDescription2":"Cloud sync function is under development, currently only supports data import and export",
+    "resetWarning": "This operation will delete all custom prompts and categories and restore to default state. This operation cannot be undone.",
+    "cloudSyncDescription2": "Cloud sync function is under development, currently only supports data import and export",
     "cloudSync": "Cloud Sync",
     "dataManagement": "Data Management",
     "backupRestore": "Backup & Restore",
@@ -521,102 +519,102 @@
       "resolveConflicts": "Resolve Conflicts",
       "desktopSyncDescription": "Sync data with desktop app"
     },
-  "message": {
-    "loading": "Data import/export component mounted",
-    "log2": "Data management tab switched",
-    "log3": "Data is ready",
-    "log4": "You can copy the data or download as JSON file",
-    "alertDescription": "Importing data will overwrite all current prompts and categories. Please ensure you have backed up important data.",
-    "resetWarning": "This operation will delete all custom prompts and categories and restore to default state. This operation cannot be undone.",
-    "exported": "Prompts exported",
-    "exportedFile": "Prompts successfully exported as JSON file",
-    "importFailed": "Import failed",
-    "importFailedData": "Please enter JSON data to import first",
-    "importSuccess": "Import successful",
-    "importSuccessData": "Data imported successfully",
-    "importFailedError": "Error occurred during import",
-    "importFile": "File loaded",
-    "importFileDesc": "Please click import button to complete import",
-    "importFileError": "Failed to read file",
-    "importFileErrorDesc": "Unable to read selected file",
-    "resetSuccess": "Reset successful",
-    "resetSuccessData": "All data has been reset to default values",
-    "exchangeTag": "Switch to export tab",
-    "pasteData": "Paste JSON data to import:",
-    "pasteDataDesc": "Paste JSON format prompt data..."
+    "message": {
+      "loading": "Data import/export component mounted",
+      "log2": "Data management tab switched",
+      "log3": "Data is ready",
+      "log4": "You can copy the data or download as JSON file",
+      "alertDescription": "Importing data will overwrite all current prompts and categories. Please ensure you have backed up important data.",
+      "resetWarning": "This operation will delete all custom prompts and categories and restore to default state. This operation cannot be undone.",
+      "exported": "Prompts exported",
+      "exportedFile": "Prompts successfully exported as JSON file",
+      "importFailed": "Import failed",
+      "importFailedData": "Please enter JSON data to import first",
+      "importSuccess": "Import successful",
+      "importSuccessData": "Data imported successfully",
+      "importFailedError": "Error occurred during import",
+      "importFile": "File loaded",
+      "importFileDesc": "Please click import button to complete import",
+      "importFileError": "Failed to read file",
+      "importFileErrorDesc": "Unable to read selected file",
+      "resetSuccess": "Reset successful",
+      "resetSuccessData": "All data has been reset to default values",
+      "exchangeTag": "Switch to export tab",
+      "pasteData": "Paste JSON data to import:",
+      "pasteDataDesc": "Paste JSON format prompt data..."
     }
   },
-  "about":{
-    "title":"About",
-    "description":"A prompt optimization and generation tool based on AI",
-    "version":{
-      "title":"Version Info",
-      "currentVersion":"Current Version",
-      "buildDate":"Build Date",
-      "electronVersion":"Electron Version",
-      "nodeVersion":"Node.js Version",
-      "chromeVersion":"Chrome Version",
-      "webVersion":"Web Version",
-      "platform":"Platform"
+  "about": {
+    "title": "About",
+    "description": "A prompt optimization and generation tool based on AI",
+    "version": {
+      "title": "Version Info",
+      "currentVersion": "Current Version",
+      "buildDate": "Build Date",
+      "electronVersion": "Electron Version",
+      "nodeVersion": "Node.js Version",
+      "chromeVersion": "Chrome Version",
+      "webVersion": "Web Version",
+      "platform": "Platform"
     },
-    "checkForUpdates":{
-      "title":"Check Update",
-      "description":"Check Update",
-      "checking":"Checking update...",
-      "newVersion":"New version available",
-      "upToDate":"Current is the latest version",
-      "updateFailed":"Update failed",
-      "updateSuccess":"Update success",
-      "updateCheckingError":"Web environment does not support update check"
+    "checkForUpdates": {
+      "title": "Check Update",
+      "description": "Check Update",
+      "checking": "Checking update...",
+      "newVersion": "New version available",
+      "upToDate": "Current is the latest version",
+      "updateFailed": "Update failed",
+      "updateSuccess": "Update success",
+      "updateCheckingError": "Web environment does not support update check"
     },
-    "viewReleasePage":"View Release Page",
-    "update":"Check Update",
-    "updateAvailable":"New version available",
-    "updateNotAvailable":"Current is the latest version",
-    "updateError":"Check update failed",
-    "updateChecking":"Checking update...",
-    "updateDownloading":"Downloading update...",
-    "updateInstalling":"Installing update...",
-    "updateFailed":"Update failed",
-    "updateSuccess":"Update success",
-    "updateCheckingError":"Web environment does not support update check",
-    "majorversion":"Major version update",
-    "minorversion":"Minor version update",
-    "patchversion":"Patch version update",
-    "unknown":"Unknown",
-    "downloadUpdate":"Download Update",
-    "downloading":"Downloading...",
-    "downloadSuccess":"Download Success",
-    "downloadFailed":"Download Failed",
-    "author":"Luoyuan",
-    "license":"License",
-    "sourceCode":"Source Code",
-    "privacyPolicy":"Privacy Policy",
+    "viewReleasePage": "View Release Page",
+    "update": "Check Update",
+    "updateAvailable": "New version available",
+    "updateNotAvailable": "Current is the latest version",
+    "updateError": "Check update failed",
+    "updateChecking": "Checking update...",
+    "updateDownloading": "Downloading update...",
+    "updateInstalling": "Installing update...",
+    "updateFailed": "Update failed",
+    "updateSuccess": "Update success",
+    "updateCheckingError": "Web environment does not support update check",
+    "majorversion": "Major version update",
+    "minorversion": "Minor version update",
+    "patchversion": "Patch version update",
+    "unknown": "Unknown",
+    "downloadUpdate": "Download Update",
+    "downloading": "Downloading...",
+    "downloadSuccess": "Download Success",
+    "downloadFailed": "Download Failed",
+    "author": "Luoyuan",
+    "license": "License",
+    "sourceCode": "Source Code",
+    "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "appInfo": "App Info",
-     "repository": "Repository",
-     "support": {
-       "title": "Support & Feedback",
-       "description": "If you find this project helpful, please consider supporting us:",
-       "sponsor": {
-         "title": "Sponsor",
-         "github": "GitHub Sponsors",
-         "afdian": "Afdian",
-         "paypal": "PayPal"
-       },
-       "qr": {
-         "title": "QR Code Support",
-         "wechat": "WeChat",
-         "alipay": "Alipay",
-         "note": "Scan QR code to support"
-       },
-       "feedback": {
-         "title": "Feedback",
-         "github": "GitHub Issues",
-         "email": "Email Feedback"
-       }
-     }
-   },
+    "repository": "Repository",
+    "support": {
+      "title": "Support & Feedback",
+      "description": "If you find this project helpful, please consider supporting us:",
+      "sponsor": {
+        "title": "Sponsor",
+        "github": "GitHub Sponsors",
+        "afdian": "Afdian",
+        "paypal": "PayPal"
+      },
+      "qr": {
+        "title": "QR Code Support",
+        "wechat": "WeChat",
+        "alipay": "Alipay",
+        "note": "Scan QR code to support"
+      },
+      "feedback": {
+        "title": "Feedback",
+        "github": "GitHub Issues",
+        "email": "Email Feedback"
+      }
+    }
+  },
   "ai": {
     "optimize": "AI Optimize",
     "generate": "AI Generate",
@@ -643,7 +641,7 @@
       "rateLimitExceeded": "Rate limit exceeded",
       "serviceUnavailable": "Service unavailable"
     },
-    "settings":{
+    "settings": {
       "title": "AI Optimization Service Configuration",
       "description": "Configure AI services to enable prompt optimization and generation features. Supports major domestic and international AI service providers, local deployments, and third-party API aggregation services.",
       "tip": "💡 Recommendation: Domestic users can prioritize services like DeepSeek, Kimi, or use aggregation services such as SiliconFlow.",
@@ -692,24 +690,24 @@
         "desc": "Unable to connect to AI service, please check configuration"
       }
     },
-    "custom":"Custom API",
-    "getApiKeyDescription":{
-      "openai":"Register OpenAI account and create API key",
-      "anthropic":"Access Anthropic console to get Claude API key",
-      "gemini":"Get Gemini API key in Google AI Studio",
-      "deepseek":"Register DeepSeek account and get API key",
-      "kimi":"Register Kimi account and get API key",
-      "doubao":"Register DouBao account and get API key",
-      "siliconflow":"Register SiliconFlow account and get API key",
-      "qwen":"Register Qwen account and get API key",
-      "baidu":"Register Baidu account and get API key",
-      "oneapi":"Register One API account and get API key",
-      "groq":"Register Groq account and get API key",
-      "perplexity":"Register Perplexity account and get API key",
-      "together":"Register Together AI account and get API key",
-      "ollama":"Register Ollama account and get API key",
-      "lmstudio":"Register LM Studio account and get API key",
-      "custom":"Register custom API account and get API key"
+    "custom": "Custom API",
+    "getApiKeyDescription": {
+      "openai": "Register OpenAI account and create API key",
+      "anthropic": "Access Anthropic console to get Claude API key",
+      "gemini": "Get Gemini API key in Google AI Studio",
+      "deepseek": "Register DeepSeek account and get API key",
+      "kimi": "Register Kimi account and get API key",
+      "doubao": "Register DouBao account and get API key",
+      "siliconflow": "Register SiliconFlow account and get API key",
+      "qwen": "Register Qwen account and get API key",
+      "baidu": "Register Baidu account and get API key",
+      "oneapi": "Register One API account and get API key",
+      "groq": "Register Groq account and get API key",
+      "perplexity": "Register Perplexity account and get API key",
+      "together": "Register Together AI account and get API key",
+      "ollama": "Register Ollama account and get API key",
+      "lmstudio": "Register LM Studio account and get API key",
+      "custom": "Register custom API account and get API key"
     }
   },
   "ai_settings": {
@@ -717,11 +715,11 @@
     "description": "Configure your AI service provider and API key to enable prompt optimization and generation features"
   },
   "ai_optimize": {
-    "tooltipText":"Use AI to optimize current prompt",
-    "tooltipText2":"Use AI to generate new prompt",
-    "optimizing":{
-      "title":"Optimizing...",
-      "description":"AI is optimizing your prompt, please wait...",
+    "tooltipText": "Use AI to optimize current prompt",
+    "tooltipText2": "Use AI to generate new prompt",
+    "optimizing": {
+      "title": "Optimizing...",
+      "description": "AI is optimizing your prompt, please wait...",
       "tooltip": "Click to view AI optimization progress",
       "result": "Optimized Prompt",
       "explanation": "Optimization Explanation",
@@ -729,15 +727,15 @@
       "accept": "Accept",
       "reject": "Reject"
     },
-    "error":{
-      "title":"AI Service Not Configured",
-      "desc":"Please configure AI service in settings first",
-      "action":"Go to Settings",
-      "retry":"Please try again later"  
+    "error": {
+      "title": "AI Service Not Configured",
+      "desc": "Please configure AI service in settings first",
+      "action": "Go to Settings",
+      "retry": "Please try again later"
     },
-    "success":{
-      "title":"Optimization Complete",
-      "desc":"AI optimized content has been applied"
+    "success": {
+      "title": "Optimization Complete",
+      "desc": "AI optimized content has been applied"
     }
   },
   "version": {
@@ -1031,197 +1029,197 @@
     "confirmDelete": "Are you sure you want to delete tag",
     "confirmDeleteButton": "Confirm Delete"
   },
-"version": {
-  "title": "Version Management",
-  "createVersion": "Create Version",
-  "restoreVersion": "Restore Version",
-  "compareVersions": "Compare Versions",
-  "versionNotes": "Version Notes",
-  "createdAt": "Created At",
-  "current": "Current Version",
-  "versionCreated": "Version created",
-  "versionRestored": "Version restored",
-  "confirmRestore": "Confirm restore to this version?"
-},
-"rating": {
-  "title": "Rating Management",
-  "ratePrompt": "Rate Prompt",
-  "rating": "Rating",
-  "notes": "Rating Notes",
-  "saveRating": "Save Rating",
-  "ratingSaved": "Rating saved",
-  "averageRating": "Average Rating",
-  "totalRatings": "Total Ratings"
-},
-"comparison": {
-  "title": "Model Comparison",
-  "addModel": "Add Model",
-  "removeModel": "Remove Model",
-  "runComparison": "Run Comparison",
-  "comparisonRunning": "Comparison running...",
-  "comparisonComplete": "Comparison complete",
-  "saveComparison": "Save Comparison",
-  "comparisonSaved": "Comparison saved",
-  "viewHistory": "View History",
-  "models": {
-    "gpt4": "GPT-4",
-    "gpt35": "GPT-3.5",
-    "claude": "Claude",
-    "gemini": "Gemini"
-  }
-},
-"errors": {
-  "generic": "An unknown error occurred",
-  "networkError": "Network connection error",
-  "serverError": "Server error",
-  "validationError": "Input validation failed",
-  "notFound": "Content not found",
-  "unauthorized": "Unauthorized access",
-  "forbidden": "Access forbidden",
-  "timeout": "Request timeout"
-},
-"success": {
-  "saved": "Saved successfully",
-  "deleted": "Deleted successfully",
-  "copied": "Copied successfully",
-  "exported": "Exported successfully",
-  "imported": "Imported successfully",
-  "updated": "Updated successfully"
-},
-"prompteditform": {
-  "title": "Edit Prompt",
-  "description": "Please enter prompt title",
-  "message": {
-    "fileSize": "Exceeds 10MB limit",
-    "fileType": "Not a valid image format"
+  "version": {
+    "title": "Version Management",
+    "createVersion": "Create Version",
+    "restoreVersion": "Restore Version",
+    "compareVersions": "Compare Versions",
+    "versionNotes": "Version Notes",
+    "createdAt": "Created At",
+    "current": "Current Version",
+    "versionCreated": "Version created",
+    "versionRestored": "Version restored",
+    "confirmRestore": "Confirm restore to this version?"
   },
-  "or": "Or",
-  "tags": "Tags",
-  "tagsPlaceholder": "Enter tags, separated by commas or semicolons",
-  "promptContent": "Content Editing",
-  "promptContentPlaceholder": "Enter prompt content, supports Markdown format and variable placeholders",
-  "promptCategory": "Category",
-  "promptCategoryPlaceholder": "Select category",
-  "tagSuggestion": "Suggested Tags",
-  "variables": "Variables",
-  "variablesPlaceholder": "Enter variable names, separated by commas or semicolons",
-  "addVariable": "Add Variable",
-  "variableChosed": "Select existing variables",
-  "imageUpload": "Reference Images",
-  "imageUploadPlaceholder": "Drag images here or paste images",
-  "imageUploadDescription": "Supports JPG, PNG, GIF formats, max 10MB",
-  "imageUploadButton": "Upload Image",
-  "image": "Image",
-  "imageCaption": "Image Caption",
-  "imageCaptionPlaceholder": "Add description for this image..."
-},
-"variableForm": {
-  "noVariables": "No variable placeholders found in current prompt",
-  "supportedFormats": "Supported formats:",
-  "variableStats": "Variable Statistics",
-  "total": "Total",
-  "unique": "Unique",
-  "completed": "Completed",
-  "pending": "pending",
-  "variableFill": "Variable Fill",
-  "fillExample": "Fill Example",
-  "clear": "Clear",
-  "originalContent": "Original Content",
-  "finalContent": "Final Content",
-  "searchSuggestions": "Search suggestions...",
-  "noSuggestions": "No suggestions found",
-  "hidePreview": "Hide Preview",
-  "showPreview": "Show Preview",
-  "copyPreview": "Copy Preview Content",
-  "livePreview": "Live Preview",
-  "variableReplacement": "Variable replacement status:",
-  "fillVariablesHint": "After filling variables, the replaced content will be displayed here",
-  "historyRecords": "History Records",
-  "noHistory": "No history records",
-  "suggestions": "Suggestions",
-  "noHistoryOrSuggestions": "No history records or suggestions"
-},
-"variableHighlighter": {
-  "variableLabel": "Variable",
-  "variableCount": "variables",
-  "foundVariables": "Found",
-  "variablePlaceholders": "variable placeholders",
-  "moreVariables": "more"
-},
-"themePreview": {
-  "systemTheme": "System Theme",
-  "customTheme": "Custom Theme",
-  "button": "Button"
-},
-"themeCustomizer": {
-  "backgroundColor": "Background Color",
-  "textColor": "Text Color",
-  "primaryColor": "Primary Color",
-  "accentColor": "Accent Color",
-  "themePreview": "Theme Preview",
-  "customThemePreview": "Custom Theme Preview",
-  "primaryButton": "Primary Button",
-  "secondaryButton": "Secondary Button",
-  "applyTheme": "Apply Theme"
-},
-"tagDeleteDialog": {
-  "deleteTag": "Delete Tag",
-  "irreversible": "This action cannot be undone",
-  "tagName": "Tag Name:",
-  "deleteWillCause": "Deleting this tag will:",
-  "removeFromPrompts": "Remove this tag from",
-  "promptsCount": "prompts",
-  "cannotRecover": "Cannot recover deleted tag associations",
-  "confirmDelete": "Are you sure you want to delete tag",
-  "confirmDeleteButton": "Confirm Delete"
-},
-"syncStatusIndicator": {
-  "syncDisabled": "Sync Disabled",
-  "syncing": "Syncing...",
-  "syncSuccess": "Sync Successful",
-  "syncError": "Sync Failed",
-  "lastSyncTime": "Last sync: {{time}}",
-  "neverSynced": "Never synced",
-  "manualSync": "Manual Sync",
-  "enableSync": "Enable Sync",
-  "disableSync": "Disable Sync",
-  "syncSettings": "Sync Settings",
-  "viewLogs": "View Logs",
-  "clearCache": "Clear Cache",
-  "reconnect": "Reconnect",
-  "syncInProgress": "Syncing data...",
-  "syncFailed": "Sync failed, please retry",
-  "syncConflict": "Data conflict detected",
-  "resolveConflict": "Resolve Conflict"
-},
-"syncConflictDialog": {
-  "title": "Data Sync Conflict",
-  "description": "A conflict has been detected between local and remote data. Please choose how to resolve:",
-  "localData": "Local Data",
-  "remoteData": "Remote Data",
-  "currentBadge": "Current",
-  "syncBadge": "Sync",
-  "promptsCount": "Prompts: {{count}} items",
-  "categoriesCount": "Categories: {{count}} items",
-  "promptsTab": "Prompts Comparison",
-  "categoriesTab": "Categories Comparison",
-  "settingsTab": "Settings Comparison",
-  "localPrompts": "Local Prompts ({{count}})",
-  "remotePrompts": "Remote Prompts ({{count}})",
-  "localCategories": "Local Categories ({{count}})",
-  "remoteCategories": "Remote Categories ({{count}})",
-  "localSettings": "Local Settings",
-  "remoteSettings": "Remote Settings",
-  "updated": "Updated: {{time}}",
-  "chooseResolution": "Choose resolution:",
-  "useLocalData": "Use Local Data",
-  "useRemoteData": "Use Remote Data",
-  "smartMerge": "Smart Merge",
-  "processing": "Processing...",
-  "localDataDesc": "• Local Data: Keep all current local data",
-  "remoteDataDesc": "• Remote Data: Overwrite local with synced data",
-  "smartMergeDesc": "• Smart Merge: Automatically merge both sides, keeping latest versions",
-  "resolveFailed": "Failed to resolve conflict"
+  "rating": {
+    "title": "Rating Management",
+    "ratePrompt": "Rate Prompt",
+    "rating": "Rating",
+    "notes": "Rating Notes",
+    "saveRating": "Save Rating",
+    "ratingSaved": "Rating saved",
+    "averageRating": "Average Rating",
+    "totalRatings": "Total Ratings"
+  },
+  "comparison": {
+    "title": "Model Comparison",
+    "addModel": "Add Model",
+    "removeModel": "Remove Model",
+    "runComparison": "Run Comparison",
+    "comparisonRunning": "Comparison running...",
+    "comparisonComplete": "Comparison complete",
+    "saveComparison": "Save Comparison",
+    "comparisonSaved": "Comparison saved",
+    "viewHistory": "View History",
+    "models": {
+      "gpt4": "GPT-4",
+      "gpt35": "GPT-3.5",
+      "claude": "Claude",
+      "gemini": "Gemini"
+    }
+  },
+  "errors": {
+    "generic": "An unknown error occurred",
+    "networkError": "Network connection error",
+    "serverError": "Server error",
+    "validationError": "Input validation failed",
+    "notFound": "Content not found",
+    "unauthorized": "Unauthorized access",
+    "forbidden": "Access forbidden",
+    "timeout": "Request timeout"
+  },
+  "success": {
+    "saved": "Saved successfully",
+    "deleted": "Deleted successfully",
+    "copied": "Copied successfully",
+    "exported": "Exported successfully",
+    "imported": "Imported successfully",
+    "updated": "Updated successfully"
+  },
+  "prompteditform": {
+    "title": "Edit Prompt",
+    "description": "Please enter prompt title",
+    "message": {
+      "fileSize": "Exceeds 10MB limit",
+      "fileType": "Not a valid image format"
+    },
+    "or": "Or",
+    "tags": "Tags",
+    "tagsPlaceholder": "Enter tags, separated by commas or semicolons",
+    "promptContent": "Content Editing",
+    "promptContentPlaceholder": "Enter prompt content, supports Markdown format and variable placeholders",
+    "promptCategory": "Category",
+    "promptCategoryPlaceholder": "Select category",
+    "tagSuggestion": "Suggested Tags",
+    "variables": "Variables",
+    "variablesPlaceholder": "Enter variable names, separated by commas or semicolons",
+    "addVariable": "Add Variable",
+    "variableChosed": "Select existing variables",
+    "imageUpload": "Reference Images",
+    "imageUploadPlaceholder": "Drag images here or paste images",
+    "imageUploadDescription": "Supports JPG, PNG, GIF formats, max 10MB",
+    "imageUploadButton": "Upload Image",
+    "image": "Image",
+    "imageCaption": "Image Caption",
+    "imageCaptionPlaceholder": "Add description for this image..."
+  },
+  "variableForm": {
+    "noVariables": "No variable placeholders found in current prompt",
+    "supportedFormats": "Supported formats:",
+    "variableStats": "Variable Statistics",
+    "total": "Total",
+    "unique": "Unique",
+    "completed": "Completed",
+    "pending": "pending",
+    "variableFill": "Variable Fill",
+    "fillExample": "Fill Example",
+    "clear": "Clear",
+    "originalContent": "Original Content",
+    "finalContent": "Final Content",
+    "searchSuggestions": "Search suggestions...",
+    "noSuggestions": "No suggestions found",
+    "hidePreview": "Hide Preview",
+    "showPreview": "Show Preview",
+    "copyPreview": "Copy Preview Content",
+    "livePreview": "Live Preview",
+    "variableReplacement": "Variable replacement status:",
+    "fillVariablesHint": "After filling variables, the replaced content will be displayed here",
+    "historyRecords": "History Records",
+    "noHistory": "No history records",
+    "suggestions": "Suggestions",
+    "noHistoryOrSuggestions": "No history records or suggestions"
+  },
+  "variableHighlighter": {
+    "variableLabel": "Variable",
+    "variableCount": "variables",
+    "foundVariables": "Found",
+    "variablePlaceholders": "variable placeholders",
+    "moreVariables": "more"
+  },
+  "themePreview": {
+    "systemTheme": "System Theme",
+    "customTheme": "Custom Theme",
+    "button": "Button"
+  },
+  "themeCustomizer": {
+    "backgroundColor": "Background Color",
+    "textColor": "Text Color",
+    "primaryColor": "Primary Color",
+    "accentColor": "Accent Color",
+    "themePreview": "Theme Preview",
+    "customThemePreview": "Custom Theme Preview",
+    "primaryButton": "Primary Button",
+    "secondaryButton": "Secondary Button",
+    "applyTheme": "Apply Theme"
+  },
+  "tagDeleteDialog": {
+    "deleteTag": "Delete Tag",
+    "irreversible": "This action cannot be undone",
+    "tagName": "Tag Name:",
+    "deleteWillCause": "Deleting this tag will:",
+    "removeFromPrompts": "Remove this tag from",
+    "promptsCount": "prompts",
+    "cannotRecover": "Cannot recover deleted tag associations",
+    "confirmDelete": "Are you sure you want to delete tag",
+    "confirmDeleteButton": "Confirm Delete"
+  },
+  "syncStatusIndicator": {
+    "syncDisabled": "Sync Disabled",
+    "syncing": "Syncing...",
+    "syncSuccess": "Sync Successful",
+    "syncError": "Sync Failed",
+    "lastSyncTime": "Last sync: {{time}}",
+    "neverSynced": "Never synced",
+    "manualSync": "Manual Sync",
+    "enableSync": "Enable Sync",
+    "disableSync": "Disable Sync",
+    "syncSettings": "Sync Settings",
+    "viewLogs": "View Logs",
+    "clearCache": "Clear Cache",
+    "reconnect": "Reconnect",
+    "syncInProgress": "Syncing data...",
+    "syncFailed": "Sync failed, please retry",
+    "syncConflict": "Data conflict detected",
+    "resolveConflict": "Resolve Conflict"
+  },
+  "syncConflictDialog": {
+    "title": "Data Sync Conflict",
+    "description": "A conflict has been detected between local and remote data. Please choose how to resolve:",
+    "localData": "Local Data",
+    "remoteData": "Remote Data",
+    "currentBadge": "Current",
+    "syncBadge": "Sync",
+    "promptsCount": "Prompts: {{count}} items",
+    "categoriesCount": "Categories: {{count}} items",
+    "promptsTab": "Prompts Comparison",
+    "categoriesTab": "Categories Comparison",
+    "settingsTab": "Settings Comparison",
+    "localPrompts": "Local Prompts ({{count}})",
+    "remotePrompts": "Remote Prompts ({{count}})",
+    "localCategories": "Local Categories ({{count}})",
+    "remoteCategories": "Remote Categories ({{count}})",
+    "localSettings": "Local Settings",
+    "remoteSettings": "Remote Settings",
+    "updated": "Updated: {{time}}",
+    "chooseResolution": "Choose resolution:",
+    "useLocalData": "Use Local Data",
+    "useRemoteData": "Use Remote Data",
+    "smartMerge": "Smart Merge",
+    "processing": "Processing...",
+    "localDataDesc": "• Local Data: Keep all current local data",
+    "remoteDataDesc": "• Remote Data: Overwrite local with synced data",
+    "smartMergeDesc": "• Smart Merge: Automatically merge both sides, keeping latest versions",
+    "resolveFailed": "Failed to resolve conflict"
   },
   "errorBoundary": {
     "title": "Application Error",
@@ -1268,7 +1266,7 @@
     "loadingSettings": "Loading Settings",
     "checkingUpdates": "Checking Updates"
   },
-  "promptEditorModular":{
+  "promptEditorModular": {
     "selectPromptToEdit": "Select a prompt to edit",
     "selectPromptToEditDescription": "Select a prompt to edit from the left list",
     "unsavedChanges": "Unsaved Changes",
@@ -1390,5 +1388,47 @@
     "confirm": {
       "delete": "Are you sure you want to delete this template? This action cannot be undone."
     }
+  },
+  "translation": {
+    "translate": "Translate",
+    "translating": "Translating...",
+    "translated": "Translated",
+    "retranslate": "Retranslate",
+    "aiTranslate": "AI Translate",
+    "manualInput": "Manual Input",
+    "translatedContent": "Translated Content",
+    "manualInputPlaceholder": "Enter translated content...",
+    "noContent": "No translated content",
+    "translatedAt": "Translated at {{time}}",
+    "success": "Translation Successful",
+    "successDescription": "Prompt has been translated successfully",
+    "error": "Translation Failed",
+    "aiNotConfigured": "Please configure AI service in settings first",
+    "unknownError": "Unknown error",
+    "batchTranslate": "Batch Translate",
+    "batchTranslateDescription": "Select multiple prompts for batch translation",
+    "targetLanguage": "Target Language",
+    "startTranslate": "Start Translation",
+    "abort": "Abort",
+    "aborted": "Translation Aborted",
+    "abortedDescription": "Batch translation has been aborted",
+    "batchSuccess": "Batch Translation Complete",
+    "batchSuccessDescription": "Successfully translated {{count}} prompts",
+    "batchPartial": "Partial Translation Complete",
+    "batchPartialDescription": "Success: {{success}}, Failed: {{error}}",
+    "hasTranslation": "Has Translation",
+    "noPromptsToTranslate": "No prompts to translate",
+    "copyOriginal": "Copy Original",
+    "copyTranslated": "Copy Translated",
+    "copyFallback": "Copied Original",
+    "copyFallbackDescription": "This prompt has not been translated, copied original content"
+  },
+  "copyLanguage": {
+    "title": "Default Copy Language",
+    "description": "Select the default language version when copying prompts",
+    "original": "Original Language",
+    "translated": "Translated Version",
+    "zh": "Chinese",
+    "en": "English"
   }
 }

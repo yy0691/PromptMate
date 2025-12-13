@@ -88,7 +88,64 @@ export function AuthCallback() {
           throw new Error(message);
         }
 
-        // 检查是否有授权码
+        // 首先检查 hash 中是否有 access_token（Supabase 隐式授权流程）
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+
+        if (accessToken) {
+          console.log('[OAuth Callback] 检测到隐式授权流程，hash 中包含 access_token');
+
+          try {
+            const { supabase } = await import('@/lib/supabase');
+
+            // 使用 setSession 手动设置会话（因为 detectSessionInUrl 被禁用）
+            const { data, error: sessionError } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken || '',
+            });
+
+            if (sessionError) {
+              console.error('[OAuth Callback] 设置会话失败:', sessionError);
+              throw sessionError;
+            }
+
+            console.log('[OAuth Callback] 会话设置成功:', data.session?.user?.email);
+
+            // 弹窗流程：通知父窗口并关闭
+            if (sendMessageToOpener({ type: 'oauth-callback', success: true, provider })) {
+              return;
+            }
+
+            // 检测是否为 Electron 环境
+            const isElectronEnv = !!(window as any).electronAPI;
+            if (isElectronEnv) {
+              console.log('[OAuth Callback] Electron 环境，通过 IPC 通知主进程');
+              try {
+                // 通知 Electron 主进程登录成功
+                (window as any).electronAPI?.onOAuthSuccess?.({ provider, user: data.session?.user });
+              } catch (e) {
+                console.warn('[OAuth Callback] Electron IPC 通知失败:', e);
+              }
+            }
+
+            setStatus('success');
+            toast({
+              title: '登录成功',
+              description: '正在跳转...',
+              variant: 'success',
+            });
+
+            setTimeout(() => {
+              navigate('/', { replace: true });
+            }, 1500);
+            return;
+          } catch (e: any) {
+            console.error('[OAuth Callback] 隐式授权处理失败:', e);
+            throw new Error(e.message || '登录失败，请重试');
+          }
+        }
+
+        // 检查是否有授权码（授权码流程，用于 Linuxdo 等）
         if (!code) {
           // 提供更详细的诊断信息
           const fullUrl = window.location.href;
@@ -96,7 +153,7 @@ export function AuthCallback() {
           const allParams = Object.fromEntries(urlObj.searchParams.entries());
           const allHashParams = Object.fromEntries(hashParams.entries());
 
-          console.error('[OAuth Callback] 未找到授权码');
+          console.error('[OAuth Callback] 未找到授权码或 access_token');
           console.error('[OAuth Callback] 完整 URL:', fullUrl);
           console.error('[OAuth Callback] 所有查询参数:', allParams);
           console.error('[OAuth Callback] 所有 Hash 参数:', allHashParams);

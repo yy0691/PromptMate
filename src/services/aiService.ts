@@ -38,6 +38,27 @@ export interface StreamCallback {
   onError: (error: Error) => void;
 }
 
+// 翻译请求接口
+export interface AITranslateRequest {
+  content: string;
+  targetLanguage: 'zh' | 'en';
+  title?: string;
+}
+
+// 翻译响应接口
+export interface AITranslateResponse {
+  translatedContent: string;
+  detectedLanguage: 'zh' | 'en';
+}
+
+// 批量翻译进度回调
+export interface BatchTranslateCallback {
+  onProgress: (current: number, total: number, promptId: string) => void;
+  onItemComplete: (promptId: string, result: AITranslateResponse) => void;
+  onError: (promptId: string, error: Error) => void;
+  onComplete: (results: Map<string, AITranslateResponse>) => void;
+}
+
 // 各服务商支持的模型列表
 export const AI_MODELS: Record<string, AIModel[]> = {
   openai: [
@@ -176,6 +197,23 @@ const PROMPT_OPTIMIZATION_TEMPLATE = `作为提示词专家，优化以下内容
 ## 建议
 [1-2条实用建议]`;
 
+// 提示词翻译模板
+const PROMPT_TRANSLATION_TEMPLATE = `You are a professional translator specializing in AI prompts and technical content.
+
+Translate the following prompt from {sourceLanguage} to {targetLanguage}.
+
+Requirements:
+1. Maintain the exact meaning and intent of the original prompt
+2. Preserve any special formatting, placeholders, or variables (like {{variable}})
+3. Keep technical terms accurate
+4. Ensure the translation is natural and fluent in the target language
+5. Only output the translated content, no explanations
+
+Original prompt:
+{content}
+
+Translated prompt:`;
+
 // AI服务类
 export class AIService {
   private config: AIConfig | null = null;
@@ -302,14 +340,14 @@ export class AIService {
     try {
       // 构建请求URL
       let requestUrl = baseUrl;
-      
+
       // 根据不同服务商构建正确的API端点
       console.log('URL构建前:', { provider, baseUrl });
       switch (provider) {
         case 'gemini':
           // 只处理真正的Gemini API
-          if (baseUrl === 'https://generativelanguage.googleapis.com' || 
-              baseUrl === 'https://generativelanguage.googleapis.com/') {
+          if (baseUrl === 'https://generativelanguage.googleapis.com' ||
+            baseUrl === 'https://generativelanguage.googleapis.com/') {
             requestUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
           } else if (baseUrl.includes('generativelanguage.googleapis.com') && !baseUrl.includes(':generateContent')) {
             // 如果是Gemini域名但URL不完整，补充路径
@@ -320,7 +358,7 @@ export class AIService {
           const separator = requestUrl.includes('?') ? '&' : '?';
           requestUrl = `${requestUrl}${separator}key=${apiKey}`;
           break;
-          
+
         case 'openai':
           // OpenAI API端点处理
           if (baseUrl === 'https://api.openai.com' || baseUrl === 'https://api.openai.com/') {
@@ -330,7 +368,7 @@ export class AIService {
             requestUrl = `${cleanUrl}/v1/chat/completions`;
           }
           break;
-          
+
         case 'anthropic':
           // Anthropic API端点处理
           if (baseUrl === 'https://api.anthropic.com' || baseUrl === 'https://api.anthropic.com/') {
@@ -340,7 +378,7 @@ export class AIService {
             requestUrl = `${cleanUrl}/v1/messages`;
           }
           break;
-          
+
         case 'custom':
         default:
           // 自定义服务商处理（如硅基流动）
@@ -377,7 +415,7 @@ export class AIService {
       }
 
       const data = await response.json();
-      
+
       // 检查响应是否包含预期的内容
       let hasValidResponse = false;
       switch (provider) {
@@ -409,7 +447,7 @@ export class AIService {
 
   // 优化提示词（支持流式输出）
   public async optimizePrompt(
-    request: AIOptimizeRequest, 
+    request: AIOptimizeRequest,
     streamCallback?: StreamCallback
   ): Promise<AIOptimizeResponse> {
     if (!this.isConfigured()) {
@@ -424,7 +462,7 @@ export class AIService {
       .replace('{content}', content || '请生成一个高质量的提示词');
 
     try {
-      const response = streamCallback 
+      const response = streamCallback
         ? await this.callAIStream(prompt, streamCallback)
         : await this.callAI(prompt);
       return this.parseResponse(response);
@@ -445,7 +483,7 @@ export class AIService {
 
     try {
       const { requestBody, headers, requestUrl } = this.buildRequest(prompt, true);
-      
+
       const streamHeaders: Record<string, string> = { ...headers };
       if (this.config.provider === 'gemini') {
         streamHeaders['Accept'] = 'text/event-stream';
@@ -470,7 +508,7 @@ export class AIService {
       }
 
       const decoder = new TextDecoder();
-      
+
       if (isSSE) {
         while (true) {
           const { done, value } = await reader.read();
@@ -483,7 +521,7 @@ export class AIService {
             if (line.startsWith('data: ')) {
               const data = line.slice(6);
               if (data === '[DONE]') continue;
-              
+
               try {
                 const parsed = JSON.parse(data);
                 const content = this.extractStreamContent(parsed, provider);
@@ -503,9 +541,9 @@ export class AIService {
         try {
           const json = JSON.parse(text);
           const content = this.extractStreamContent(json, provider) ||
-                          (this.config!.provider === 'gemini' ?
-                            (json?.candidates?.[0]?.content?.parts?.map((p: any) => p?.text || '').join('') || '')
-                            : (json?.choices?.[0]?.message?.content || ''));
+            (this.config!.provider === 'gemini' ?
+              (json?.candidates?.[0]?.content?.parts?.map((p: any) => p?.text || '').join('') || '')
+              : (json?.choices?.[0]?.message?.content || ''));
           if (content) {
             fullResponse += content;
             callback.onChunk(content);
@@ -646,7 +684,7 @@ export class AIService {
         requestUrl = `${root}/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${apiKey}`;
       }
     }
-    
+
     return { requestBody, headers, requestUrl };
   }
 
@@ -654,24 +692,24 @@ export class AIService {
   private buildRequestUrl(provider: string, baseUrl: string, model: string, apiKey: string): string {
     switch (provider) {
       case 'gemini':
-        if (baseUrl === 'https://generativelanguage.googleapis.com' || 
-            baseUrl === 'https://generativelanguage.googleapis.com/') {
+        if (baseUrl === 'https://generativelanguage.googleapis.com' ||
+          baseUrl === 'https://generativelanguage.googleapis.com/') {
           return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
         }
         break;
-        
+
       case 'openai':
         if (baseUrl === 'https://api.openai.com' || baseUrl === 'https://api.openai.com/') {
           return 'https://api.openai.com/v1/chat/completions';
         }
         break;
-        
+
       case 'anthropic':
         if (baseUrl === 'https://api.anthropic.com' || baseUrl === 'https://api.anthropic.com/') {
           return 'https://api.anthropic.com/v1/messages';
         }
         break;
-        
+
       case 'custom':
       default:
         if (baseUrl.includes('siliconflow')) {
@@ -679,7 +717,7 @@ export class AIService {
         }
         break;
     }
-    
+
     return baseUrl;
   }
 
@@ -705,7 +743,7 @@ export class AIService {
     }
 
     const data = await response.json();
-    
+
     // 根据不同提供商解析响应
     switch (this.config!.provider) {
       case 'openai':
@@ -741,7 +779,7 @@ export class AIService {
     try {
       // 尝试解析结构化响应
       const sections = response.split('##');
-      
+
       let optimizedContent = '';
       let explanation = '';
       let suggestions: string[] = [];
@@ -776,6 +814,104 @@ export class AIService {
         suggestions: []
       };
     }
+  }
+
+  // 检测文本语言
+  private detectLanguage(text: string): 'zh' | 'en' {
+    // 简单的中文检测：如果包含较多中文字符，则认为是中文
+    const chineseCharCount = (text.match(/[\u4e00-\u9fff]/g) || []).length;
+    const totalCharCount = text.replace(/\s/g, '').length;
+    return chineseCharCount > totalCharCount * 0.3 ? 'zh' : 'en';
+  }
+
+  // 翻译提示词
+  public async translatePrompt(
+    request: AITranslateRequest,
+    streamCallback?: StreamCallback
+  ): Promise<AITranslateResponse> {
+    if (!this.isConfigured()) {
+      throw new Error('AI服务未配置，请先配置API密钥');
+    }
+
+    const { content, targetLanguage, title } = request;
+
+    // 检测源语言
+    const detectedLanguage = this.detectLanguage(content);
+
+    // 如果目标语言和源语言相同，直接返回原内容
+    if (detectedLanguage === targetLanguage) {
+      return {
+        translatedContent: content,
+        detectedLanguage
+      };
+    }
+
+    const sourceLanguageName = detectedLanguage === 'zh' ? 'Chinese' : 'English';
+    const targetLanguageName = targetLanguage === 'zh' ? 'Chinese' : 'English';
+
+    // 构建翻译提示词
+    const prompt = PROMPT_TRANSLATION_TEMPLATE
+      .replace('{sourceLanguage}', sourceLanguageName)
+      .replace('{targetLanguage}', targetLanguageName)
+      .replace('{content}', content);
+
+    try {
+      const response = streamCallback
+        ? await this.callAIStream(prompt, streamCallback)
+        : await this.callAI(prompt);
+
+      // 清理翻译结果（去除可能的引号或多余空白）
+      const translatedContent = response.trim().replace(/^["']|["']$/g, '');
+
+      return {
+        translatedContent,
+        detectedLanguage
+      };
+    } catch (error) {
+      console.error('AI翻译失败:', error);
+      throw new Error('翻译失败，请检查网络连接和API配置');
+    }
+  }
+
+  // 批量翻译提示词
+  public async translatePromptsBatch(
+    prompts: Array<{ id: string; content: string }>,
+    targetLanguage: 'zh' | 'en',
+    callback: BatchTranslateCallback,
+    abortSignal?: AbortSignal
+  ): Promise<void> {
+    const results = new Map<string, AITranslateResponse>();
+    const total = prompts.length;
+
+    for (let i = 0; i < prompts.length; i++) {
+      // 检查是否被中断
+      if (abortSignal?.aborted) {
+        console.log('批量翻译已中断');
+        break;
+      }
+
+      const prompt = prompts[i];
+      callback.onProgress(i + 1, total, prompt.id);
+
+      try {
+        const result = await this.translatePrompt({
+          content: prompt.content,
+          targetLanguage
+        });
+
+        results.set(prompt.id, result);
+        callback.onItemComplete(prompt.id, result);
+      } catch (error) {
+        callback.onError(prompt.id, error as Error);
+      }
+
+      // 添加小延迟以避免API限流
+      if (i < prompts.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    }
+
+    callback.onComplete(results);
   }
 }
 

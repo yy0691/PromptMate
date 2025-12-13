@@ -41,7 +41,7 @@ function usePromptsState() {
   const [refreshCounter, setRefreshCounter] = useState(0);
   const { toast } = useToast();
   const { t } = useTranslation();
-  
+
   // 数据库状态
   const [dbState, setDbState] = useState<DatabaseState>({
     isInitialized: false,
@@ -52,10 +52,10 @@ function usePromptsState() {
 
   // 数据库客户端状态
   const [dbClient] = useState(() => databaseClient);
-  
+
   // 添加标记未保存更改的状态
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  
+
   // 添加一个回调函数引用，用于检查是否有未保存的更改
   const checkUnsavedChangesCallback = useRef<((newPromptId: string | null) => boolean) | null>(null);
 
@@ -66,7 +66,7 @@ function usePromptsState() {
 
   // 强制刷新函数
   const forceRefresh = () => setRefreshCounter(prev => prev + 1);
-  
+
   // 重新加载数据函数
   const reloadData = useCallback(async () => {
     console.log("[DEBUG] reloadData: Entered.");
@@ -89,18 +89,18 @@ function usePromptsState() {
       try {
         //开始初始化数据库
         console.log(t('common.message.startInitializeDatabase'));
-        
+
         // 检查是否在Electron环境中并且数据库客户端可用
         if (dbClient.isAvailable()) {
           try {
             // 获取数据库状态
             const dbStatus = await dbClient.getStatus();
             console.log(t('common.message.databaseStatus'), dbStatus);
-            
+
             if (dbStatus.initialized) {
               // 数据库已初始化，检查是否需要迁移
               const migrationStatus = await dbClient.getMigrationStatus();
-              
+
               if (migrationStatus === 'pending') {
                 // 执行数据迁移
                 console.log(t('common.message.startDataMigration'));
@@ -109,11 +109,11 @@ function usePromptsState() {
                   categories: loadCategories(),
                   settings: { /* 根据需要加载设置 */ }
                 };
-                
+
                 await dbClient.migrateFromLocalStorage(localData);
                 console.log(t('common.message.dataMigrationCompleted'));
               }
-              
+
               // 更新数据库状态
               setDbState({
                 isInitialized: true,
@@ -121,11 +121,11 @@ function usePromptsState() {
                 useSqlite: true,
                 error: null
               });
-              
+
               // 从数据库加载数据
               console.log(t('common.message.loadDataFromDatabase'));
               await loadDataFromDatabase();
-              
+
               console.log(t('common.message.sqliteDatabaseInitialized'));
             } else {
               throw new Error(t('common.message.databaseInitializationFailed'));
@@ -141,7 +141,7 @@ function usePromptsState() {
         }
       } catch (error) {
         console.log(t('common.message.useLocalStorageMode'));
-        
+
         // 回退到localStorage
         setDbState({
           isInitialized: true,
@@ -149,7 +149,7 @@ function usePromptsState() {
           useSqlite: false,
           error: error instanceof Error ? error.message : t('common.message.unknownError')
         });
-        
+
         await loadDataFromLocalStorage();
       }
     };
@@ -161,7 +161,7 @@ function usePromptsState() {
   useEffect(() => {
     const currentLanguage = i18n.language || 'zh-CN';
     console.log(`🌐 语言变化检测: ${currentLanguage}, 数据库模式: ${dbState.useSqlite}`);
-    
+
     // 如果使用localStorage模式，重新加载分类和提示词
     if (!dbState.useSqlite) {
       const updatedCategories = loadCategories(currentLanguage);
@@ -179,28 +179,28 @@ function usePromptsState() {
             dbClient.updateCategoryLanguage(currentLanguage),
             dbClient.updatePromptsLanguage(currentLanguage)
           ]);
-          
+
           // 重新加载数据
           const [updatedCategories, updatedPrompts] = await Promise.all([
             dbClient.getAllCategories(),
             dbClient.getAllPrompts()
           ]);
-          
+
           setCategories(updatedCategories);
           setPrompts(updatedPrompts);
-          
+
           console.log(`🗄️ 数据库模式: 语言切换到 ${currentLanguage}，已更新数据库分类和提示词语言`);
           console.log(`📊 分类数量: ${updatedCategories.length}, 提示词数量: ${updatedPrompts.length}`);
         } catch (error) {
           console.error('更新数据库语言失败:', error);
-          
+
           // 回退到前端更新
           const defaultCategories = getDefaultCategories(currentLanguage);
           const samplePrompts = getSamplePrompts(currentLanguage);
-          
+
           const defaultCategoryMap = new Map(defaultCategories.map(cat => [cat.id, cat]));
           const samplePromptMap = new Map(samplePrompts.map(prompt => [prompt.id, prompt]));
-          
+
           setCategories(prev => prev.map(category => {
             const defaultCategory = defaultCategoryMap.get(category.id);
             if (defaultCategory) {
@@ -208,7 +208,7 @@ function usePromptsState() {
             }
             return category;
           }));
-          
+
           setPrompts(prev => prev.map(prompt => {
             const samplePrompt = samplePromptMap.get(prompt.id);
             if (samplePrompt) {
@@ -216,7 +216,7 @@ function usePromptsState() {
             }
             return prompt;
           }));
-          
+
           console.log(`语言切换到 ${currentLanguage}，使用前端更新分类和提示词显示`);
         }
       };
@@ -232,10 +232,10 @@ function usePromptsState() {
         dbClient.getAllPrompts(),
         dbClient.getAllCategories()
       ]);
-      
+
       setPrompts(dbPrompts);
       setCategories(dbCategories);
-      
+
       console.log(`[DEBUG] DB_READ: Loaded ${dbPrompts.length} prompts and ${dbCategories.length} categories from database.`);
       console.log("[DEBUG] DB_READ: Loaded Prompts sample (first 3):", dbPrompts.slice(0, 3));
       console.log("[DEBUG] DB_READ: Loaded Categories sample (first 3):", dbCategories.slice(0, 3));
@@ -252,10 +252,10 @@ function usePromptsState() {
       const currentLanguage = i18n.language || 'zh-CN';
       const localPrompts = loadPrompts(currentLanguage);
       const localCategories = loadCategories(currentLanguage);
-      
+
       setPrompts(localPrompts);
       setCategories(localCategories);
-      
+
       console.log(`从localStorage加载了 ${localPrompts.length} 个提示词和 ${localCategories.length} 个分类 (语言: ${currentLanguage})`);
     } catch (error) {
       console.error('从localStorage加载数据失败:', error);
@@ -267,12 +267,12 @@ function usePromptsState() {
     if (checkUnsavedChangesCallback.current) {
       const newPromptId = newPrompt ? newPrompt.id : null;
       const canProceed = checkUnsavedChangesCallback.current(newPromptId);
-      
+
       if (!canProceed) {
         return;
       }
     }
-    
+
     setSelectedPrompt(newPrompt);
   }, []);
 
@@ -290,18 +290,18 @@ function usePromptsState() {
         // 使用SQLite数据库
         const savedPrompt = await dbClient.createPrompt(newPrompt);
         setPrompts(prev => [savedPrompt, ...prev]);
-        
+
         // 同时备份到localStorage
         const allPrompts = [savedPrompt, ...prompts];
         savePrompts(allPrompts);
-        
+
         console.log('提示词已保存到数据库:', savedPrompt.id);
       } else {
         // 使用localStorage
         const updatedPrompts = [newPrompt, ...prompts];
         setPrompts(updatedPrompts);
         savePrompts(updatedPrompts);
-        
+
         console.log('提示词已保存到localStorage:', newPrompt.id);
       }
 
@@ -313,7 +313,7 @@ function usePromptsState() {
 
     } catch (error) {
       console.error('添加提示词失败:', error);
-      
+
       // 如果数据库操作失败，回退到localStorage
       if (dbState.useSqlite) {
         console.log('数据库操作失败，回退到localStorage');
@@ -323,12 +323,12 @@ function usePromptsState() {
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
-        
+
         const updatedPrompts = [newPrompt, ...prompts];
         setPrompts(updatedPrompts);
         savePrompts(updatedPrompts);
       }
-      
+
       toast({
         title: "添加失败",
         description: "提示词添加失败，请重试",
@@ -344,31 +344,31 @@ function usePromptsState() {
         // 使用SQLite数据库
         const updatedPrompt = await dbClient.updatePrompt(id, updates);
         setPrompts(prev => prev.map(p => p.id === id ? updatedPrompt : p));
-        
+
         // 同时更新localStorage备份
         const allPrompts = prompts.map(p => p.id === id ? updatedPrompt : p);
         savePrompts(allPrompts);
-        
+
         console.log('提示词已在数据库中更新:', id);
       } else {
         // 使用localStorage
-        const updatedPrompts = prompts.map(prompt => 
-          prompt.id === id 
+        const updatedPrompts = prompts.map(prompt =>
+          prompt.id === id
             ? { ...prompt, ...updates, updatedAt: new Date().toISOString() }
             : prompt
         );
         setPrompts(updatedPrompts);
         savePrompts(updatedPrompts);
-        
+
         console.log('提示词已在localStorage中更新:', id);
       }
 
       // 如果更新的是当前选中的提示词，也要更新selectedPrompt
       if (selectedPrompt && selectedPrompt.id === id) {
-        const updatedSelected = { 
-          ...selectedPrompt, 
-          ...updates, 
-          updatedAt: new Date().toISOString() 
+        const updatedSelected = {
+          ...selectedPrompt,
+          ...updates,
+          updatedAt: new Date().toISOString()
         };
         console.log('🔄 更新 selectedPrompt:', { id, oldCategory: selectedPrompt.category, newCategory: updates.category, updatedSelected });
         setSelectedPrompt(updatedSelected);
@@ -376,19 +376,19 @@ function usePromptsState() {
 
     } catch (error) {
       console.error('更新提示词失败:', error);
-      
+
       // 如果数据库操作失败，回退到localStorage
       if (dbState.useSqlite) {
         console.log('数据库更新失败，回退到localStorage');
-        const updatedPrompts = prompts.map(prompt => 
-          prompt.id === id 
+        const updatedPrompts = prompts.map(prompt =>
+          prompt.id === id
             ? { ...prompt, ...updates, updatedAt: new Date().toISOString() }
             : prompt
         );
         setPrompts(updatedPrompts);
         savePrompts(updatedPrompts);
       }
-      
+
       toast({
         title: t('common.message.updateFailed'),
         description: t('common.message.updateFailedDescription'),
@@ -405,11 +405,11 @@ function usePromptsState() {
         const success = await dbClient.deletePrompt(id);
         if (success) {
           setPrompts(prev => prev.filter(p => p.id !== id));
-          
+
           // 同时从localStorage删除
           const filteredPrompts = prompts.filter(p => p.id !== id);
           savePrompts(filteredPrompts);
-          
+
           console.log(t('common.message.promptDeletedFromDatabase'), id);
         }
       } else {
@@ -417,7 +417,7 @@ function usePromptsState() {
         const filteredPrompts = prompts.filter(prompt => prompt.id !== id);
         setPrompts(filteredPrompts);
         savePrompts(filteredPrompts);
-        
+
         console.log(t('common.message.promptDeletedFromLocalStorage'), id);
       }
 
@@ -434,7 +434,7 @@ function usePromptsState() {
 
     } catch (error) {
       console.error(t('common.message.deleteFailed'), error);
-      
+
       toast({
         title: t('common.message.deleteFailed'),
         description: t('common.message.deleteFailedDescription'),
@@ -464,18 +464,18 @@ function usePromptsState() {
         // 使用SQLite数据库
         const savedCategory = await dbClient.createCategory(newCategory);
         setCategories(prev => [...prev, savedCategory]);
-        
+
         // 同时备份到localStorage
         const allCategories = [...categories, savedCategory];
         saveCategories(allCategories);
-        
+
         console.log('分类已保存到数据库:', savedCategory.id);
       } else {
         // 使用localStorage
         const updatedCategories = [...categories, newCategory];
         setCategories(updatedCategories);
         saveCategories(updatedCategories);
-        
+
         console.log('分类已保存到localStorage:', newCategory.id);
       }
 
@@ -488,7 +488,7 @@ function usePromptsState() {
       return newCategory;
     } catch (error) {
       console.error(t('common.message.categoryAddFailed'), error);
-      
+
       // 如果数据库操作失败，回退到localStorage
       if (dbState.useSqlite) {
         console.log(t('common.message.databaseOperationFailed'), error);
@@ -497,12 +497,12 @@ function usePromptsState() {
           name: name.trim(),
           icon: icon || "folder",
         };
-        
+
         const updatedCategories = [...categories, newCategory];
         setCategories(updatedCategories);
         saveCategories(updatedCategories);
-      } 
-      
+      }
+
       toast({
         title: t('common.message.categoryAddFailed'),
         description: t('common.message.categoryAddFailedDescription'),
@@ -515,23 +515,23 @@ function usePromptsState() {
   const updateCategory = useCallback((id: string, name: string, icon?: string) => {
     // 获取旧分类名称用于通知
     const oldCategory = categories.find(cat => cat.id === id);
-    
-    setCategories(prev => 
-      prev.map(category => 
-        category.id === id 
-          ? { ...category, name, icon } 
+
+    setCategories(prev =>
+      prev.map(category =>
+        category.id === id
+          ? { ...category, name, icon }
           : category
       )
     );
-    
+
     // 同时更新localStorage
-    const updatedCategories = categories.map(category => 
-      category.id === id 
-        ? { ...category, name, icon } 
+    const updatedCategories = categories.map(category =>
+      category.id === id
+        ? { ...category, name, icon }
         : category
     );
     saveCategories(updatedCategories);
-    
+
     toast({
       title: t('common.message.categoryUpdated'),
       description: t('common.message.categoryUpdatedDescription', { name: oldCategory?.name || id }),
@@ -543,30 +543,30 @@ function usePromptsState() {
   const deleteCategory = useCallback((id: string) => {
     // 获取分类信息用于通知
     const categoryToDelete = categories.find(cat => cat.id === id);
-    
+
     // 计算该分类下有多少提示词
     const promptsInCategory = prompts.filter(p => p.category === id).length;
-    
+
     // 将该分类下的提示词移到"general"
-    const updatedPrompts = prompts.map(prompt => 
-      prompt.category === id 
-        ? { ...prompt, category: "general" } 
+    const updatedPrompts = prompts.map(prompt =>
+      prompt.category === id
+        ? { ...prompt, category: "general" }
         : prompt
     );
     setPrompts(updatedPrompts);
     savePrompts(updatedPrompts);
-    
+
     const updatedCategories = categories.filter(category => category.id !== id);
     setCategories(updatedCategories);
     saveCategories(updatedCategories);
-    
+
     if (activeCategory === id) {
       setActiveCategory(null);
     }
-    
+
     toast({
       title: "分类已删除",
-      description: promptsInCategory > 0 
+      description: promptsInCategory > 0
         ? `${t('common.message.category')} "${categoryToDelete?.name || id}" ${t('common.message.deleted')}，${promptsInCategory} ${t('common.message.promptsInCategory')} ${t('common.message.generalCategory')}`
         : `${t('common.message.category')} "${categoryToDelete?.name || id}" ${t('common.message.deleted')}`,
       variant: "warning",
@@ -577,7 +577,7 @@ function usePromptsState() {
   const updateCategoriesOrder = useCallback((reorderedCategories: Category[]) => {
     setCategories(reorderedCategories);
     saveCategories(reorderedCategories);
-    
+
     toast({
       title: t('common.message.categoryOrderUpdated'),
       description: t('common.message.categoryOrderUpdatedSuccessfully'),
@@ -599,7 +599,7 @@ function usePromptsState() {
         console.error(t('common.message.getTagsFailed'), error);
       }
     }
-    
+
     // 回退到从prompts中提取标签
     const tags = new Set<string>();
     prompts.forEach(prompt => {
@@ -611,7 +611,7 @@ function usePromptsState() {
   // 根据分类获取标签
   const getTagsForCategory = useCallback(async (categoryId?: string) => {
     if (!categoryId) return allTags;
-    
+
     if (dbState.useSqlite && dbClient.isAvailable()) {
       try {
         return await dbClient.getTagsByCategory(categoryId);
@@ -619,7 +619,7 @@ function usePromptsState() {
         console.error('从数据库获取分类标签失败:', error);
       }
     }
-    
+
     // 回退到从prompts中筛选
     const categoryPrompts = prompts.filter(prompt => prompt.category === categoryId);
     const tags = new Set<string>();
@@ -643,10 +643,10 @@ function usePromptsState() {
         }
         return prompt;
       });
-      
+
       setPrompts(updatedPrompts);
       savePrompts(updatedPrompts);
-      
+
       // 如果使用SQLite，也更新数据库
       if (dbState.useSqlite && dbClient.isAvailable()) {
         updatedPrompts.forEach(async (prompt) => {
@@ -655,7 +655,7 @@ function usePromptsState() {
           }
         });
       }
-      
+
       console.log(`标签 "${tagName}" 已删除`);
 
       // 如果删除的是当前选中的标签，清空选中状态
@@ -665,7 +665,7 @@ function usePromptsState() {
 
     } catch (error) {
       console.error('删除标签失败:', error);
-      
+
       toast({
         title: "删除标签失败",
         description: "标签删除失败，请重试",
@@ -675,17 +675,75 @@ function usePromptsState() {
   }, [prompts, selectedTag, dbState.useSqlite, dbClient, toast]);
 
   // 复制提示词内容
-  const copyPromptContent = useCallback((promptId: string) => {
+  const copyPromptContent = useCallback((promptId: string, forceLanguage?: 'original' | 'translated') => {
     const prompt = prompts.find(p => p.id === promptId);
     if (!prompt) return;
 
-    navigator.clipboard.writeText(prompt.content)
+    // 从 settings 获取默认复制语言
+    const settingsStr = localStorage.getItem('app-settings');
+    let defaultCopyLanguage: 'original' | 'translated' | 'zh' | 'en' = 'original';
+    if (settingsStr) {
+      try {
+        const settings = JSON.parse(settingsStr);
+        defaultCopyLanguage = settings.defaultCopyLanguage || 'original';
+      } catch (e) {
+        // 使用默认值
+      }
+    }
+
+    // 如果强制指定了语言，使用强制指定的
+    const targetLanguage = forceLanguage || defaultCopyLanguage;
+
+    // 决定复制的内容
+    let contentToCopy = prompt.content;
+    let usedFallback = false;
+
+    if (targetLanguage === 'translated' || targetLanguage === 'en' || targetLanguage === 'zh') {
+      // 检查是否需要翻译版本
+      if (targetLanguage === 'translated') {
+        // 用户设置复制翻译版本
+        if (prompt.translatedContent) {
+          contentToCopy = prompt.translatedContent;
+        } else {
+          // 未翻译，回退到原文
+          usedFallback = true;
+        }
+      } else if (targetLanguage === 'en') {
+        // 用户希望复制英文
+        if (prompt.contentLanguage === 'en') {
+          contentToCopy = prompt.content;
+        } else if (prompt.translatedContent && prompt.contentLanguage === 'zh') {
+          contentToCopy = prompt.translatedContent;
+        } else {
+          usedFallback = true;
+        }
+      } else if (targetLanguage === 'zh') {
+        // 用户希望复制中文
+        if (prompt.contentLanguage === 'zh') {
+          contentToCopy = prompt.content;
+        } else if (prompt.translatedContent && prompt.contentLanguage === 'en') {
+          contentToCopy = prompt.translatedContent;
+        } else {
+          usedFallback = true;
+        }
+      }
+    }
+
+    navigator.clipboard.writeText(contentToCopy)
       .then(() => {
-        toast({
-          title: t('common.message.copied'),
-          description: t('common.message.copiedDescription'),
-          variant: "success",
-        });
+        if (usedFallback) {
+          toast({
+            title: t('translation.copyFallback'),
+            description: t('translation.copyFallbackDescription'),
+            variant: "warning",
+          });
+        } else {
+          toast({
+            title: t('common.message.copied'),
+            description: t('common.message.copiedDescription'),
+            variant: "success",
+          });
+        }
       })
       .catch(() => {
         toast({
@@ -694,11 +752,11 @@ function usePromptsState() {
           variant: "destructive",
         });
       });
-  }, [prompts, toast]);
+  }, [prompts, toast, t]);
 
   // 过滤后的提示词
   const filteredPrompts = useMemo(() => {
-    
+
     const isZh = i18n.language === 'zh-CN';
     const currentLanguage = i18n.language || 'zh-CN';
     let filtered = prompts;
@@ -761,7 +819,7 @@ function usePromptsState() {
       isFavorite: false,
       version: 1
     };
-    
+
     addPrompt(promptData);
   }, [addPrompt]);
 
@@ -781,7 +839,7 @@ function usePromptsState() {
     categories,
     filteredPrompts,
     allTags,
-    
+
     // UI状态
     activeCategory,
     setActiveCategory,
@@ -797,7 +855,7 @@ function usePromptsState() {
     setShowFavorites,
     refreshCounter,
     hasUnsavedChanges,
-    
+
     // 操作方法
     addPrompt,
     updatePrompt,
@@ -807,18 +865,18 @@ function usePromptsState() {
     addFromRecommended,
     deleteTag,
     getTagsForCategory,
-    
+
     // 分类管理
     addCategory,
     updateCategory,
     deleteCategory,
     updateCategoriesOrder,
-    
+
     // 工具方法
     forceRefresh,
     reloadData,
     setCheckUnsavedChangesCallback,
-    
+
     // 重置所有过滤器
     resetAllFilters: () => {
       setActiveCategory(null);
@@ -828,7 +886,7 @@ function usePromptsState() {
       setSearchTerm('');
       setSelectedPrompt(null);
     },
-    
+
     // 数据库信息
     getDatabaseInfo,
     dbState

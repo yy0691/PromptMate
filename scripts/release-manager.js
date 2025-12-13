@@ -76,6 +76,26 @@ class ReleaseManager {
     const currentVersion = version || this.packageJson.version;
     console.log(`🔍 查找版本 ${currentVersion} 的构建产物...`);
     
+    // 读取 latest.yml 获取最新构建时间（如果存在）
+    let latestBuildTime = null;
+    const latestYmlPath = path.join(releaseDir, 'latest.yml');
+    if (fs.existsSync(latestYmlPath)) {
+      try {
+        const latestYml = fs.readFileSync(latestYmlPath, 'utf8');
+        const releaseDateMatch = latestYml.match(/releaseDate:\s*['"]([^'"]+)['"]/);
+        if (releaseDateMatch) {
+          latestBuildTime = new Date(releaseDateMatch[1]).getTime();
+          console.log(`📅 最新构建时间: ${new Date(latestBuildTime).toLocaleString()}`);
+        }
+      } catch (error) {
+        console.warn(`⚠️  无法读取 latest.yml: ${error.message}`);
+      }
+    }
+    
+    // 如果没有 latest.yml，使用文件修改时间来判断
+    // 允许的时间差（5分钟，300000毫秒）
+    const timeThreshold = 5 * 60 * 1000;
+    
     // 定义要排除的文件和目录
     const excludePatterns = [
       '.DS_Store',
@@ -83,7 +103,6 @@ class ReleaseManager {
       'builder-debug.yml',
       'builder-effective-config.yaml',
       'latest-mac.yml',
-      '.blockmap',
       '.icon-ico',
       '.icon-icns',
       'win-unpacked',
@@ -93,7 +112,7 @@ class ReleaseManager {
       'Assets'
     ];
     
-    // 定义当前版本相关的文件模式
+    // 定义当前版本相关的文件模式（带版本号）
     const currentVersionPatterns = [
       `PromptMate-${currentVersion}-x64.exe`,
       `PromptMate-${currentVersion}-arm64.exe`,
@@ -110,17 +129,34 @@ class ReleaseManager {
       `PromptMate-${currentVersion}.AppImage`,
       `PromptMate-${currentVersion}.deb`,
       `PromptMate-${currentVersion}.rpm`,
-      'latest.yml',
-      'latest-mac.yml',
-      'latest-linux.yml'
     ];
     
-    // 添加构建相关的最新文件（签名文件、配置文件等）
-    // 这些文件通常是每次构建都会更新的
+    // 定义无版本号的通用文件模式（最新构建可能使用这些名称）
+    const genericPatterns = [
+      /^PromptMate-x64\.exe$/,
+      /^PromptMate-arm64\.exe$/,
+      /^PromptMate\.exe$/,
+      /^PromptMate Setup\.exe$/,
+      /^PromptMate-x64\.dmg$/,
+      /^PromptMate-arm64\.dmg$/,
+      /^PromptMate-universal\.dmg$/,
+      /^PromptMate-x64\.zip$/,
+      /^PromptMate-arm64\.zip$/,
+      /^PromptMate-universal\.zip$/,
+      /^PromptMate\.dmg$/,
+      /^PromptMate\.pkg$/,
+      /^PromptMate\.AppImage$/,
+      /^PromptMate\.deb$/,
+      /^PromptMate\.rpm$/,
+    ];
+    
+    // 必须包含的文件（配置文件等）
     const alwaysIncludePatterns = [
+      'latest.yml',
+      'latest-mac.yml',
+      'latest-linux.yml',
       /^[A-Fa-f0-9]{32,64}$/, // 哈希签名文件
       /^[A-Fa-f0-9]{32,64}\.pub$/, // 公钥文件
-      /^latest.*\.yml$/, // 更新配置文件
     ];
     
     const files = fs.readdirSync(releaseDir);
@@ -139,32 +175,93 @@ class ReleaseManager {
         return;
       }
       
-      // 检查是否是当前版本的文件
+      const filePath = path.join(releaseDir, file);
+      const stats = fs.statSync(filePath);
+      
+      if (!stats.isFile()) {
+        return;
+      }
+      
+      // 检查是否是必须包含的文件
+      const isAlwaysInclude = alwaysIncludePatterns.some(pattern => {
+        if (typeof pattern === 'string') {
+          return file === pattern;
+        }
+        return pattern.test(file);
+      });
+      
+      if (isAlwaysInclude) {
+        artifacts.push({
+          name: file,
+          path: filePath,
+          size: stats.size,
+          mtime: stats.mtime.getTime()
+        });
+        return;
+      }
+      
+      // 检查是否是当前版本的文件（带版本号）
       const isCurrentVersion = currentVersionPatterns.some(pattern => {
         return file === pattern;
       });
       
-      // 检查是否是构建相关的通用文件（签名文件等）
-      const isAlwaysInclude = alwaysIncludePatterns.some(pattern => {
-        return pattern.test(file);
-      });
-      
-      // 如果既不是当前版本的文件，也不是通用构建文件，跳过
-      if (!isCurrentVersion && !isAlwaysInclude) {
-        console.log(`⏭️  跳过旧版本文件: ${file}`);
-        return;
-      }
-      
-      const filePath = path.join(releaseDir, file);
-      const stats = fs.statSync(filePath);
-      
-      if (stats.isFile()) {
+      if (isCurrentVersion) {
         artifacts.push({
           name: file,
           path: filePath,
-          size: stats.size
+          size: stats.size,
+          mtime: stats.mtime.getTime()
         });
+        return;
       }
+      
+      // 检查是否是通用模式的文件（无版本号）
+      const isGenericPattern = genericPatterns.some(pattern => {
+        return pattern.test(file);
+      });
+      
+      // 检查是否是 blockmap 文件（与主文件配套）
+      const isBlockmap = file.endsWith('.blockmap');
+      
+      if (isGenericPattern || isBlockmap) {
+        // 如果 latest.yml 存在，检查文件修改时间是否接近
+        if (latestBuildTime) {
+          const fileTime = stats.mtime.getTime();
+          const timeDiff = Math.abs(fileTime - latestBuildTime);
+          
+          if (timeDiff <= timeThreshold) {
+            const fileType = isBlockmap ? 'blockmap' : '构建';
+            console.log(`✅ 找到最新${fileType}文件: ${file} (时间差: ${Math.round(timeDiff / 1000)}秒)`);
+            artifacts.push({
+              name: file,
+              path: filePath,
+              size: stats.size,
+              mtime: stats.mtime.getTime()
+            });
+            return;
+          } else {
+            console.log(`⏭️  跳过旧文件: ${file} (时间差: ${Math.round(timeDiff / 1000 / 60)}分钟)`);
+            return;
+          }
+        } else {
+          // 如果没有 latest.yml，检查是否是最近修改的文件（24小时内）
+          const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+          if (stats.mtime.getTime() > oneDayAgo) {
+            const fileType = isBlockmap ? 'blockmap' : '构建';
+            console.log(`✅ 找到最近${fileType}文件: ${file}`);
+            artifacts.push({
+              name: file,
+              path: filePath,
+              size: stats.size,
+              mtime: stats.mtime.getTime()
+            });
+            return;
+          }
+        }
+      }
+      
+      // 其他文件跳过
+      console.log(`⏭️  跳过旧版本文件: ${file}`);
     });
     
     if (artifacts.length === 0) {
@@ -407,26 +504,131 @@ class ReleaseManager {
       process.exit(1);
     }
   }
+
+  // 仅发布已构建的包（跳过构建步骤）
+  async publishOnly(platform = 'win') {
+    console.log('🚀 开始发布已构建的包...\n');
+    
+    try {
+      // 1. 检查环境
+      this.checkEnvironment();
+      
+      // 2. 获取当前版本（不更新版本）
+      const currentVersion = this.packageJson.version;
+      console.log(`📋 当前版本: ${currentVersion}`);
+      
+      // 3. 获取构建产物（根据平台过滤）
+      const allArtifacts = this.getBuildArtifacts(currentVersion);
+      
+      // 根据平台过滤产物
+      let artifacts = allArtifacts;
+      if (platform === 'win') {
+        artifacts = allArtifacts.filter(a => 
+          a.name.includes('.exe') || 
+          a.name.includes('latest.yml') ||
+          /^[A-Fa-f0-9]{32,64}$/.test(a.name) ||
+          /^[A-Fa-f0-9]{32,64}\.pub$/.test(a.name)
+        );
+      } else if (platform === 'mac') {
+        artifacts = allArtifacts.filter(a => 
+          a.name.includes('.dmg') || 
+          a.name.includes('.pkg') ||
+          a.name.includes('latest-mac.yml') ||
+          /^[A-Fa-f0-9]{32,64}$/.test(a.name) ||
+          /^[A-Fa-f0-9]{32,64}\.pub$/.test(a.name)
+        );
+      }
+      
+      if (artifacts.length === 0) {
+        throw new Error(`❌ 未找到 ${platform} 平台的构建产物`);
+      }
+      
+      console.log(`📦 找到 ${artifacts.length} 个 ${platform} 平台构建产物`);
+      
+      // 4. 检查是否已存在该版本的 Release
+      let existingRelease = null;
+      try {
+        const release = await this.githubApiRequest(
+          `GET /repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/tags/v${currentVersion}`
+        );
+        existingRelease = release;
+        console.log(`⚠️  版本 v${currentVersion} 的 Release 已存在: ${release.html_url}`);
+      } catch (error) {
+        // Release 不存在，继续创建
+        console.log(`✅ 版本 v${currentVersion} 的 Release 不存在，将创建新的 Release`);
+      }
+      
+      let release;
+      if (existingRelease) {
+        // 如果 Release 已存在，只上传新的文件
+        console.log('📤 上传新的构建产物到现有 Release...');
+        release = existingRelease;
+        await this.uploadArtifacts(existingRelease.id, artifacts);
+      } else {
+        // 5. 创建GitHub Release
+        release = await this.createGitHubRelease(currentVersion, artifacts);
+        
+        // 6. 创建并推送Git标签（如果不存在）
+        try {
+          execSync(`git tag -a v${currentVersion} -m "Release ${currentVersion}"`, { stdio: 'pipe' });
+          console.log(`✅ 创建标签 v${currentVersion}`);
+        } catch (error) {
+          // 标签可能已存在，继续
+          console.log(`⚠️  标签 v${currentVersion} 可能已存在`);
+        }
+        this.pushGitTags();
+      }
+      
+      console.log('\n🎉 发布完成!');
+      console.log(`📋 版本: ${currentVersion}`);
+      console.log(`🌐 Release页面: ${release.html_url}`);
+      console.log(`📦 构建产物: ${artifacts.length} 个文件`);
+      
+      return {
+        version: currentVersion,
+        release: release,
+        artifacts: artifacts
+      };
+      
+    } catch (error) {
+      console.error('\n❌ 发布失败:', error.message);
+      process.exit(1);
+    }
+  }
 }
 
 // 命令行参数处理
 function main() {
   const args = process.argv.slice(2);
-  const type = args[0] || 'patch';
-  const platform = args[1] || 'all';
+  const command = args[0];
   
-  if (!['major', 'minor', 'patch'].includes(type)) {
-    console.error('❌ 无效的版本类型。请使用: major, minor, 或 patch');
-    process.exit(1);
+  if (command === 'publish-only' || command === 'publish') {
+    // 仅发布已构建的包
+    const platform = args[1] || 'win';
+    if (!['all', 'win', 'mac'].includes(platform)) {
+      console.error('❌ 无效的平台。请使用: all, win, 或 mac');
+      process.exit(1);
+    }
+    const releaseManager = new ReleaseManager();
+    releaseManager.publishOnly(platform);
+  } else {
+    // 完整的发布流程（构建+发布）
+    const type = command || 'patch';
+    const platform = args[1] || 'all';
+    
+    if (!['major', 'minor', 'patch'].includes(type)) {
+      console.error('❌ 无效的版本类型。请使用: major, minor, 或 patch');
+      process.exit(1);
+    }
+    
+    if (!['all', 'win', 'mac'].includes(platform)) {
+      console.error('❌ 无效的平台。请使用: all, win, 或 mac');
+      process.exit(1);
+    }
+    
+    const releaseManager = new ReleaseManager();
+    releaseManager.release(type, platform);
   }
-  
-  if (!['all', 'win', 'mac'].includes(platform)) {
-    console.error('❌ 无效的平台。请使用: all, win, 或 mac');
-    process.exit(1);
-  }
-  
-  const releaseManager = new ReleaseManager();
-  releaseManager.release(type, platform);
 }
 
 // 如果直接运行此脚本

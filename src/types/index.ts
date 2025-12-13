@@ -15,6 +15,10 @@ export interface Prompt {
   // 评分功能
   rating?: number; // 1-5星评分
   ratingNotes?: string; // 评分备注
+  // 翻译功能
+  translatedContent?: string; // 翻译后的内容
+  contentLanguage?: 'zh' | 'en'; // 原始内容语言
+  translatedAt?: string; // 翻译时间戳
 }
 
 export interface PromptImage {
@@ -64,15 +68,15 @@ export interface Category {
 }
 
 export type ThemeType =
-  | 'light' 
-  | 'dark' 
+  | 'light'
+  | 'dark'
   | 'system'
-  | 'blue' 
-  | 'purple' 
-  | 'green' 
-  | 'orange' 
+  | 'blue'
+  | 'purple'
+  | 'green'
+  | 'orange'
   | 'red'
-  | 'midnight' 
+  | 'midnight'
   | 'coffee'
   | 'custom';
 
@@ -89,6 +93,8 @@ export interface Settings {
     accent: string;
   };
   cloudStorage?: CloudStorageSettings;
+  // 翻译功能
+  defaultCopyLanguage?: 'original' | 'translated' | 'zh' | 'en'; // 默认复制语言
 }
 
 // 云存储配置

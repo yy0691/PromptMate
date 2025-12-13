@@ -1,19 +1,19 @@
 {
   "common": {
-    "title":"标题",
-    "promptContent":"提示词内容",
-    "createdAt":"创建时间",
-    "updatedAt":"更新时间",
-    "noRecommended":"暂无推荐",
-    "noRecommendedDescription":"当前没有可用的推荐模板。",
-    "noFavoritePromptDescription":"快来添加第一个提示词，让这里热闹起来吧！",
-    "noCategory":"这个分类有点孤单",
-    "noCategoryDescription":"快来添加第一个提示词，让这里热闹起来吧！",
-    "currentView":"当前查看",
-    "saveComparisonResult":"保存对比结果",
-    "manualCreateVersion":"手动创建版本",
-    "confirmDeleteDescription":"您确定要删除提示词吗？此操作无法撤销。",
-    "promptTitle":"提示词标题",
+    "title": "标题",
+    "promptContent": "提示词内容",
+    "createdAt": "创建时间",
+    "updatedAt": "更新时间",
+    "noRecommended": "暂无推荐",
+    "noRecommendedDescription": "当前没有可用的推荐模板。",
+    "noFavoritePromptDescription": "快来添加第一个提示词，让这里热闹起来吧！",
+    "noCategory": "这个分类有点孤单",
+    "noCategoryDescription": "快来添加第一个提示词，让这里热闹起来吧！",
+    "currentView": "当前查看",
+    "saveComparisonResult": "保存对比结果",
+    "manualCreateVersion": "手动创建版本",
+    "confirmDeleteDescription": "您确定要删除提示词吗？此操作无法撤销。",
+    "promptTitle": "提示词标题",
     "confirm": "确认",
     "ok": "确定",
     "cancel": "取消",
@@ -40,22 +40,22 @@
     "editPrompt": "编辑提示词",
     "confirmDeletePrompt": "您确定要删除提示词吗？此操作无法撤销。",
     "confirmDelete": "确认删除",
-    "searchResults": "搜索结果：",  
-    "all":"全部",
-    "favorite":"收藏",
-    "category":"分类",
-    "recommended":"推荐",
-    "showAll":"显示全部",
-    "showFavorites":"显示收藏",
-    "showRecommended":"显示推荐",
-    "enabled":"已启用",
-    "disabled":"已禁用",
-    "toggleFullscreen":"切换全屏",
-    "exitFullscreen":"退出全屏",
-    "deleteTag":"删除标签",
-    "filterByTag":"按此标签筛选",
-    "deleteCategory":"删除分类",
-    "deletePrompt":"删除提示词",
+    "searchResults": "搜索结果：",
+    "all": "全部",
+    "favorite": "收藏",
+    "category": "分类",
+    "recommended": "推荐",
+    "showAll": "显示全部",
+    "showFavorites": "显示收藏",
+    "showRecommended": "显示推荐",
+    "enabled": "已启用",
+    "disabled": "已禁用",
+    "toggleFullscreen": "切换全屏",
+    "exitFullscreen": "退出全屏",
+    "deleteTag": "删除标签",
+    "filterByTag": "按此标签筛选",
+    "deleteCategory": "删除分类",
+    "deletePrompt": "删除提示词",
     "clickNewPrompt": "点击新建提示词创建你的第一个提示词。",
     "noPromptFound": "没有找到提示词",
     "noMatchingPrompt": "没有找到匹配的提示词，请尝试其他搜索词。",
@@ -93,39 +93,39 @@
     "settings": "设置",
     "help": "帮助",
     "about": "关于",
-    "instantSave":"立即保存",
+    "instantSave": "立即保存",
     "version": "版本",
     "language": "语言",
-    "alertTitle":"注意",
-    "addFavorite":"添加收藏",
-    "removeFavorite":"取消收藏",
-    "addmyPrompt":"添加到我的提示词",
-    "file":"文件",
-    "markdownPreview":"Markdown 预览",
-    "markdownPreviewPlaceholder":"在上方编辑器中输入内容，这里将显示 Markdown 预览",
-    "warning":"警告",
-    "backToViewMode":"返回查看模式",
-    "create_prompt":{
-      "title":"新建提示词",
-      "description":"请输入提示词标题",
-      "content_title":"内容",
-      "content":"请输入提示词内容",
-      "markdown":"Markdown 预览",
-      "category":"分类",
-      "categoryPlaceholder":"选择分类",
-      "tags":"标签",
-      "tagsPlaceholder":"输入标签，用逗号、分号分隔",
-      "addTag":"添加标签",
-      "tagChosed":"选择已有标签",
-      "imageUpload":"参考图片",
-      "imageUploadPlaceholder":"点击上传参考图片",
-      "imageUploadButton":"上传图片",
-      "image":"图片",
-      "imageCaption":"图片说明",
-      "imageCaptionPlaceholder":"为这张图片添加说明..."
+    "alertTitle": "注意",
+    "addFavorite": "添加收藏",
+    "removeFavorite": "取消收藏",
+    "addmyPrompt": "添加到我的提示词",
+    "file": "文件",
+    "markdownPreview": "Markdown 预览",
+    "markdownPreviewPlaceholder": "在上方编辑器中输入内容，这里将显示 Markdown 预览",
+    "warning": "警告",
+    "backToViewMode": "返回查看模式",
+    "create_prompt": {
+      "title": "新建提示词",
+      "description": "请输入提示词标题",
+      "content_title": "内容",
+      "content": "请输入提示词内容",
+      "markdown": "Markdown 预览",
+      "category": "分类",
+      "categoryPlaceholder": "选择分类",
+      "tags": "标签",
+      "tagsPlaceholder": "输入标签，用逗号、分号分隔",
+      "addTag": "添加标签",
+      "tagChosed": "选择已有标签",
+      "imageUpload": "参考图片",
+      "imageUploadPlaceholder": "点击上传参考图片",
+      "imageUploadButton": "上传图片",
+      "image": "图片",
+      "imageCaption": "图片说明",
+      "imageCaptionPlaceholder": "为这张图片添加说明..."
     },
-    "edit_prompt":{
-      "title":"编辑提示词"
+    "edit_prompt": {
+      "title": "编辑提示词"
     },
     "switchToLight": "切换到浅色模式",
     "switchToDark": "切换到深色模式",
@@ -143,57 +143,55 @@
       "copiedDescription": "最终内容已复制到剪贴板",
       "copyFailed": "复制失败",
       "copyFailedDescription": "无法复制到剪贴板，请手动复制",
-      "saving":"保存中...",
+      "saving": "保存中...",
       "saveSuccess": "保存成功",
       "saveFailed": "保存失败",
       "saveFailedDescription": "请稍后重试",
       "saveSuccessDescription": "更改已保存",
-      "fileTypeDescription":"请上传图片文件",
-      "fileSize":"文件过大",
-      "fileType":"图片大小不能超过10MB",
-      "deleteSuccess":"删除成功",
-      "deleteSuccessDescription":"您的提示词已被删除。",
-      "addSuccess":"添加成功",
-      "addSuccessDescription":"推荐模板已添加到您的提示词库",
-      "reloadDataFailed":"重新加载数据失败",
-      "startInitializeDatabase":"开始初始化数据库",
-      "reloadDataSuccess":"重新加载数据成功",
-      "databaseStatus":"数据库状态",
-      "startDataMigration":"开始数据迁移",
-      "dataMigrationCompleted":"数据迁移完成",
-      "loadDataFromDatabase":"从数据库加载数据",
-      "sqliteDatabaseInitialized":"SQLite数据库初始化成功",
-      "databaseInitializationFailed":"数据库初始化失败",
-      "databaseClientUnavailable":"数据库客户端不可用",
-      "useLocalStorageMode":"使用localStorage模式",
-      "unknownError":"未知错误",
-      "sqliteInitializationFailed":"SQLite初始化失败，回退到localStorage",
-      "updateFailed":"更新失败",
-      "updateFailedDescription":"提示词更新失败，请重试",
-      "promptDeleted":"提示词已删除",
-      "promptDeletedFromDatabase":"提示词已从数据库删除",
-      "promptDeletedFromLocalStorage":"提示词已从localStorage删除",
-      "categoryAddSuccess":"分类已添加",
-      "categoryAddFailed":"分类添加失败",
-      "categoryAddFailedDescription":"分类添加失败，请重试",
-      "newCategory":"新分类",
-      "categoryCreatedSuccessfully":"已成功创建",
-      "databaseOperationFailed":"数据库操作失败，回退到localStorage",
-      "categoryUpdated":"分类已更新",
-      "categoryUpdatedDescription":"分类已更新，请重试",
-      "categoryUpdatedFailed":"分类更新失败",
-      "categoryUpdatedFailedDescription":"分类更新失败，请重试",
-      "categoryDeleted":"分类已删除",
-      "category":"分类",
-      "deleted":"已删除",
-      "movedToGeneral":"已移至",
-      "promptsInCategory":"个提示词已移至",
-      "generalCategory":"通用分类",
-      "categoryOrderUpdated":"分类顺序已更新",
-      "categoryOrderUpdatedSuccessfully":"分类顺序已更新成功",
-      "getTagsFailed":"从数据库获取标签失败"
-
-
+      "fileTypeDescription": "请上传图片文件",
+      "fileSize": "文件过大",
+      "fileType": "图片大小不能超过10MB",
+      "deleteSuccess": "删除成功",
+      "deleteSuccessDescription": "您的提示词已被删除。",
+      "addSuccess": "添加成功",
+      "addSuccessDescription": "推荐模板已添加到您的提示词库",
+      "reloadDataFailed": "重新加载数据失败",
+      "startInitializeDatabase": "开始初始化数据库",
+      "reloadDataSuccess": "重新加载数据成功",
+      "databaseStatus": "数据库状态",
+      "startDataMigration": "开始数据迁移",
+      "dataMigrationCompleted": "数据迁移完成",
+      "loadDataFromDatabase": "从数据库加载数据",
+      "sqliteDatabaseInitialized": "SQLite数据库初始化成功",
+      "databaseInitializationFailed": "数据库初始化失败",
+      "databaseClientUnavailable": "数据库客户端不可用",
+      "useLocalStorageMode": "使用localStorage模式",
+      "unknownError": "未知错误",
+      "sqliteInitializationFailed": "SQLite初始化失败，回退到localStorage",
+      "updateFailed": "更新失败",
+      "updateFailedDescription": "提示词更新失败，请重试",
+      "promptDeleted": "提示词已删除",
+      "promptDeletedFromDatabase": "提示词已从数据库删除",
+      "promptDeletedFromLocalStorage": "提示词已从localStorage删除",
+      "categoryAddSuccess": "分类已添加",
+      "categoryAddFailed": "分类添加失败",
+      "categoryAddFailedDescription": "分类添加失败，请重试",
+      "newCategory": "新分类",
+      "categoryCreatedSuccessfully": "已成功创建",
+      "databaseOperationFailed": "数据库操作失败，回退到localStorage",
+      "categoryUpdated": "分类已更新",
+      "categoryUpdatedDescription": "分类已更新，请重试",
+      "categoryUpdatedFailed": "分类更新失败",
+      "categoryUpdatedFailedDescription": "分类更新失败，请重试",
+      "categoryDeleted": "分类已删除",
+      "category": "分类",
+      "deleted": "已删除",
+      "movedToGeneral": "已移至",
+      "promptsInCategory": "个提示词已移至",
+      "generalCategory": "通用分类",
+      "categoryOrderUpdated": "分类顺序已更新",
+      "categoryOrderUpdatedSuccessfully": "分类顺序已更新成功",
+      "getTagsFailed": "从数据库获取标签失败"
     }
   },
   "sidebar": {
@@ -203,9 +201,7 @@
     "help": "帮助",
     "expandSidebar": "展开侧边栏",
     "collapseSidebar": "收起侧边栏",
-    "button":{
-
-    },
+    "button": {},
     "tooltip": {
       "allPrompts": "全部提示词",
       "favoritePrompts": "收藏提示词",
@@ -239,23 +235,23 @@
       "promptComparison": "提示词对比成功",
       "promptComparisonFailed": "提示词对比失败"
     },
-    "message":{
-      "categoryClicked":"分类已更新:",
-      "favoritesClicked":"收藏已更新:",
-      "recommendedClicked":"推荐已更新:",
-      "allPromptsClicked":"全部提示词已更新:",
-      "workflowClicked":"工作流已更新:",
-      "categoryManagerClicked":"分类管理已更新:",
-      "deleteCategory":"确定要删除这个分类吗？",
-      "deleteCategoryFailed":"删除分类失败",
-      "deleteCategorySuccess":"删除分类成功"
+    "message": {
+      "categoryClicked": "分类已更新:",
+      "favoritesClicked": "收藏已更新:",
+      "recommendedClicked": "推荐已更新:",
+      "allPromptsClicked": "全部提示词已更新:",
+      "workflowClicked": "工作流已更新:",
+      "categoryManagerClicked": "分类管理已更新:",
+      "deleteCategory": "确定要删除这个分类吗？",
+      "deleteCategoryFailed": "删除分类失败",
+      "deleteCategorySuccess": "删除分类成功"
     }
   },
   "file": {
-    "allPrompts":"全部提示词",
-    "favoritePrompts":"收藏提示词",
-    "workflowPrompts":"工作流提示词",
-    "categoryPrompts":"分类提示词"
+    "allPrompts": "全部提示词",
+    "favoritePrompts": "收藏提示词",
+    "workflowPrompts": "工作流提示词",
+    "categoryPrompts": "分类提示词"
   },
   "prompts": {
     "title": "提示词管理",
@@ -274,7 +270,6 @@
     "promptTags": "标签",
     "promptDescription": "描述",
     "variables": "变量",
-
     "addVariable": "添加变量",
     "variableName": "变量名",
     "variableDescription": "变量描述",
@@ -287,8 +282,8 @@
     "versionHistory": "版本历史",
     "rating": "评分",
     "comparison": "模型对比",
-    "chooseOrCreatePrompt":"选择提示词或创建新提示词",  
-    "chooseOrCreatePromptDesc":"从列表中选择一个提示词进行编辑，或创建一个新的提示词。"
+    "chooseOrCreatePrompt": "选择提示词或创建新提示词",
+    "chooseOrCreatePromptDesc": "从列表中选择一个提示词进行编辑，或创建一个新的提示词。"
   },
   "categories": {
     "title": "分类管理",
@@ -361,74 +356,74 @@
     "edit": "编辑主题",
     "delete": "删除主题",
     "light": {
-        "name": "默认浅色",
-        "description": "标准浅色主题，明亮简洁的设计"
-      },
-      "dark": {
-        "name": "默认深色",
-        "description": "标准深色主题，减少眼部疲劳"
-      },
-      "blue": {
-        "name": "蓝色主题",
-        "description": "专业稳重的蓝色调界面"
-      },
-      "purple": {
-        "name": "紫色主题",
-        "description": "创意紫色调，适合创意工作"
-      },
-      "green": {
-        "name": "绿色主题",
-        "description": "自然绿色主题，舒适护眼"
-      },
-      "orange": {
-        "name": "橙色主题",
-        "description": "活力橙色主题，充满能量"
-      },
-      "red": {
-        "name": "红色主题",
-        "description": "热情红色主题，充满活力"
-      },
-      "midnight": {
-        "name": "午夜蓝",
-        "description": "深邃优雅的暗色主题"
-      },
-      "coffee": {
-        "name": "咖啡色",
-        "description": "温暖舒适的咖啡色调"
-      },
-      "custom": {
-        "name": "自定义主题",
-        "description": "根据个人喜好定制专属主题"
-      }
+      "name": "默认浅色",
+      "description": "标准浅色主题，明亮简洁的设计"
     },
-  "font":{
-    "selectFont":"选择字体",
-    "selectSystemFont":"选择系统字体",
-    "detectionSuccess":"字体检测成功",
-    "detectionSuccessDesc":"检测到 {count} 个可用字体",
-    "detectionFailed":"字体检测失败",
-    "detectionFailedDesc":"无法检测系统字体，将使用默认字体列表",
-    "fontSelected":"字体已选择",
-    "fontSelectedDesc":"已选择字体: {font}",
-    "system":"系统",
-    "monospace":"等宽",
-    "all":"全部",
-    "search":"搜索字体",
-    "searchPlaceholder":"输入字体名称...",
-    "redetect":"重新检测",
-    "detecting":"正在检测字体...",
-    "noSearchResults":"未找到匹配的字体",
-    "noFontsFound":"未找到可用字体",
-    "totalFonts":"共 {count} 个字体",
-    "useDefault":"使用默认",
+    "dark": {
+      "name": "默认深色",
+      "description": "标准深色主题，减少眼部疲劳"
+    },
+    "blue": {
+      "name": "蓝色主题",
+      "description": "专业稳重的蓝色调界面"
+    },
+    "purple": {
+      "name": "紫色主题",
+      "description": "创意紫色调，适合创意工作"
+    },
+    "green": {
+      "name": "绿色主题",
+      "description": "自然绿色主题，舒适护眼"
+    },
+    "orange": {
+      "name": "橙色主题",
+      "description": "活力橙色主题，充满能量"
+    },
+    "red": {
+      "name": "红色主题",
+      "description": "热情红色主题，充满活力"
+    },
+    "midnight": {
+      "name": "午夜蓝",
+      "description": "深邃优雅的暗色主题"
+    },
+    "coffee": {
+      "name": "咖啡色",
+      "description": "温暖舒适的咖啡色调"
+    },
+    "custom": {
+      "name": "自定义主题",
+      "description": "根据个人喜好定制专属主题"
+    }
+  },
+  "font": {
+    "selectFont": "选择字体",
+    "selectSystemFont": "选择系统字体",
+    "detectionSuccess": "字体检测成功",
+    "detectionSuccessDesc": "检测到 {count} 个可用字体",
+    "detectionFailed": "字体检测失败",
+    "detectionFailedDesc": "无法检测系统字体，将使用默认字体列表",
+    "fontSelected": "字体已选择",
+    "fontSelectedDesc": "已选择字体: {font}",
+    "system": "系统",
+    "monospace": "等宽",
+    "all": "全部",
+    "search": "搜索字体",
+    "searchPlaceholder": "输入字体名称...",
+    "redetect": "重新检测",
+    "detecting": "正在检测字体...",
+    "noSearchResults": "未找到匹配的字体",
+    "noFontsFound": "未找到可用字体",
+    "totalFonts": "共 {count} 个字体",
+    "useDefault": "使用默认",
     "category": {
-      "systemfonts":"系统字体",
-      "seriffonts":"衬线字体",
-      "sansseriffonts":"无衬线字体",
-      "monospacefonts":"等宽字体",
-      "displayfonts":"装饰字体",
-      "handwritingfonts":"手写字体",
-      "otherfonts":"其他字体"
+      "systemfonts": "系统字体",
+      "seriffonts": "衬线字体",
+      "sansseriffonts": "无衬线字体",
+      "monospacefonts": "等宽字体",
+      "displayfonts": "装饰字体",
+      "handwritingfonts": "手写字体",
+      "otherfonts": "其他字体"
     }
   },
   "dataManagement": {
@@ -447,8 +442,8 @@
     "file": "从文件中导入",
     "confirmImport": "确认导入",
     "confirmReset": "确认重置",
-    "resetWarning":"此操作将删除所有自定义提示词和分类并恢复到默认状态。此操作无法撤销。",
-    "cloudSyncDescription2":"云同步功能待完善，当前仅支持数据导入导出",
+    "resetWarning": "此操作将删除所有自定义提示词和分类并恢复到默认状态。此操作无法撤销。",
+    "cloudSyncDescription2": "云同步功能待完善，当前仅支持数据导入导出",
     "cloudSync": "云同步",
     "dataManagement": "数据管理",
     "backupRestore": "备份恢复",
@@ -552,87 +547,87 @@
       "pasteDataDesc": "粘贴JSON格式的提示词数据..."
     }
   },
-  "about":{
-    "title":"PromptMate",
-    "description":"一个基于AI的提示词优化和生成工具",
-    "version":{
-      "title":"版本信息",
-      "currentVersion":"当前版本",
-      "buildDate":"构建日期",
-      "electronVersion":"Electron版本",
-      "nodeVersion":"Node.js版本",
-      "chromeVersion":"Chrome版本",
-      "webVersion":"Web版本",
-      "lastCheckTime":"上次检查时间",
-      "platform":"平台"
+  "about": {
+    "title": "PromptMate",
+    "description": "一个基于AI的提示词优化和生成工具",
+    "version": {
+      "title": "版本信息",
+      "currentVersion": "当前版本",
+      "buildDate": "构建日期",
+      "electronVersion": "Electron版本",
+      "nodeVersion": "Node.js版本",
+      "chromeVersion": "Chrome版本",
+      "webVersion": "Web版本",
+      "lastCheckTime": "上次检查时间",
+      "platform": "平台"
     },
-    "checkForUpdates":{
-      "title":"检查更新",
-      "description":"检查更新",
-      "checking":"正在检查更新...",
-      "newVersion":"有新版本可用",
-      "upToDate":"当前已是最新版本",
-      "updateFailed":"更新失败",
-      "updateSuccess":"更新成功",
-      "updateCheckingError":"Web环境不支持更新检查",
-      "majorversion":"主版本更新",
-      "minorversion":"次版本更新",
-      "patchversion":"补丁更新",
-      "unknown":"未知",
-      "releaseName":"发布名称",
-      "releaseDate":"发布时间"
+    "checkForUpdates": {
+      "title": "检查更新",
+      "description": "检查更新",
+      "checking": "正在检查更新...",
+      "newVersion": "有新版本可用",
+      "upToDate": "当前已是最新版本",
+      "updateFailed": "更新失败",
+      "updateSuccess": "更新成功",
+      "updateCheckingError": "Web环境不支持更新检查",
+      "majorversion": "主版本更新",
+      "minorversion": "次版本更新",
+      "patchversion": "补丁更新",
+      "unknown": "未知",
+      "releaseName": "发布名称",
+      "releaseDate": "发布时间"
     },
-    "viewReleasePage":"查看发布页面",
-    "update":"检查更新",
-    "updateAvailable":"有新版本可用",
-    "updateNotAvailable":"当前已是最新版本",
-    "updateError":"检查更新失败",
-    "updateChecking":"正在检查更新...",
-    "updateDownloading":"正在下载更新...",
-    "updateInstalling":"正在安装更新...",
-    "updateFailed":"更新失败",
-    "updateSuccess":"更新成功",
-    "updateCheckingError":"Web环境不支持更新检查",
-    "majorversion":"主版本更新",
-    "minorversion":"次版本更新",
-    "patchversion":"补丁更新",
-    "unknown":"未知",
-    "releaseName":"发布名称",
-    "releaseDate":"发布时间",
-    "viewReleaseDetails":"查看发布详情",
-    "downloadUpdate":"下载更新",
-    "downloading":"下载中...",
-    "downloadSuccess":"下载成功",
-    "downloadFailed":"下载失败",
-    "author":"泺源",
-    "license":"许可证",
-    "sourceCode":"源代码",
-    "privacyPolicy":"隐私政策",
-    "termsOfService":"服务条款",
-    "appInfo":"应用信息",
-     "repository":"项目地址",
-     "support": {
-       "title": "赞助与反馈",
-       "description": "如果您觉得这个项目对您有帮助，欢迎通过以下方式支持我们：",
-       "sponsor": {
-         "title": "赞助支持",
-         "github": "GitHub Sponsors",
-         "afdian": "爱发电",
-         "paypal": "PayPal"
-       },
-       "qr": {
-         "title": "扫码赞助",
-         "wechat": "微信",
-         "alipay": "支付宝",
-         "note": "扫描二维码进行赞助"
-       },
-       "feedback": {
-         "title": "问题反馈",
-         "github": "GitHub Issues",
-         "email": "邮件反馈"
-       }
-     }
-   },
+    "viewReleasePage": "查看发布页面",
+    "update": "检查更新",
+    "updateAvailable": "有新版本可用",
+    "updateNotAvailable": "当前已是最新版本",
+    "updateError": "检查更新失败",
+    "updateChecking": "正在检查更新...",
+    "updateDownloading": "正在下载更新...",
+    "updateInstalling": "正在安装更新...",
+    "updateFailed": "更新失败",
+    "updateSuccess": "更新成功",
+    "updateCheckingError": "Web环境不支持更新检查",
+    "majorversion": "主版本更新",
+    "minorversion": "次版本更新",
+    "patchversion": "补丁更新",
+    "unknown": "未知",
+    "releaseName": "发布名称",
+    "releaseDate": "发布时间",
+    "viewReleaseDetails": "查看发布详情",
+    "downloadUpdate": "下载更新",
+    "downloading": "下载中...",
+    "downloadSuccess": "下载成功",
+    "downloadFailed": "下载失败",
+    "author": "泺源",
+    "license": "许可证",
+    "sourceCode": "源代码",
+    "privacyPolicy": "隐私政策",
+    "termsOfService": "服务条款",
+    "appInfo": "应用信息",
+    "repository": "项目地址",
+    "support": {
+      "title": "赞助与反馈",
+      "description": "如果您觉得这个项目对您有帮助，欢迎通过以下方式支持我们：",
+      "sponsor": {
+        "title": "赞助支持",
+        "github": "GitHub Sponsors",
+        "afdian": "爱发电",
+        "paypal": "PayPal"
+      },
+      "qr": {
+        "title": "扫码赞助",
+        "wechat": "微信",
+        "alipay": "支付宝",
+        "note": "扫描二维码进行赞助"
+      },
+      "feedback": {
+        "title": "问题反馈",
+        "github": "GitHub Issues",
+        "email": "邮件反馈"
+      }
+    }
+  },
   "ai": {
     "optimize": "AI优化",
     "generate": "AI生成",
@@ -708,24 +703,24 @@
       "saveSuccess": "服务配置已成功保存",
       "saveError": "保存配置时出现错误"
     },
-    "custom":"自定义API",
-    "getApiKeyDescription":{
-      "openai":"注册OpenAI账户并创建API密钥",
-      "anthropic":"访问Anthropic控制台获取Claude API密钥",
-      "gemini":"在Google AI Studio中获取Gemini API密钥",
-      "deepseek":"注册DeepSeek账户并获取API密钥",
-      "kimi":"注册Kimi账户并获取API密钥",
-      "doubao":"注册多宝账户并获取API密钥",
-      "siliconflow":"注册硅基流动账户并获取API密钥",
-      "qwen":"注册阿里云账户并获取API密钥",
-      "baidu":"注册百度智能云账户并获取API密钥",
-      "oneapi":"注册One API账户并获取API密钥",
-      "groq":"注册Groq账户并获取API密钥",
-      "perplexity":"注册Perplexity账户并获取API密钥",
-      "together":"注册Together AI账户并获取API密钥",
-      "ollama":"注册Ollama账户并获取API密钥",
-      "lmstudio":"注册LM Studio账户并获取API密钥",
-      "custom":"注册自定义API账户并获取API密钥"
+    "custom": "自定义API",
+    "getApiKeyDescription": {
+      "openai": "注册OpenAI账户并创建API密钥",
+      "anthropic": "访问Anthropic控制台获取Claude API密钥",
+      "gemini": "在Google AI Studio中获取Gemini API密钥",
+      "deepseek": "注册DeepSeek账户并获取API密钥",
+      "kimi": "注册Kimi账户并获取API密钥",
+      "doubao": "注册多宝账户并获取API密钥",
+      "siliconflow": "注册硅基流动账户并获取API密钥",
+      "qwen": "注册阿里云账户并获取API密钥",
+      "baidu": "注册百度智能云账户并获取API密钥",
+      "oneapi": "注册One API账户并获取API密钥",
+      "groq": "注册Groq账户并获取API密钥",
+      "perplexity": "注册Perplexity账户并获取API密钥",
+      "together": "注册Together AI账户并获取API密钥",
+      "ollama": "注册Ollama账户并获取API密钥",
+      "lmstudio": "注册LM Studio账户并获取API密钥",
+      "custom": "注册自定义API账户并获取API密钥"
     }
   },
   "version": {
@@ -740,31 +735,31 @@
     "versionRestored": "版本已恢复",
     "confirmRestore": "确认恢复到此版本？"
   },
-  "ai_optimize":{
-    "tooltipText":"使用AI优化当前提示词",
-    "tooltipText2":"使用AI生成新的提示词",
-    "optimizing":{
-      "title":"优化中...",
-      "description":"AI正在优化您的提示词，请稍等...",
-      "tooltip":"点击查看AI优化进度",
-      "result":"优化后的提示词",
-      "tooltipText":"使用AI优化当前提示词",
-      "tooltipText2":"使用AI生成新的提示词",
-      "explanation":"优化说明",
-      "suggestions":"进一步建议",
-      "accept":"接受",
-      "reject":"拒绝"
+  "ai_optimize": {
+    "tooltipText": "使用AI优化当前提示词",
+    "tooltipText2": "使用AI生成新的提示词",
+    "optimizing": {
+      "title": "优化中...",
+      "description": "AI正在优化您的提示词，请稍等...",
+      "tooltip": "点击查看AI优化进度",
+      "result": "优化后的提示词",
+      "tooltipText": "使用AI优化当前提示词",
+      "tooltipText2": "使用AI生成新的提示词",
+      "explanation": "优化说明",
+      "suggestions": "进一步建议",
+      "accept": "接受",
+      "reject": "拒绝"
     },
-    "error":{
-      "title":"AI服务未配置",
-      "desc":"请先在设置中配置AI服务",
-      "action":"去设置",
-      "failed":"AI优化失败",
-      "retry":"请稍后重试"  
+    "error": {
+      "title": "AI服务未配置",
+      "desc": "请先在设置中配置AI服务",
+      "action": "去设置",
+      "failed": "AI优化失败",
+      "retry": "请稍后重试"
     },
-    "success":{
-      "title":"优化完成",
-      "desc":"AI优化的内容已应用"
+    "success": {
+      "title": "优化完成",
+      "desc": "AI优化的内容已应用"
     }
   },
   "rating": {
@@ -889,37 +884,37 @@
     "imported": "导入成功",
     "updated": "更新成功"
   },
-  "Header":{
-    "title":"PromptMate",
-    "message":{
-      "debug":"调试信息",
-      "debugDesc":"electronAPI 不可用，请检查preload脚本",
-      "functionUnavailable":"功能不可用",
-      "functionUnavailableDesc":"窗口控制功能在当前环境下不可用",
-      "operationFailed":"操作失败",
-      "operationFailedDesc":"最小化窗口时发生错误",
-      "destructive":"破坏性",
-      "minimizeWindow":"最小化窗口",
-      "minimizeWindowFailed":"最小化窗口失败",
-      "maximizeWindow":"最大化/还原窗口",
-      "maximizeWindowFailed":"最大化/还原窗口失败",
-      "closeWindow":"关闭窗口",
-      "closeWindowFailed":"关闭窗口失败",
-      "closeWindowFailedDesc":"关闭窗口时发生错误"
+  "Header": {
+    "title": "PromptMate",
+    "message": {
+      "debug": "调试信息",
+      "debugDesc": "electronAPI 不可用，请检查preload脚本",
+      "functionUnavailable": "功能不可用",
+      "functionUnavailableDesc": "窗口控制功能在当前环境下不可用",
+      "operationFailed": "操作失败",
+      "operationFailedDesc": "最小化窗口时发生错误",
+      "destructive": "破坏性",
+      "minimizeWindow": "最小化窗口",
+      "minimizeWindowFailed": "最小化窗口失败",
+      "maximizeWindow": "最大化/还原窗口",
+      "maximizeWindowFailed": "最大化/还原窗口失败",
+      "closeWindow": "关闭窗口",
+      "closeWindowFailed": "关闭窗口失败",
+      "closeWindowFailedDesc": "关闭窗口时发生错误"
     },
-    "search":{
-      "searchplaceholder":"搜索提示词...",
-      "search_noResults":"未找到相关内容",
-      "search_suggestions":"搜索建议"
+    "search": {
+      "searchplaceholder": "搜索提示词...",
+      "search_noResults": "未找到相关内容",
+      "search_suggestions": "搜索建议"
     },
-    "button":{
-      "dark":"切换到深色模式",
-      "light":"切换到浅色模式",
-      "cancelPinWindow":"取消窗口置顶",
-      "pinWindow":"窗口置顶",
-      "minimize":"最小化",
-      "maximize":"最大化",
-      "close":"关闭"
+    "button": {
+      "dark": "切换到深色模式",
+      "light": "切换到浅色模式",
+      "cancelPinWindow": "取消窗口置顶",
+      "pinWindow": "窗口置顶",
+      "minimize": "最小化",
+      "maximize": "最大化",
+      "close": "关闭"
     },
     "user": {
       "login": "登录",
@@ -928,32 +923,32 @@
       "noNickname": "未设置昵称"
     }
   },
-  "prompteditform":{
-    "title":"编辑提示词",
-    "description":"请输入提示词标题",
-    "message":{
-      "fileSize":"超过10MB限制",
-      "fileType":"不是有效的图片格式"
+  "prompteditform": {
+    "title": "编辑提示词",
+    "description": "请输入提示词标题",
+    "message": {
+      "fileSize": "超过10MB限制",
+      "fileType": "不是有效的图片格式"
     },
-    "or":"或者",
-    "tags":"标签",
-    "tagsPlaceholder":"输入标签，用逗号、分号分隔",
-    "promptContent":"内容编辑",
-    "promptContentPlaceholder":"输入提示词内容，支持 Markdown 格式和变量占位符",
-    "promptCategory":"分类",
-    "promptCategoryPlaceholder":"选择分类",
-    "tagSuggestion":"建议标签",
-    "variables":"变量",
-    "variablesPlaceholder":"输入变量名，用逗号、分号分隔",
-    "addVariable":"添加变量",
-    "variableChosed":"选择已有变量",
-    "imageUpload":"参考图片",
-    "imageUploadPlaceholder":"拖拽图片到此处或粘贴图片",
-    "imageUploadDescription":"支持 JPG、PNG、GIF 等格式，最大 10MB",
-    "imageUploadButton":"上传图片",
-    "image":"图片",
-    "imageCaption":"图片说明",
-    "imageCaptionPlaceholder":"为这张图片添加说明..."
+    "or": "或者",
+    "tags": "标签",
+    "tagsPlaceholder": "输入标签，用逗号、分号分隔",
+    "promptContent": "内容编辑",
+    "promptContentPlaceholder": "输入提示词内容，支持 Markdown 格式和变量占位符",
+    "promptCategory": "分类",
+    "promptCategoryPlaceholder": "选择分类",
+    "tagSuggestion": "建议标签",
+    "variables": "变量",
+    "variablesPlaceholder": "输入变量名，用逗号、分号分隔",
+    "addVariable": "添加变量",
+    "variableChosed": "选择已有变量",
+    "imageUpload": "参考图片",
+    "imageUploadPlaceholder": "拖拽图片到此处或粘贴图片",
+    "imageUploadDescription": "支持 JPG、PNG、GIF 等格式，最大 10MB",
+    "imageUploadButton": "上传图片",
+    "image": "图片",
+    "imageCaption": "图片说明",
+    "imageCaptionPlaceholder": "为这张图片添加说明..."
   },
   "variableForm": {
     "noVariables": "当前提示词中没有发现变量占位符",
@@ -1288,5 +1283,47 @@
     "confirm": {
       "delete": "确定要删除这个模板吗？此操作无法撤销。"
     }
+  },
+  "translation": {
+    "translate": "翻译",
+    "translating": "翻译中...",
+    "translated": "已翻译",
+    "retranslate": "重新翻译",
+    "aiTranslate": "AI 翻译",
+    "manualInput": "手动输入",
+    "translatedContent": "翻译内容",
+    "manualInputPlaceholder": "输入翻译后的内容...",
+    "noContent": "暂无翻译内容",
+    "translatedAt": "翻译于 {{time}}",
+    "success": "翻译成功",
+    "successDescription": "提示词已成功翻译",
+    "error": "翻译失败",
+    "aiNotConfigured": "请先在设置中配置 AI 服务",
+    "unknownError": "未知错误",
+    "batchTranslate": "批量翻译",
+    "batchTranslateDescription": "选择多个提示词进行批量翻译",
+    "targetLanguage": "目标语言",
+    "startTranslate": "开始翻译",
+    "abort": "中断翻译",
+    "aborted": "翻译已中断",
+    "abortedDescription": "批量翻译已被中断",
+    "batchSuccess": "批量翻译完成",
+    "batchSuccessDescription": "成功翻译 {{count}} 个提示词",
+    "batchPartial": "部分翻译完成",
+    "batchPartialDescription": "成功 {{success}} 个，失败 {{error}} 个",
+    "hasTranslation": "已有翻译",
+    "noPromptsToTranslate": "没有需要翻译的提示词",
+    "copyOriginal": "复制原文",
+    "copyTranslated": "复制译文",
+    "copyFallback": "已复制原文",
+    "copyFallbackDescription": "该提示词尚未翻译，已复制原文"
+  },
+  "copyLanguage": {
+    "title": "默认复制语言",
+    "description": "选择复制提示词时使用的默认语言版本",
+    "original": "原始语言",
+    "translated": "翻译版本",
+    "zh": "中文",
+    "en": "英文"
   }
 }
