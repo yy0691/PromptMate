@@ -25,7 +25,7 @@ export const ModularComponentsExample: React.FC = () => {
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold">模块化提示词编辑组件示例</h1>
-      
+
       {/* 组件使用示例 */}
       <div className="space-y-4">
         <h2 className="text-lg font-semibold">1. QuickPromptEditor 组件</h2>
@@ -40,13 +40,13 @@ export const ModularComponentsExample: React.FC = () => {
           >
             编辑提示词
           </QuickPromptEditor>
-          
+
           <QuickPromptEditor
             prompt={selectedPrompt}
             variant="icon"
             size="sm"
           />
-          
+
           <QuickPromptEditor
             prompt={selectedPrompt}
             variant="ghost"
@@ -65,7 +65,7 @@ export const ModularComponentsExample: React.FC = () => {
         <Button onClick={() => setShowEditorDialog(true)}>
           打开编辑对话框
         </Button>
-        
+
         <PromptEditorDialog
           open={showEditorDialog}
           onOpenChange={setShowEditorDialog}
@@ -74,10 +74,10 @@ export const ModularComponentsExample: React.FC = () => {
             autoSave: true,
             autoSaveDelay: 2000,
             onSave: (prompt) => {
-              console.log("提示词已保存:", prompt);
+              //console.log("提示词已保存:", prompt);
             },
             onDelete: (promptId) => {
-              console.log("提示词已删除:", promptId);
+              // console.log("提示词已删除:", promptId);
             },
           }}
         />

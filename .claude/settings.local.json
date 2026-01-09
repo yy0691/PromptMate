@@ -1,8 +1,8 @@
 {
   "env": {
-    "ANTHROPIC_API_KEY": "sk-xWm85EvsIpypMEy5sgkto5d3NmT6hDMlKRB4vCwCSu5oH3ux",
-    "ANTHROPIC_BASE_URL": "https://x666.me/v1beta/models",
-    "ANTHROPIC_MODEL": "claude-sonnet-4-5",
+    "ANTHROPIC_API_KEY": "sk-LIHinCFBL5dVFwKuJl4Tz84UNpkKevX8lmrdh3oksM1biUT8",
+    "ANTHROPIC_BASE_URL": "https://x666.me/v1/chat/completions",
+    "ANTHROPIC_MODEL": "claude-opus-4-5-thinking",
     "DISABLE_AUTOUPDATER": 1,
     "IS_SANDBOX": "1",
     "USER_NAME": "薄荷"

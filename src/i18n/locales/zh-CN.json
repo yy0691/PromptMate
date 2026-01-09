@@ -152,7 +152,7 @@
       "fileSize": "文件过大",
       "fileType": "图片大小不能超过10MB",
       "deleteSuccess": "删除成功",
-      "deleteSuccessDescription": "您的提示词已被删除。",
+      "deleteSuccessDescription": "提示词已被删除",
       "addSuccess": "添加成功",
       "addSuccessDescription": "推荐模板已添加到您的提示词库",
       "reloadDataFailed": "重新加载数据失败",

@@ -410,7 +410,7 @@ function usePromptsState() {
           const filteredPrompts = prompts.filter(p => p.id !== id);
           savePrompts(filteredPrompts);
 
-          console.log(t('common.message.promptDeletedFromDatabase'), id);
+          // console.log(t('common.message.promptDeletedFromDatabase'), id);
         }
       } else {
         // 使用localStorage
@@ -418,7 +418,7 @@ function usePromptsState() {
         setPrompts(filteredPrompts);
         savePrompts(filteredPrompts);
 
-        console.log(t('common.message.promptDeletedFromLocalStorage'), id);
+        //console.log(t('common.message.promptDeletedFromLocalStorage'), id);
       }
 
       // 如果删除的是当前选中的提示词，清空选中状态
