@@ -9,6 +9,14 @@
     "api/[...slug].ts": {
       "runtime": "@vercel/node@5.5.13",
       "maxDuration": 30
+    },
+    "api/sync/push.ts": {
+      "runtime": "@vercel/node@5.5.13",
+      "maxDuration": 30
+    },
+    "api/sync/pull.ts": {
+      "runtime": "@vercel/node@5.5.13",
+      "maxDuration": 30
     }
   },
   "rewrites": [

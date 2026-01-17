@@ -195,7 +195,7 @@ export async function createOrGetLinuxdoUser(
 
 /**
  * 为 Linuxdo 用户生成 Supabase 会话
- * 使用 Supabase Admin API 创建用户并生成令牌
+ * 使用 Supabase Admin API 创建 magic link 并验证以获取令牌
  */
 export async function generateSupabaseSession(userId: string, email: string): Promise<{
   access_token: string;
@@ -204,29 +204,13 @@ export async function generateSupabaseSession(userId: string, email: string): Pr
 }> {
   const { supabaseUrl, supabaseServiceKey } = env;
 
-  // 使用 Supabase Admin API 为用户生成邀请链接，然后提取令牌
-  // 或者直接使用 Supabase 的 signInWithId
-  
-  // 更简单的方法：使用 Supabase 的 Admin API 创建用户时，Supabase 会自动生成会话
-  // 但我们这里用户已经存在，所以我们需要使用其他方法
-  
-  // 最佳实践：使用 Supabase 的 generate_link API 生成 magic link
-  // 然后从链接中提取令牌，或者让用户点击链接完成认证
-  
-  // 简化实现：直接使用 Supabase Admin API 的 createUser 返回的会话信息
-  // 但由于用户已存在，我们需要使用 updateUser 或者重新创建
-  
-  // 实际方案：使用 Supabase 的 custom JWT 或者通过 Admin API 设置用户的认证状态
-  // 然后返回一个可以用于客户端认证的令牌
-  
-  // 临时方案：返回用户 ID，让客户端使用 Supabase 客户端 SDK 的 signInWithId
-  // 但这需要客户端配置，不太理想
-  
-  // 最终方案：使用 Supabase 的 Admin API 生成一个一次性令牌
-  // 客户端可以使用这个令牌来获取完整的会话
-  
-  // 使用 generate_link 生成 magic link
-  const linkResponse = await fetch(`${supabaseUrl}/auth/v1/admin/users/${userId}/generate_link`, {
+  console.log('[Linuxdo OAuth] 开始生成 Supabase 会话');
+  console.log('[Linuxdo OAuth] userId:', userId);
+  console.log('[Linuxdo OAuth] email:', email);
+
+  // 使用正确的 Supabase Admin API 端点生成 magic link
+  // API 文档：https://supabase.com/docs/reference/javascript/auth-admin-generatelink
+  const linkResponse = await fetch(`${supabaseUrl}/auth/v1/admin/generate_link`, {
     method: 'POST',
     headers: {
       'apikey': supabaseServiceKey,
@@ -235,74 +219,110 @@ export async function generateSupabaseSession(userId: string, email: string): Pr
     },
     body: JSON.stringify({
       type: 'magiclink',
+      email: email,
     }),
   });
 
   if (!linkResponse.ok) {
     const errorText = await linkResponse.text();
+    console.error('[Linuxdo OAuth] generate_link 失败:', linkResponse.status, errorText);
     throw new Error(`Failed to generate link: ${linkResponse.status} ${errorText}`);
   }
 
   const linkData = await linkResponse.json();
-  const actionLink = linkData.properties?.action_link || linkData.action_link;
+  console.log('[Linuxdo OAuth] generate_link 响应:', JSON.stringify(linkData, null, 2));
   
-  if (!actionLink) {
-    throw new Error('No action link returned from generate_link');
+  // Supabase 返回的数据结构包含 properties.action_link 和 properties.hashed_token
+  const actionLink = linkData.properties?.action_link;
+  const hashedToken = linkData.properties?.hashed_token;
+  
+  if (!actionLink && !hashedToken) {
+    console.error('[Linuxdo OAuth] generate_link 返回数据缺少必要字段:', linkData);
+    throw new Error('No action link or hashed token returned from generate_link');
   }
 
-  // 从链接中提取令牌
-  // Supabase 的 magic link 格式通常是: https://...?token=...&type=magiclink
-  const url = new URL(actionLink);
-  const token = url.searchParams.get('token');
-  
-  if (!token) {
-    throw new Error('No token found in action link');
-  }
+  console.log('[Linuxdo OAuth] 获取到 action_link，开始验证...');
 
-  // 使用令牌交换访问令牌和刷新令牌
-  // 通过 Supabase 的 verify 端点
-  const verifyResponse = await fetch(`${supabaseUrl}/auth/v1/verify?token=${token}&type=magiclink`, {
-    method: 'GET',
-    headers: {
-      'apikey': supabaseServiceKey,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!verifyResponse.ok) {
-    // 如果 verify 不行，我们尝试使用 token 端点
-    const tokenResponse = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
+  // 方法1：使用 hashed_token 通过 verifyOtp 获取会话
+  if (hashedToken) {
+    console.log('[Linuxdo OAuth] 尝试使用 hashed_token 验证...');
+    const verifyResponse = await fetch(`${supabaseUrl}/auth/v1/verify`, {
       method: 'POST',
       headers: {
         'apikey': supabaseServiceKey,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        type: 'magiclink',
+        token_hash: hashedToken,
         email: email,
-        password: token, // 使用 magic link token 作为临时密码
       }),
     });
 
-    if (tokenResponse.ok) {
-      const session = await tokenResponse.json();
-      return {
-        access_token: session.access_token,
-        refresh_token: session.refresh_token,
-        expires_in: session.expires_in || 3600,
-      };
+    if (verifyResponse.ok) {
+      const session = await verifyResponse.json();
+      console.log('[Linuxdo OAuth] verify 成功，获取到会话');
+      if (session.access_token) {
+        return {
+          access_token: session.access_token,
+          refresh_token: session.refresh_token || '',
+          expires_in: session.expires_in || 3600,
+        };
+      }
+    } else {
+      const errorText = await verifyResponse.text();
+      console.log('[Linuxdo OAuth] verify 失败:', verifyResponse.status, errorText);
     }
-  } else {
-    const session = await verifyResponse.json();
-    if (session.access_token) {
-      return {
-        access_token: session.access_token,
-        refresh_token: session.refresh_token || '',
-        expires_in: session.expires_in || 3600,
-      };
+  }
+
+  // 方法2：从 action_link 中提取 token 并验证
+  if (actionLink) {
+    console.log('[Linuxdo OAuth] 尝试从 action_link 提取 token...');
+    try {
+      const url = new URL(actionLink);
+      const token = url.searchParams.get('token');
+      const tokenHash = url.hash ? new URLSearchParams(url.hash.slice(1)).get('token_hash') : null;
+      
+      console.log('[Linuxdo OAuth] 从 URL 提取的 token:', token ? token.substring(0, 20) + '...' : 'null');
+      console.log('[Linuxdo OAuth] 从 URL 提取的 token_hash:', tokenHash ? tokenHash.substring(0, 20) + '...' : 'null');
+      
+      const verifyToken = tokenHash || token;
+      if (verifyToken) {
+        const verifyResponse = await fetch(`${supabaseUrl}/auth/v1/verify`, {
+          method: 'POST',
+          headers: {
+            'apikey': supabaseServiceKey,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            type: 'magiclink',
+            token_hash: verifyToken,
+            email: email,
+          }),
+        });
+
+        if (verifyResponse.ok) {
+          const session = await verifyResponse.json();
+          console.log('[Linuxdo OAuth] 通过 action_link token 验证成功');
+          if (session.access_token) {
+            return {
+              access_token: session.access_token,
+              refresh_token: session.refresh_token || '',
+              expires_in: session.expires_in || 3600,
+            };
+          }
+        } else {
+          const errorText = await verifyResponse.text();
+          console.log('[Linuxdo OAuth] action_link token 验证失败:', verifyResponse.status, errorText);
+        }
+      }
+    } catch (urlError) {
+      console.error('[Linuxdo OAuth] 解析 action_link URL 失败:', urlError);
     }
   }
 
   // 如果以上方法都不行，返回错误
+  console.error('[Linuxdo OAuth] 所有验证方法都失败');
   throw new Error('Failed to generate Supabase session for Linuxdo user');
 }
 
