@@ -131,7 +131,20 @@ export function AuthDialog({ open, onOpenChange, defaultTab = 'login' }: AuthDia
         // 浏览器环境：新标签页打开（避免被弹窗拦截）
         const popup = window.open(oauthUrl, '_blank');
         if (!popup) {
-          // 若被阻止，直接在当前窗口跳转
+          // 弹窗被阻止：先存储当前的 code_verifier key，然后跳转
+          // 注意：Supabase SDK 在 signInWithOAuth 时会将 code_verifier 存储到 localStorage
+          // 当页面跳转后，回调页面可以通过 exchangeCodeForSession 使用这个 code_verifier
+          console.log('[OAuth] 弹窗被阻止，直接在当前窗口跳转');
+          console.log('[OAuth] 跳转前检查 localStorage 中的 Supabase 数据...');
+          
+          // 标记这是一个直接跳转的 OAuth 流程
+          try {
+            sessionStorage.setItem('oauth_direct_flow', 'true');
+            sessionStorage.setItem('oauth_provider', provider);
+          } catch (e) {
+            console.warn('[OAuth] 无法保存 OAuth 流程标记:', e);
+          }
+          
           window.location.href = oauthUrl;
           return;
         }

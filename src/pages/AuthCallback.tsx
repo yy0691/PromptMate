@@ -53,7 +53,70 @@ export function AuthCallback() {
         const error = searchParams.get('error') || hashParams.get('error');
         const errorDescription = searchParams.get('error_description') || hashParams.get('error_description');
         const state = searchParams.get('state') || hashParams.get('state') || '';
-        const provider = (searchParams.get('provider') || hashParams.get('provider') || 'google').toLowerCase();
+        
+        // 智能检测 provider
+        // 优先级：
+        // 1. URL 参数 provider（由 redirect_uri 带入）
+        // 2. sessionStorage 中保存的 provider（直接跳转流程）
+        // 3. referrer 检测
+        // 4. state 中的信息
+        // 5. 默认 google
+        let provider = (searchParams.get('provider') || hashParams.get('provider') || '').toLowerCase();
+        
+        // 检查是否是直接跳转流程
+        let isDirectFlow = false;
+        try {
+          isDirectFlow = sessionStorage.getItem('oauth_direct_flow') === 'true';
+          if (isDirectFlow) {
+            console.log('[OAuth Callback] 检测到直接跳转流程');
+            // 清理标记
+            sessionStorage.removeItem('oauth_direct_flow');
+            
+            // 如果没有从 URL 获取到 provider，尝试从 sessionStorage 获取
+            if (!provider) {
+              const savedProvider = sessionStorage.getItem('oauth_provider');
+              if (savedProvider) {
+                provider = savedProvider.toLowerCase();
+                console.log('[OAuth Callback] 从 sessionStorage 获取 provider:', provider);
+              }
+              sessionStorage.removeItem('oauth_provider');
+            }
+          }
+        } catch (e) {
+          console.warn('[OAuth Callback] 读取 sessionStorage 失败:', e);
+        }
+        
+        if (!provider) {
+          // 根据 referrer 检测
+          const referrer = document.referrer.toLowerCase();
+          if (referrer.includes('linux.do') || referrer.includes('linuxdo')) {
+            provider = 'linuxdo';
+            console.log('[OAuth Callback] 根据 referrer 检测到 Linuxdo 登录');
+          } else if (referrer.includes('github.com')) {
+            provider = 'github';
+            console.log('[OAuth Callback] 根据 referrer 检测到 GitHub 登录');
+          } else if (referrer.includes('google.com') || referrer.includes('accounts.google')) {
+            provider = 'google';
+            console.log('[OAuth Callback] 根据 referrer 检测到 Google 登录');
+          } else if (state) {
+            // 尝试从 state 中解析 provider（如果是 JSON 编码的信息）
+            try {
+              const decoded = JSON.parse(atob(state.replace(/-/g, '+').replace(/_/g, '/')));
+              if (decoded?.provider) {
+                provider = decoded.provider.toLowerCase();
+                console.log('[OAuth Callback] 从 state JSON 中解析到 provider:', provider);
+              }
+            } catch {
+              // 忽略解析失败
+            }
+          }
+          
+          // 默认 google
+          if (!provider) {
+            provider = 'google';
+            console.log('[OAuth Callback] 使用默认 provider: google');
+          }
+        }
         let codeVerifier: string | undefined;
 
         console.log('[OAuth Callback] 提取的参数:', {

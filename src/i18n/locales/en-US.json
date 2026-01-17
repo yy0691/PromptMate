@@ -125,6 +125,7 @@
     "switchToLight": "Switch to light mode",
     "switchToDark": "Switch to dark mode",
     "alwaysOnTop": "Always on Top",
+    "alwaysOnTopDesc": "Keep the window always on top of other windows",
     "maximize": "Maximize",
     "minimize": "Minimize",
     "close": "Close",
@@ -343,7 +344,8 @@
     "connectionSuccess": "Connection successful",
     "connectionFailed": "Connection failed",
     "saveSettings": "Save Settings",
-    "settingsSaved": "Settings saved"
+    "settingsSaved": "Settings saved",
+    "typography": "Typography"
   },
   "custom_theme": {
     "title": "Custom Theme",

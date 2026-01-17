@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI参数详解 - 小红书卡片</title>
+    <style>
+        :root {
+            --bg-color: #F5F5F7;
+            --card-bg: #FFFFFF;
+            --primary-color: #2D3436; /* 深灰黑 */
+            --accent-blue: #0984E3; /* 科技蓝 */
+            --accent-red: #D63031; /* 警示红 */
+            --accent-green: #00B894; /* 成功绿 */
+            --accent-purple: #6C5CE7; /* 创意紫 */
+            --text-color: #2D3436;
+            --text-light: #636E72;
+            --border-radius: 24px;
+            --card-width: 600px; /* 基准宽度 */
+            --card-height: 800px; /* 3:4 比例 */
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        body {
+            background-color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            padding: 40px;
+            margin: 0;
+        }
+
+        /* 卡片容器 */
+        .xhs-card {
+            width: var(--card-width);
+            height: var(--card-height);
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+
+        /* 顶部栏 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 15px;
+        }
+
+        .brand {
+            font-weight: 800;
+            font-size: 14px;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .brand::before {
+            content: "";
+            display: block;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-blue);
+            border-radius: 50%;
+        }
+
+        .page-num {
+            font-weight: 600;
+            color: #b2bec3;
+            font-size: 14px;
+        }
+
+        /* 标题样式 */
+        h1 {
+            font-size: 36px;
+            line-height: 1.2;
+            margin: 0 0 20px 0;
+            color: var(--primary-color);
+        }
+
+        h2 {
+            font-size: 24px;
+            margin: 25px 0 15px 0;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2::before {
+            content: '';
+            display: block;
+            width: 6px;
+            height: 24px;
+            background: var(--accent-purple);
+            border-radius: 3px;
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: var(--text-color);
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .highlight {
+            color: var(--accent-blue);
+            font-weight: 700;
+            background: rgba(9, 132, 227, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* 可视化图表区 */
+        .visual-box {
+            background: var(--bg-color);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .bar-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .bar-label {
+            width: 50px;
+            font-weight: bold;
+            text-align: right;
+            font-size: 14px;
+        }
+
+        .bar {
+            height: 24px;
+            background: var(--accent-blue);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 12px;
+            padding-left: 8px;
+            transition: width 0.3s;
+        }
+
+        .bar.low { background: #dfe6e9; color: #636E72; }
+        .bar.danger { background: var(--accent-red); opacity: 0.1; color: var(--accent-red); }
+
+        /* 表格样式 */
+        .table-container {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .table-container th {
+            background: var(--accent-blue);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .table-container th:first-child { border-top-left-radius: 12px; }
+        .table-container th:last-child { border-top-right-radius: 12px; }
+
+        .table-container td {
+            background: #fdfdfd;
+            border-bottom: 1px solid #eee;
+            padding: 12px;
+            color: var(--text-color);
+            vertical-align: top;
+        }
+
+        .table-container tr:last-child td:first-child { border-bottom-left-radius: 12px; }
+        .table-container tr:last-child td:last-child { border-bottom-right-radius: 12px; }
+
+        /* 标签 */
+        .tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .tag-temp { background: #ffeaa7; color: #d35400; }
+        .tag-top { background: #81ecec; color: #00b894; }
+
+        /* 底部 */
+        .footer {
+            margin-top: auto;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 15px;
+            font-size: 14px;
+            color: var(--text-light);
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* 封面特有 */
+        .cover-title {
+            font-size: 56px;
+            font-weight: 900;
+            margin-top: 40px;
+            line-height: 1.1;
+        }
+        .cover-subtitle {
+            font-size: 24px;
+            color: var(--text-light);
+            margin-top: 20px;
+            font-weight: 400;
+        }
+        .cover-visual {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+        }
+
+        /* 提示框 */
+        .note-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 16px;
+            color: #856404;
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="xhs-card">
+        <div class="header">
+            <div class="brand">AI 折腾研究所</div>
+            <div class="page-num">01 / 05</div>
+        </div>
+        
+        <div class="tag tag-temp" style="align-self: flex-start; margin-top: 20px;">硬核科普</div>
+        <div class="cover-title">
+            别只知道<br>
+            <span style="color: var(--accent-blue);">调Temperature</span>
+        </div>
+        <div class="cover-subtitle">
+            驯服 AI 胡说八道的 3 个“大脑旋钮”<br>
+            (附：产品经理避坑指南)
+        </div>
+
+        <div class="cover-visual">
+            ❄️ 🎛️ 🔥
+        </div>
+
+        <div class="footer">
+            <span>@你的小红书ID</span>
+            <span>向左滑动学习 👉</span>
+        </div>
+    </div>
+
+    <div class="xhs-card">
+        <div class="header">
+            <div class="brand">AI 原理解析</div>
+            <div class="page-num">02 / 05</div>
+        </div>
+
+        <h1>AI 是个“接龙赌徒”</h1>
+        <p>AI 并不是真正在思考，而是在计算下一个字的<span class="highlight">概率排行榜</span>。</p>
+        <p>当我们输入：“今天天气真...”</p>
+
+        <div class="visual-box">
+            <div class="bar-chart">
+                <div class="bar-item">
+                    <span class="bar-label">好</span>
+                    <div class="bar" style="width: 80%;">65% (首选)</div>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">不错</span>
+                    <div class="bar low" style="width: 40%;">20%</div>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">热</span>
+                    <div class="bar low" style="width: 25%;">10%</div>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">西瓜</span>
+                    <div class="bar danger" style="width: 5%;">0.01% (幻觉)</div>
+                </div>
+            </div>
+        </div>
+
+        <p>我们调整参数，就是在 AI 真正“落子”之前，对这个排行榜进行干预。</p>
+
+        <div class="footer">
+            <span>概率决定一切</span>
+        </div>
+    </div>
+
+    <div class="xhs-card">
+        <div class="header">
+            <div class="brand">核心参数详解</div>
+            <div class="page-num">03 / 05</div>
+        </div>
+
+        <h2><span style="color:var(--accent-red)">Temperature</span> (温度)</h2>
+        <p class="highlight">作用：改变概率分布的“形状”</p>
+
+        <div class="visual-box" style="text-align: center;">
+            <p><strong>Temp < 0.5 (低温)</strong></p>
+            <div style="height: 50px; background: linear-gradient(to top, #74b9ff 0%, #74b9ff 90%, transparent 90%); width: 20px; margin: 0 auto; border-radius: 4px;"></div>
+            <p style="font-size: 14px; color: #636E72;">高山变得更高（极度保守）</p>
+            <hr style="border: 0; border-top: 1px dashed #ccc; margin: 15px 0;">
+            <p><strong>Temp > 1.0 (高温)</strong></p>
+            <div style="display: flex; justify-content: center; gap: 5px; align-items: flex-end;">
+                <div style="height: 30px; background: #ff7675; width: 20px; border-radius: 4px;"></div>
+                <div style="height: 28px; background: #ff7675; width: 20px; border-radius: 4px;"></div>
+                <div style="height: 32px; background: #ff7675; width: 20px; border-radius: 4px;"></div>
+            </div>
+            <p style="font-size: 14px; color: #636E72;">地形被压平，万物皆有可能（创意/混乱）</p>
+        </div>
+
+        <div class="note-box">
+            💡 <strong>心法：</strong><br>
+            想让AI别乱想？降温。<br>
+            想让AI搞创意？升温。
+        </div>
+
+        <div class="footer">
+            <span>它是“调色盘”</span>
+        </div>
+    </div>
+
+    <div class="xhs-card">
+        <div class="header">
+            <div class="brand">核心参数详解</div>
+            <div class="page-num">04 / 05</div>
+        </div>
+
+        <h2><span style="color:var(--accent-green)">Top-P</span> (核采样)</h2>
+        <p class="highlight">作用：划定入围名单 (动态截断)</p>
+        <p>设为 0.9，意味着只录取累加概率达到 90% 的前几名优等生。</p>
+        <ul style="color: var(--text-color); font-size: 16px;">
+            <li>题目简单 -> 录取 1 人</li>
+            <li>题目开放 -> 录取 50 人</li>
+        </ul>
+
+        <hr style="margin: 20px 0; border: 0; border-top: 2px solid #f0f0f0;">
+
+        <h2><span style="color:#636E72">Top-K</span> (硬保底)</h2>
+        <p class="highlight">作用：不管概率多少，只要前 K 名</p>
+        <p>这是防止开源小模型“发疯”的最后一道防线。通常设为 40-50。</p>
+
+        <div class="footer">
+            <span>它是“招生办”</span>
+        </div>
+    </div>
+
+    <div class="xhs-card">
+        <div class="header">
+            <div class="brand">实战指南</div>
+            <div class="page-num">05 / 05</div>
+        </div>
+
+        <h1>抄作业：黄金组合</h1>
+        <p>很多文档说“二选一”，但高阶玩家通常打<strong>组合拳</strong>：</p>
+
+        <table class="table-container">
+            <thead>
+                <tr>
+                    <th style="width: 25%">场景</th>
+                    <th style="width: 35%">配置</th>
+                    <th>AI 心态</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>严谨逻辑</strong><br><span style="font-size:12px; color:#666">代码/JSON</span></td>
+                    <td><span class="tag tag-temp">Temp=0</span><br><span style="font-size:12px;color:#999">(Top-P失效)</span></td>
+                    <td>莫得感情，只陈述事实。</td>
+                </tr>
+                <tr>
+                    <td><strong>日常辅助</strong><br><span style="font-size:12px; color:#666">周报/客服</span></td>
+                    <td><span class="tag tag-temp">T=0.7</span><br><span class="tag tag-top">P=0.9</span></td>
+                    <td>正常说话，逻辑通顺。</td>
+                </tr>
+                <tr>
+                    <td><strong>创意风暴</strong><br><span style="font-size:12px; color:#666">起名/小说</span></td>
+                    <td><span class="tag tag-temp">T=1.2</span><br><span class="tag tag-top">P=0.95</span></td>
+                    <td>“扶我起来，我要搞艺术！”</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="note-box" style="margin-top: 30px;">
+            📸 <strong>建议截图收藏</strong><br>
+            下次遇到 AI 胡说八道，你就知道该拧哪个螺丝了！
+        </div>
+
+        <div class="footer">
+            <span>记得点赞收藏 ⭐</span>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -38,9 +38,14 @@ export function buildLinuxdoOAuthUrl(redirectUri: string, state?: string): strin
     throw new Error('LINUXDO_CLIENT_ID is not configured');
   }
 
+  // 在 redirect_uri 中添加 provider 参数，方便回调时识别
+  const redirectUrl = new URL(redirectUri);
+  redirectUrl.searchParams.set('provider', 'linuxdo');
+  const finalRedirectUri = redirectUrl.toString();
+
   const params = new URLSearchParams({
     client_id: linuxdoClientId,
-    redirect_uri: redirectUri,
+    redirect_uri: finalRedirectUri,
     response_type: 'code',
     scope: 'read',
     ...(state && { state }),
@@ -59,6 +64,13 @@ export async function exchangeLinuxdoCode(code: string, redirectUri: string): Pr
     throw new Error('LINUXDO_CLIENT_ID or LINUXDO_CLIENT_SECRET is not configured');
   }
 
+  // 确保 redirect_uri 包含 provider 参数（与生成 URL 时一致）
+  const redirectUrl = new URL(redirectUri);
+  if (!redirectUrl.searchParams.has('provider')) {
+    redirectUrl.searchParams.set('provider', 'linuxdo');
+  }
+  const finalRedirectUri = redirectUrl.toString();
+
   const response = await fetch(LINUXDO_TOKEN_URL, {
     method: 'POST',
     headers: {
@@ -67,7 +79,7 @@ export async function exchangeLinuxdoCode(code: string, redirectUri: string): Pr
     body: new URLSearchParams({
       grant_type: 'authorization_code',
       code,
-      redirect_uri: redirectUri,
+      redirect_uri: finalRedirectUri,
       client_id: linuxdoClientId,
       client_secret: linuxdoClientSecret,
     }),

@@ -118,11 +118,16 @@ class AuthService {
         throw new Error('Supabase 配置缺失。请检查 VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY 环境变量。');
       }
 
+      // 在 redirect_uri 中添加 provider 参数，方便回调时识别
+      const redirectUrl = new URL(redirectUri);
+      redirectUrl.searchParams.set('provider', provider);
+      const finalRedirectUri = redirectUrl.toString();
+
       // 优化 OAuth 选项，只包含必要的参数
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: provider as 'google' | 'github',
         options: {
-          redirectTo: redirectUri,
+          redirectTo: finalRedirectUri,
           skipBrowserRedirect: true,
           // 只请求必要的 scope，减少 URL 长度
           scopes: provider === 'google' ? 'email profile' : undefined,
@@ -186,6 +191,15 @@ class AuthService {
     // Google / GitHub 走 Supabase SDK
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
     if (error) {
+      // 检查是否是 code_verifier 相关的错误
+      const errorMessage = error.message || '';
+      if (errorMessage.includes('code_verifier') || errorMessage.includes('code verifier')) {
+        console.error('[OAuth] PKCE code_verifier 验证失败，可能是因为：');
+        console.error('  1. 弹窗被浏览器阻止，导致在新页面跳转');
+        console.error('  2. 页面刷新导致 code_verifier 丢失');
+        console.error('  3. localStorage 被清理');
+        throw new Error('登录验证失败：请检查浏览器是否阻止了弹窗，建议允许弹窗后重试。如果问题持续，请尝试使用其他浏览器。');
+      }
       throw new Error(error.message || 'OAuth登录失败');
     }
 

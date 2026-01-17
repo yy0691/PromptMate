@@ -5,12 +5,13 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
     console.error('CRITICAL: Supabase URL or Anon Key is missing! OAuth features WILL FAIL.');
+    console.error('Please configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env.local file.');
 }
 
 // 防止页面白屏崩溃：如果没有 URL，使用占位符 (会导致 Auth 调用失败但页面能加载)
 export const supabase = createClient(
-    supabaseUrl,
-    supabaseAnonKey,
+    supabaseUrl || 'https://placeholder.supabase.co',
+    supabaseAnonKey || 'placeholder-key',
     {
         auth: {
             detectSessionInUrl: false
