@@ -38,14 +38,12 @@ export function buildLinuxdoOAuthUrl(redirectUri: string, state?: string): strin
     throw new Error('LINUXDO_CLIENT_ID is not configured');
   }
 
-  // 在 redirect_uri 中添加 provider 参数，方便回调时识别
-  const redirectUrl = new URL(redirectUri);
-  redirectUrl.searchParams.set('provider', 'linuxdo');
-  const finalRedirectUri = redirectUrl.toString();
+  // 注意：不在 redirect_uri 中添加额外参数，因为某些 OAuth 服务器不会保留这些参数
+  // 前端通过 referrer 检测来识别 Linuxdo 登录
 
   const params = new URLSearchParams({
     client_id: linuxdoClientId,
-    redirect_uri: finalRedirectUri,
+    redirect_uri: redirectUri,
     response_type: 'code',
     scope: 'read',
     ...(state && { state }),
@@ -64,12 +62,13 @@ export async function exchangeLinuxdoCode(code: string, redirectUri: string): Pr
     throw new Error('LINUXDO_CLIENT_ID or LINUXDO_CLIENT_SECRET is not configured');
   }
 
-  // 确保 redirect_uri 包含 provider 参数（与生成 URL 时一致）
-  const redirectUrl = new URL(redirectUri);
-  if (!redirectUrl.searchParams.has('provider')) {
-    redirectUrl.searchParams.set('provider', 'linuxdo');
-  }
-  const finalRedirectUri = redirectUrl.toString();
+  // 使用传入的 redirect_uri，不添加额外参数
+  // 注意：redirect_uri 必须与生成 OAuth URL 时完全一致
+  
+  console.log('[Linuxdo OAuth] 交换 token 请求参数:');
+  console.log('[Linuxdo OAuth]   redirect_uri:', redirectUri);
+  console.log('[Linuxdo OAuth]   client_id:', linuxdoClientId.substring(0, 10) + '...');
+  console.log('[Linuxdo OAuth]   code:', code.substring(0, 20) + '...');
 
   const response = await fetch(LINUXDO_TOKEN_URL, {
     method: 'POST',
@@ -79,7 +78,7 @@ export async function exchangeLinuxdoCode(code: string, redirectUri: string): Pr
     body: new URLSearchParams({
       grant_type: 'authorization_code',
       code,
-      redirect_uri: finalRedirectUri,
+      redirect_uri: redirectUri,
       client_id: linuxdoClientId,
       client_secret: linuxdoClientSecret,
     }),
@@ -87,10 +86,13 @@ export async function exchangeLinuxdoCode(code: string, redirectUri: string): Pr
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Failed to exchange code: ${response.status} ${errorText}`);
+    console.error('[Linuxdo OAuth] token 交换失败:', response.status, errorText);
+    throw new Error(`Linuxdo 登录失败: ${response.status} - ${errorText || '授权码无效或已过期，请重新登录'}`);
   }
 
-  return response.json();
+  const result = await response.json();
+  console.log('[Linuxdo OAuth] token 交换成功');
+  return result;
 }
 
 /**

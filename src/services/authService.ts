@@ -172,6 +172,10 @@ class AuthService {
   async oauthCallback(provider: OAuthProvider, code: string, redirectUri: string, codeVerifier?: string): Promise<AuthResponse> {
     // Linuxdo 依然走后端 API
     if (provider === 'linuxdo') {
+      console.log('[Linuxdo OAuth] 开始回调处理');
+      console.log('[Linuxdo OAuth] redirect_uri:', redirectUri);
+      console.log('[Linuxdo OAuth] code:', code.substring(0, 20) + '...');
+      
       const response = await fetch(`${this.baseURL}/api/auth/oauth/callback`, {
         method: 'POST',
         headers: {
@@ -181,8 +185,23 @@ class AuthService {
       });
 
       if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: 'OAuth登录失败' }));
-        throw new Error(error.message || 'OAuth登录失败');
+        const errorData = await response.json().catch(() => ({ error: { message: 'OAuth登录失败' } }));
+        console.error('[Linuxdo OAuth] 回调失败:', response.status, errorData);
+        
+        // 解析错误信息（后端格式：{ error: { code, message } }）
+        let errorMessage = errorData.error?.message || errorData.message || 'OAuth登录失败';
+        
+        // 提供更友好的错误提示
+        if (response.status === 400) {
+          if (errorMessage.includes('redirect_uri') || errorMessage.includes('redirect')) {
+            errorMessage = 'Linuxdo 登录配置错误：回调地址不匹配，请联系管理员';
+          } else if (errorMessage.includes('code') || errorMessage.includes('授权码') || errorMessage.includes('invalid_grant')) {
+            errorMessage = 'Linuxdo 授权码无效或已过期，请重新登录';
+          } else if (errorMessage.includes('not configured') || errorMessage.includes('未配置')) {
+            errorMessage = 'Linuxdo 登录功能未配置，请联系管理员';
+          }
+        }
+        throw new Error(errorMessage);
       }
 
       return response.json();

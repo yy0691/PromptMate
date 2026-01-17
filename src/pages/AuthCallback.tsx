@@ -174,6 +174,25 @@ export function AuthCallback() {
 
             console.log('[OAuth Callback] 会话设置成功:', data.session?.user?.email);
 
+            // 同步到我们的认证状态管理（useAuth）
+            if (data.session) {
+              const authTokens = {
+                access_token: data.session.access_token,
+                refresh_token: data.session.refresh_token,
+                expires_in: data.session.expires_in || 3600,
+                expires_at: Date.now() + (data.session.expires_in || 3600) * 1000,
+              };
+              const userInfo = {
+                id: data.user?.id || '',
+                email: data.user?.email || '',
+                nickname: data.user?.user_metadata?.full_name || data.user?.user_metadata?.name || null,
+                avatar_url: data.user?.user_metadata?.avatar_url || null,
+              };
+              localStorage.setItem('promptmate_auth_tokens', JSON.stringify(authTokens));
+              localStorage.setItem('promptmate_user', JSON.stringify(userInfo));
+              console.log('[OAuth Callback] 已同步认证状态到 localStorage');
+            }
+
             // 弹窗流程：通知父窗口并关闭
             if (sendMessageToOpener({ type: 'oauth-callback', success: true, provider })) {
               return;
@@ -198,8 +217,9 @@ export function AuthCallback() {
               variant: 'success',
             });
 
+            // 使用硬刷新而不是 React Router 导航，确保 AuthProvider 重新初始化
             setTimeout(() => {
-              navigate('/', { replace: true });
+              window.location.href = '/';
             }, 1500);
             return;
           } catch (e: any) {
@@ -230,15 +250,33 @@ export function AuthCallback() {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
               console.log('[OAuth Callback] 发现现有会话，可能已自动登录');
-              // 如果已有会话，直接使用
+              
+              // 同步到我们的认证状态管理（useAuth）
+              const authTokens = {
+                access_token: session.access_token,
+                refresh_token: session.refresh_token,
+                expires_in: session.expires_in || 3600,
+                expires_at: Date.now() + (session.expires_in || 3600) * 1000,
+              };
+              const userInfo = {
+                id: session.user?.id || '',
+                email: session.user?.email || '',
+                nickname: session.user?.user_metadata?.full_name || session.user?.user_metadata?.name || null,
+                avatar_url: session.user?.user_metadata?.avatar_url || null,
+              };
+              localStorage.setItem('promptmate_auth_tokens', JSON.stringify(authTokens));
+              localStorage.setItem('promptmate_user', JSON.stringify(userInfo));
+              console.log('[OAuth Callback] 已同步认证状态到 localStorage');
+              
               setStatus('success');
               toast({
                 title: '登录成功',
                 description: '检测到已有会话，正在跳转...',
                 variant: 'success',
               });
+              // 使用硬刷新
               setTimeout(() => {
-                navigate('/', { replace: true });
+                window.location.href = '/';
               }, 1500);
               return;
             }
@@ -285,8 +323,9 @@ export function AuthCallback() {
           variant: 'success',
         });
 
+        // 使用硬刷新而不是 React Router 导航，确保 AuthProvider 重新初始化
         setTimeout(() => {
-          navigate('/', { replace: true });
+          window.location.href = '/';
         }, 1500);
       } catch (error: any) {
         console.error('OAuth 回调处理失败:', error);

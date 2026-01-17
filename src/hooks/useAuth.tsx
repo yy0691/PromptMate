@@ -124,6 +124,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     initAuth();
+    
+    // 监听 localStorage 变化（跨标签页同步）
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === USER_STORAGE_KEY) {
+        if (event.newValue) {
+          try {
+            const newUser = JSON.parse(event.newValue);
+            setUser(newUser);
+            console.log('[Auth] 检测到跨标签页登录，已同步用户状态');
+          } catch (e) {
+            console.error('[Auth] 解析用户信息失败:', e);
+          }
+        } else {
+          // 用户信息被清除（登出）
+          setUser(null);
+          console.log('[Auth] 检测到跨标签页登出');
+        }
+      }
+    };
+    
+    // 监听页面可见性变化（当用户从其他标签页切回时检查登录状态）
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        const { user: storedUser } = loadStoredAuth();
+        // 使用函数式更新来避免闭包问题
+        setUser(currentUser => {
+          if (storedUser && !currentUser) {
+            console.log('[Auth] 页面激活时检测到已登录，同步用户状态');
+            return storedUser;
+          } else if (!storedUser && currentUser) {
+            console.log('[Auth] 页面激活时检测到已登出，清除用户状态');
+            return null;
+          }
+          return currentUser;
+        });
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   // 定期刷新token（在过期前5分钟）

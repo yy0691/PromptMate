@@ -127,15 +127,30 @@ export async function oauthCallback(context: RequestContext) {
 
     // Linuxdo 使用独立的授权流程
     if (provider.toLowerCase() === 'linuxdo') {
+      console.log('[OAuth Callback] Linuxdo 登录流程开始');
+      console.log('[OAuth Callback] redirect_uri:', redirectUri);
+      console.log('[OAuth Callback] code:', code.substring(0, 20) + '...');
+      
       if (!isLinuxdoConfigured()) {
+        console.error('[OAuth Callback] Linuxdo OAuth 未配置');
         throw new Error('Linuxdo OAuth is not configured');
       }
 
       // 1. 使用授权码交换访问令牌
-      const linuxdoToken = await exchangeLinuxdoCode(code, redirectUri);
+      console.log('[OAuth Callback] 开始交换 Linuxdo token...');
+      let linuxdoToken;
+      try {
+        linuxdoToken = await exchangeLinuxdoCode(code, redirectUri);
+        console.log('[OAuth Callback] Linuxdo token 交换成功');
+      } catch (tokenError: any) {
+        console.error('[OAuth Callback] Linuxdo token 交换失败:', tokenError.message);
+        throw tokenError;
+      }
 
       // 2. 使用访问令牌获取用户信息
+      console.log('[OAuth Callback] 获取 Linuxdo 用户信息...');
       const linuxdoUser = await getLinuxdoUserInfo(linuxdoToken.access_token);
+      console.log('[OAuth Callback] Linuxdo 用户:', linuxdoUser.username);
 
       // 3. 在 Supabase 中创建或查找用户
       // 使用 Linuxdo 的用户邮箱作为唯一标识
