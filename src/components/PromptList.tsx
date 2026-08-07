@@ -549,7 +549,8 @@ export const PromptList = memo(function PromptList({
                             e.stopPropagation();
                             handleCopyPrompt(prompt.id);
                           }}
-                          title={t('common.edit')}
+                          aria-label={t('common.copyPrompt')}
+                          title={t('common.copyPrompt')}
                         >
                           <Icons.copy className="h-4 w-4" />
                         </Button>
@@ -560,6 +561,8 @@ export const PromptList = memo(function PromptList({
                               variant="ghost" 
                               size="icon" 
                               className="h-8 w-8"
+                              aria-label={t('common.moreActions')}
+                              title={t('common.moreActions')}
                               onClick={(e) => e.stopPropagation()}
                             >
                               <Icons.moreVertical className="h-4 w-4" />

@@ -50,6 +50,7 @@ import { Separator } from "@/components/ui/separator";
 
 // 侧边栏显示模式类型
 type SidebarMode = "expanded" | "collapsed";
+type SettingsPanel = "user" | "appearance" | "data" | "ai" | "mcp" | "about" | "preferences";
 
 export function Sidebar({ className }: { className?: string }) {
   // Hooks and shared state
@@ -90,7 +91,7 @@ export function Sidebar({ className }: { className?: string }) {
   const [sidebarMode, setSidebarMode] = useState<SidebarMode>(
     preferences.ui.sidebarExpanded ? "expanded" : "collapsed"
   );
-  const [settingsPanel, setSettingsPanel] = useState<"user" | "appearance" | "data" | "ai" | "mcp" | "about" | "preferences">("user");
+  const [settingsPanel, setSettingsPanel] = useState<SettingsPanel>("user");
   const [showCategoryManager, setShowCategoryManager] = useState(false);
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
@@ -574,6 +575,76 @@ export function Sidebar({ className }: { className?: string }) {
   const handleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
   };
+
+  const settingsNavSections: Array<{
+    title: string;
+    items: Array<{
+      id: SettingsPanel;
+      label: string;
+      icon: React.ComponentType<{ className?: string }>;
+    }>;
+  }> = [
+    {
+      title: "账户",
+      items: [
+        {
+          id: "user",
+          label: t('auth.userInfo'),
+          icon: Icons.user,
+        },
+      ],
+    },
+    {
+      title: "界面",
+      items: [
+        {
+          id: "appearance",
+          label: t('common.appearance'),
+          icon: Icons.palette,
+        },
+        {
+          id: "preferences",
+          label: t('preferences.title'),
+          icon: Icons.layout,
+        },
+      ],
+    },
+    {
+      title: "数据",
+      items: [
+        {
+          id: "data",
+          label: t('dataManagement.title'),
+          icon: Icons.fileJson,
+        },
+      ],
+    },
+    {
+      title: "智能能力",
+      items: [
+        {
+          id: "ai",
+          label: t('common.aiSettings'),
+          icon: Icons.star,
+        },
+        {
+          id: "mcp",
+          label: "MCP设置",
+          icon: Icons.zap,
+        },
+      ],
+    },
+    {
+      title: "系统",
+      items: [
+        {
+          id: "about",
+          label: t('common.about'),
+          icon: Icons.info,
+        },
+      ],
+    },
+  ];
 
   // 渲染侧边栏
   return (
@@ -1105,15 +1176,15 @@ export function Sidebar({ className }: { className?: string }) {
         }}
       >
         <DialogContent className={cn(
-          "transition-all duration-300 flex flex-col overflow-hidden",
+          "transition-all duration-300 flex flex-col overflow-hidden gap-0",
           isFullscreen 
             ? "fixed left-0 top-0 w-screen h-screen max-w-none max-h-none m-0 rounded-none translate-x-0 translate-y-0 p-0" 
-            : `sm:max-w-[720px] max-w-[90vw] h-[85vh] max-h-[85vh] p-6`
+            : "sm:max-w-[1040px] max-w-[94vw] h-[86vh] max-h-[86vh] p-0"
         )}>
-          <DialogHeader className="flex flex-row items-center justify-between flex-shrink-0">
+          <DialogHeader className="flex-shrink-0 border-b bg-muted/20 px-6 py-5">
             <div>
               <div className="flex items-center justify-between w-full">
-                <DialogTitle>{t('common.appSettings')}</DialogTitle>
+                <DialogTitle className="text-lg">{t('common.appSettings')}</DialogTitle>
                 {/* <Button
                   variant="ghost"
                   size="sm"
@@ -1131,86 +1202,52 @@ export function Sidebar({ className }: { className?: string }) {
               <DialogDescription>
                 {t('common.customizeAppearance')}
               </DialogDescription>
-              
             </div>
-            
           </DialogHeader>
           
-          {/* 设置导航按钮 */}
-          <div className="flex flex-wrap gap-2 mb-4 border-b pb-3 flex-shrink-0">
-            <Button 
-              variant={settingsPanel === "user" ? "default" : "ghost"} 
-              onClick={() => setSettingsPanel("user")}
-              className={cn(
-                "flex items-center transition-all",
-                settingsPanel === "user" 
-                  ? "bg-primary text-primary-foreground shadow-sm font-medium" 
-                  : "hover:bg-muted"
-              )}
-            >
-              <Icons.user className="w-4 h-4 mr-2" />
-              {t('auth.userInfo')}
-            </Button>
-            <Button 
-              variant={settingsPanel === "appearance" ? "default" : "ghost"} 
-              onClick={() => setSettingsPanel("appearance")}
-              className={cn(
-                "flex items-center transition-all",
-                settingsPanel === "appearance" 
-                  ? "bg-primary text-primary-foreground shadow-sm font-medium" 
-                  : "hover:bg-muted"
-              )}
-            >
-              <Icons.palette className="mr-2 h-4 w-4" />
-              {t('common.appearance')}
-            </Button>
-            <Button 
-              variant={settingsPanel === "data" ? "default" : "ghost"} 
-              onClick={() => setSettingsPanel("data")}
-              className={cn(
-                "flex items-center transition-all",
-                settingsPanel === "data" 
-                  ? "bg-primary text-primary-foreground shadow-sm font-medium" 
-                  : "hover:bg-muted"
-              )}
-            >
-              <Icons.fileJson className="mr-2 h-4 w-4" />
-              {t('dataManagement.title')}
-            </Button>
-            <Button 
-              variant={settingsPanel === "ai" ? "default" : "ghost"} 
-              onClick={() => setSettingsPanel("ai")}
-              className={cn(
-                "flex items-center transition-all",
-                settingsPanel === "ai" 
-                  ? "bg-primary text-primary-foreground shadow-sm font-medium" 
-                  : "hover:bg-muted"
-              )}
-            >
-              <Icons.star className="w-4 h-4 mr-2" />
-              {t('common.aiSettings')}
-            </Button>
-            <Button 
-              variant={settingsPanel === "mcp" ? "default" : "ghost"} 
-              onClick={() => setSettingsPanel("mcp")}
-              className={cn(
-                "flex items-center transition-all",
-                settingsPanel === "mcp" 
-                  ? "bg-primary text-primary-foreground shadow-sm font-medium" 
-                  : "hover:bg-muted"
-              )}
-            >
-              <Icons.zap className="w-4 h-4 mr-2" />
-              MCP设置
-            </Button>
-            {/* PromptX settings tab removed; use main view via sidebar button */}
-          </div>
+          <div className="flex min-h-0 flex-1">
+            <aside className="w-[188px] flex-shrink-0 border-r bg-muted/10">
+              <ScrollArea className="h-full">
+                <nav className="space-y-4 p-3">
+                  {settingsNavSections.map((section) => (
+                    <div key={section.title} className="space-y-1">
+                      <div className="px-2 text-[11px] font-medium leading-5 text-muted-foreground">
+                        {section.title}
+                      </div>
+                      <div className="space-y-1">
+                        {section.items.map((item) => {
+                          const Icon = item.icon;
+                          const active = settingsPanel === item.id;
+
+                          return (
+                            <Button
+                              key={item.id}
+                              variant={active ? "secondary" : "ghost"}
+                              onClick={() => setSettingsPanel(item.id)}
+                              className={cn(
+                                "h-10 w-full justify-start rounded-md px-2.5 text-left transition-all",
+                                active ? "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90" : "hover:bg-muted"
+                              )}
+                            >
+                              <Icon className="mr-3 h-4 w-4 flex-shrink-0" />
+                              <span className="min-w-0 truncate text-sm font-medium">{item.label}</span>
+                            </Button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </nav>
+              </ScrollArea>
+            </aside>
+
+            <div className="flex min-w-0 flex-1 flex-col bg-background">
           
           {/* 外观设置面板 */}
           {settingsPanel === "appearance" && (
             <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
               <ScrollArea className="flex-1">
-                <div className="pr-4 py-2 space-y-6">
+                <div className="px-6 py-5 space-y-6">
                 
                 {/* 语言设置 */}
                 <div className="space-y-3">
@@ -1322,7 +1359,7 @@ export function Sidebar({ className }: { className?: string }) {
           {settingsPanel === "data" && (
             <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
               <ScrollArea className="flex-1">
-                <div className="pr-4">
+                <div className="px-2 py-1">
                   <DataImportExport 
                     onDataChanged={handleDataChanged}
                     inline={true}
@@ -1336,7 +1373,7 @@ export function Sidebar({ className }: { className?: string }) {
           {settingsPanel === "ai" && (
             <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
               <ScrollArea className="flex-1">
-                <div className="pr-4 py-2">
+                <div className="px-6 py-5">
                   <AISettings />
                 </div>
               </ScrollArea>
@@ -1347,7 +1384,7 @@ export function Sidebar({ className }: { className?: string }) {
           {settingsPanel === "mcp" && (
             <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
               <ScrollArea className="flex-1">
-                <div className="pr-4 py-2">
+                <div className="px-6 py-5">
                   <MCPSettingsPanel />
                 </div>
               </ScrollArea>
@@ -1360,7 +1397,7 @@ export function Sidebar({ className }: { className?: string }) {
           {settingsPanel === "preferences" && (
             <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
               <ScrollArea className="flex-1">
-                <div className="pr-4">
+                <div className="px-6 py-5">
                   <PreferencesPanel />
                 </div>
               </ScrollArea>
@@ -1371,7 +1408,7 @@ export function Sidebar({ className }: { className?: string }) {
           {settingsPanel === "user" && (
             <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
               <ScrollArea className="flex-1">
-                <div className="pr-4 py-2">
+                <div className="px-6 py-5">
                   <UserProfilePanel />
                 </div>
               </ScrollArea>
@@ -1382,12 +1419,14 @@ export function Sidebar({ className }: { className?: string }) {
           {settingsPanel === "about" && (
             <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
               <ScrollArea className="flex-1">
-                <div className="pr-4">
+                <div className="px-6 py-5">
                   <About />
                 </div>
               </ScrollArea>
             </div>
           )}
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 

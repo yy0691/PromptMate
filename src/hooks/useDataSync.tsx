@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { usePrompts } from './usePrompts';
 import { useToast } from './use-toast';
 import { Prompt, Category, Settings } from '../types';
+import { importAllData } from '../lib/data';
 
 // 条件导入SyncManager，仅在Electron环境中可用
 let SyncManager: any = null;
@@ -251,9 +252,16 @@ export const useDataSync = () => {
 
   // 应用远程数据
   const applyRemoteData = useCallback(async (syncData: SyncDataType) => {
-    // 这里需要调用数据更新方法
-    // 由于 usePrompts hook 可能没有直接的更新方法，
-    // 我们需要通过其他方式来更新数据
+    const success = await importAllData(JSON.stringify({
+      prompts: syncData.prompts || [],
+      categories: syncData.categories || [],
+      settings: syncData.settings || {},
+    }));
+
+    if (!success) {
+      throw new Error('远程同步数据导入失败');
+    }
+
     await refreshData();
   }, [refreshData]);
 
@@ -373,6 +381,7 @@ export const useDataSync = () => {
     syncStatus,
     syncSettings,
     pendingConflict,
+    isElectronEnv,
     manualSync,
     resolveConflict,
     toggleSync,

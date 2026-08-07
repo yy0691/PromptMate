@@ -54,12 +54,11 @@ export async function updateProfile(context: RequestContext) {
       device_id: context.deviceId,
     });
 
-    const profile = updated[0];
     sendJson(context.res, 200, {
-      id: profile.id,
+      id: updated.id,
       email: context.user.email,
-      nickname: profile.nickname,
-      avatar_url: profile.avatar_url,
+      nickname: updated.nickname,
+      avatar_url: updated.avatar_url,
     });
   } catch (error: any) {
     sendError(context.res, 400, error.message ?? 'Failed to update profile', 'INVALID_PARAMS');

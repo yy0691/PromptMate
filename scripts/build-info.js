@@ -125,14 +125,52 @@ VITE_BUILD_TIME=${buildInfo.buildTime}
 VITE_GIT_COMMIT=${buildInfo.gitCommit}
 VITE_GIT_BRANCH=${buildInfo.gitBranch}
 `;
-
       const envPath = path.join(this.rootDir, '.env.local');
-      fs.writeFileSync(envPath, envContent);
+      const preservedContent = this.readPreservedEnvContent(envPath);
+      const finalContent = preservedContent
+        ? `${envContent}\n${preservedContent}\n`
+        : envContent;
+
+      fs.writeFileSync(envPath, finalContent);
       console.log('✅ 环境变量文件已创建:', envPath);
       
     } catch (error) {
       console.warn('⚠️  创建环境变量文件失败:', error);
     }
+  }
+
+  readPreservedEnvContent(envPath) {
+    if (!fs.existsSync(envPath)) {
+      return '';
+    }
+
+    const managedKeys = new Set([
+      'VITE_APP_VERSION',
+      'VITE_BUILD_DATE',
+      'VITE_BUILD_TIME',
+      'VITE_GIT_COMMIT',
+      'VITE_GIT_BRANCH'
+    ]);
+
+    const content = fs.readFileSync(envPath, 'utf8');
+    const preservedLines = content
+      .split(/\r?\n/)
+      .filter((line) => {
+        const trimmed = line.trim();
+        if (!trimmed) {
+          return false;
+        }
+        if (trimmed === '# 构建时自动生成的环境变量') {
+          return false;
+        }
+        if (trimmed.startsWith('#')) {
+          return true;
+        }
+        const [key] = trimmed.split('=', 1);
+        return !managedKeys.has(key);
+      });
+
+    return preservedLines.join('\n').trim();
   }
 
   // 显示构建信息

@@ -21,6 +21,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { usePrompts } from "@/hooks/usePrompts";
 
+type CloudProvider = 'google' | 'dropbox' | 'onedrive' | 'icloud' | 'custom';
+
 interface DataImportExportProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -62,15 +64,23 @@ export function DataImportExport({
   };
   
   // 同步相关状态
-  const { syncStatus, syncSettings, pendingConflict, manualSync, resolveConflict, toggleSync, updateSyncSettings } = useDataSync();
+  const { syncStatus, syncSettings, pendingConflict, isElectronEnv, manualSync, resolveConflict, toggleSync, updateSyncSettings } = useDataSync();
   const [showConflictDialog, setShowConflictDialog] = useState(false);
   
   // 云同步相关状态
   const [cloudSyncEnabled, setCloudSyncEnabled] = useState(false);
-  const [cloudProvider, setCloudProvider] = useState<'google' | 'dropbox' | 'onedrive' | null>(null);
+  const [cloudProvider, setCloudProvider] = useState<CloudProvider | null>(null);
   const [autoSyncEnabled, setAutoSyncEnabled] = useState(false);
   const [syncInterval, setSyncInterval] = useState<'realtime' | 'hourly' | 'daily'>('hourly');
   const [customPath, setCustomPath] = useState<string>("");
+
+  const cloudProviderLabels: Record<CloudProvider, string> = {
+    google: 'Google Drive',
+    dropbox: 'Dropbox',
+    onedrive: 'OneDrive',
+    icloud: 'iCloud Drive',
+    custom: '自定义路径',
+  };
 
   // 组件挂载时
   useEffect(() => {
@@ -113,6 +123,12 @@ export function DataImportExport({
   const handleManualSync = async () => {
     await manualSync();
     onDataChanged?.(); // 通知数据已更改
+  };
+
+  const selectCloudProvider = (provider: CloudProvider, label: string) => {
+    setCloudProvider(provider);
+    updateSyncSettings({ cloudProvider: provider });
+    toast({ title: t('dataManagement.cloudProviderSelected', { provider: label }) });
   };
 
   // 生成导出数据
@@ -407,15 +423,11 @@ export function DataImportExport({
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <Button
                 variant={cloudProvider === 'google' ? "default" : "outline"}
                 className="h-20 flex-col"
-                onClick={() => {
-                  setCloudProvider('google');
-                  updateSyncSettings({ cloudProvider: 'google' });
-                  toast({ title: t('dataManagement.cloudProviderSelected', { provider: 'Google Drive' }) });
-                }}
+                onClick={() => selectCloudProvider('google', 'Google Drive')}
               >
                 <Icons.google className="h-6 w-6 mb-2" />
                 Google Drive
@@ -423,11 +435,7 @@ export function DataImportExport({
         <Button
                 variant={cloudProvider === 'dropbox' ? "default" : "outline"}
                 className="h-20 flex-col"
-                onClick={() => {
-                  setCloudProvider('dropbox');
-                  updateSyncSettings({ cloudProvider: 'dropbox' });
-                  toast({ title: t('dataManagement.cloudProviderSelected', { provider: 'Dropbox' }) });
-                }}
+                onClick={() => selectCloudProvider('dropbox', 'Dropbox')}
               >
                 <Icons.dropbox className="h-6 w-6 mb-2" />
                 Dropbox
@@ -435,22 +443,34 @@ export function DataImportExport({
         <Button
                 variant={cloudProvider === 'onedrive' ? "default" : "outline"}
                 className="h-20 flex-col"
-                onClick={() => {
-                  setCloudProvider('onedrive');
-                  updateSyncSettings({ cloudProvider: 'onedrive' });
-                  toast({ title: t('dataManagement.cloudProviderSelected', { provider: 'OneDrive' }) });
-                }}
+                onClick={() => selectCloudProvider('onedrive', 'OneDrive')}
               >
                 <Icons.microsoft className="h-6 w-6 mb-2" />
                 OneDrive
         </Button>
+              <Button
+                variant={cloudProvider === 'icloud' ? "default" : "outline"}
+                className="h-20 flex-col"
+                onClick={() => selectCloudProvider('icloud', 'iCloud Drive')}
+              >
+                <Icons.cloud className="h-6 w-6 mb-2" />
+                iCloud Drive
+              </Button>
+              <Button
+                variant={cloudProvider === 'custom' ? "default" : "outline"}
+                className="h-20 flex-col"
+                onClick={() => selectCloudProvider('custom', '自定义路径')}
+              >
+                <Icons.folderOpen className="h-6 w-6 mb-2" />
+                自定义路径
+              </Button>
       </div>
       
             {cloudProvider && (
               <Alert>
                 <Icons.info className="h-4 w-4" />
                 <AlertDescription>
-                  {t('dataManagement.cloudProviderSelected', { provider: cloudProvider })}
+                  {t('dataManagement.cloudProviderSelected', { provider: cloudProviderLabels[cloudProvider] })}
                 </AlertDescription>
               </Alert>
             )}
@@ -459,7 +479,7 @@ export function DataImportExport({
       )}
 
       {/* 同步设置 */}
-      {cloudSyncEnabled && cloudProvider && (
+      {cloudSyncEnabled && (
         <Card>
           <CardHeader>
             <CardTitle>{t('dataManagement.syncSettings')}</CardTitle>
@@ -525,7 +545,7 @@ export function DataImportExport({
 
             {/* 云端同步文件路径设置 */}
             <div className="space-y-2">
-              <Label>云端同步文件路径</Label>
+              <Label>{cloudProvider === 'icloud' ? 'iCloud 同步文件路径' : '云端同步文件路径'}</Label>
               <div className="flex gap-2">
                 <Input
                   placeholder={"/path/to/your/cloud/folder/sync-data.json"}
@@ -539,13 +559,11 @@ export function DataImportExport({
                     if (!p) return;
                     if (!p.toLowerCase().endsWith('.json')) {
                       // 允许用户输入目录，自动补全文件名
-                      if (p.endsWith('/') || p.endsWith('\\')) {
-                        p = p + 'sync-data.json';
-                      } else {
-                        p = p + '/sync-data.json';
-                      }
+                      p = `${p.replace(/[\\/]+$/, '')}/sync-data.json`;
                     }
-                    updateSyncSettings({ dataPath: p, cloudProvider: null });
+                    updateSyncSettings({ dataPath: p, cloudProvider: 'custom' });
+                    setCloudProvider('custom');
+                    setCustomPath(p);
                     toast({ title: '已更新云同步路径', description: p });
                   }}
                 >
@@ -554,6 +572,19 @@ export function DataImportExport({
               </div>
               {syncSettings?.dataPath && (
                 <p className="text-xs text-muted-foreground">当前：{syncSettings.dataPath}</p>
+              )}
+              {cloudProvider === 'icloud' && (
+                <p className="text-xs text-muted-foreground">
+                  iCloud Drive 使用系统本地文件夹同步，无需输入 Apple ID 或密码。请确保系统已开启 iCloud Drive。
+                </p>
+              )}
+              {!isElectronEnv && (
+                <Alert>
+                  <Icons.info className="h-4 w-4" />
+                  <AlertDescription>
+                    本地文件夹云同步仅在桌面版可用；当前浏览器调试环境只能预览设置界面。
+                  </AlertDescription>
+                </Alert>
               )}
             </div>
           </CardContent>

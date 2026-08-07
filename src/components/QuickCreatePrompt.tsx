@@ -51,6 +51,7 @@ export const QuickCreatePrompt = React.forwardRef<
         onClick: () => setShowDialog(true),
         className: cn(className),
       };
+      const accessibleLabel = typeof tooltip === "string" ? tooltip : "新建提示词";
 
       switch (variant) {
         case "icon":
@@ -62,6 +63,8 @@ export const QuickCreatePrompt = React.forwardRef<
                     ref={ref as React.Ref<HTMLButtonElement>} // ✅ 将 ref 传递给 Button
                     variant="ghost"
                     size="icon"
+                    aria-label={accessibleLabel}
+                    title={accessibleLabel}
                     {...baseProps}
                     className={cn(
                       "rounded-full h-8 w-8 hover:scale-95 transition-transform",
@@ -85,6 +88,8 @@ export const QuickCreatePrompt = React.forwardRef<
                     ref={ref as React.Ref<HTMLButtonElement>} // ✅ 将 ref 传递给 Button
                     variant="default"
                     size="icon"
+                    aria-label={accessibleLabel}
+                    title={accessibleLabel}
                     {...baseProps}
                     className={cn(
                       "rounded-full h-12 w-12 bg-primary text-primary-foreground shadow-lg hover:shadow-xl hover:scale-105 transition-all",

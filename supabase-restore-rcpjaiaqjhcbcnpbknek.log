@@ -1,0 +1,1393 @@
+SET
+SET
+SET
+ERROR:  role "anon" already exists
+ERROR:  "anon" is a reserved role, only superusers can modify it
+ERROR:  role "authenticated" already exists
+ERROR:  "authenticated" is a reserved role, only superusers can modify it
+ERROR:  role "authenticator" already exists
+ERROR:  "authenticator" is a reserved role, only superusers can modify it
+ERROR:  role "dashboard_user" already exists
+ERROR:  "dashboard_user" is a reserved role, only superusers can modify it
+ERROR:  role "pgbouncer" already exists
+ERROR:  "pgbouncer" is a reserved role, only superusers can modify it
+ERROR:  role "postgres" already exists
+ERROR:  permission denied to alter role
+DETAIL:  Only superusers can alter privileged roles.
+ERROR:  role "service_role" already exists
+ERROR:  "service_role" is a reserved role, only superusers can modify it
+ERROR:  role "supabase_admin" already exists
+ERROR:  "supabase_admin" is a reserved role, only superusers can modify it
+ERROR:  role "supabase_auth_admin" already exists
+ERROR:  "supabase_auth_admin" is a reserved role, only superusers can modify it
+ERROR:  role "supabase_etl_admin" already exists
+ERROR:  "supabase_etl_admin" is a reserved role, only superusers can modify it
+ERROR:  role "supabase_read_only_user" already exists
+ERROR:  "supabase_read_only_user" is a reserved role, only superusers can modify it
+ERROR:  role "supabase_realtime_admin" already exists
+ERROR:  "supabase_realtime_admin" is a reserved role, only superusers can modify it
+ERROR:  role "supabase_replication_admin" already exists
+ERROR:  "supabase_replication_admin" is a reserved role, only superusers can modify it
+ERROR:  role "supabase_storage_admin" already exists
+ERROR:  "supabase_storage_admin" is a reserved role, only superusers can modify it
+ALTER ROLE
+ALTER ROLE
+ERROR:  permission denied to set parameter "session_preload_libraries"
+ALTER ROLE
+ALTER ROLE
+ALTER ROLE
+ERROR:  "supabase_admin" is a reserved role, only superusers can modify it
+ERROR:  "supabase_admin" is a reserved role, only superusers can modify it
+ERROR:  "supabase_auth_admin" is a reserved role, only superusers can modify it
+ERROR:  "supabase_auth_admin" is a reserved role, only superusers can modify it
+ERROR:  "supabase_auth_admin" is a reserved role, only superusers can modify it
+ERROR:  "supabase_read_only_user" is a reserved role, only superusers can modify it
+ERROR:  "supabase_storage_admin" is a reserved role, only superusers can modify it
+ERROR:  "supabase_storage_admin" is a reserved role, only superusers can modify it
+ERROR:  permission denied to grant privileges as role "supabase_admin"
+DETAIL:  Only roles with privileges of role "supabase_admin" may grant privileges as this role.
+ERROR:  permission denied to grant privileges as role "supabase_admin"
+DETAIL:  Only roles with privileges of role "supabase_admin" may grant privileges as this role.
+ERROR:  permission denied to grant privileges as role "supabase_admin"
+DETAIL:  Only roles with privileges of role "supabase_admin" may grant privileges as this role.
+ERROR:  permission denied to grant privileges as role "supabase_admin"
+DETAIL:  Only roles with privileges of role "supabase_admin" may grant privileges as this role.
+ERROR:  "authenticator" role memberships are reserved, only superusers can grant them
+ERROR:  "authenticator" role memberships are reserved, only superusers can grant them
+ERROR:  permission denied to grant privileges as role "supabase_admin"
+DETAIL:  Only roles with privileges of role "supabase_admin" may grant privileges as this role.
+ERROR:  permission denied to grant privileges as role "supabase_admin"
+DETAIL:  Only roles with privileges of role "supabase_admin" may grant privileges as this role.
+ERROR:  "supabase_etl_admin" is a reserved role, only superusers can modify it
+ERROR:  "supabase_read_only_user" is a reserved role, only superusers can modify it
+ERROR:  permission denied to grant privileges as role "supabase_admin"
+DETAIL:  Only roles with privileges of role "supabase_admin" may grant privileges as this role.
+ERROR:  "supabase_etl_admin" is a reserved role, only superusers can modify it
+ERROR:  "supabase_read_only_user" is a reserved role, only superusers can modify it
+ERROR:  permission denied to grant privileges as role "supabase_admin"
+DETAIL:  Only roles with privileges of role "supabase_admin" may grant privileges as this role.
+ERROR:  permission denied to grant privileges as role "supabase_admin"
+DETAIL:  Only roles with privileges of role "supabase_admin" may grant privileges as this role.
+ERROR:  permission denied to grant privileges as role "supabase_admin"
+DETAIL:  Only roles with privileges of role "supabase_admin" may grant privileges as this role.
+ERROR:  "supabase_realtime_admin" role memberships are reserved, only superusers can grant them
+You are now connected to database "template1" as user "postgres.rcpjaiaqjhcbcnpbknek".
+SET
+SET
+SET
+SET
+SET
+SET
+ set_config 
+------------
+ 
+(1 row)
+
+SET
+SET
+SET
+SET
+You are now connected to database "postgres" as user "postgres.rcpjaiaqjhcbcnpbknek".
+SET
+SET
+SET
+SET
+SET
+SET
+ set_config 
+------------
+ 
+(1 row)
+
+SET
+SET
+SET
+SET
+ERROR:  schema "auth" already exists
+ALTER SCHEMA
+ERROR:  schema "extensions" already exists
+ALTER SCHEMA
+ERROR:  schema "graphql" already exists
+ALTER SCHEMA
+ERROR:  schema "graphql_public" already exists
+ALTER SCHEMA
+ERROR:  schema "pgbouncer" already exists
+ALTER SCHEMA
+ERROR:  schema "realtime" already exists
+ALTER SCHEMA
+ERROR:  schema "storage" already exists
+ALTER SCHEMA
+ERROR:  schema "vault" already exists
+ALTER SCHEMA
+CREATE EXTENSION
+COMMENT
+CREATE EXTENSION
+COMMENT
+CREATE EXTENSION
+COMMENT
+CREATE EXTENSION
+COMMENT
+CREATE EXTENSION
+COMMENT
+ERROR:  permission denied for schema auth
+ALTER TYPE
+ERROR:  permission denied for schema auth
+ALTER TYPE
+ERROR:  permission denied for schema auth
+ALTER TYPE
+ERROR:  permission denied for schema auth
+ALTER TYPE
+ERROR:  permission denied for schema auth
+ALTER TYPE
+ERROR:  permission denied for schema auth
+ALTER TYPE
+ERROR:  permission denied for schema auth
+ALTER TYPE
+ERROR:  permission denied for schema auth
+ALTER TYPE
+ERROR:  permission denied for schema auth
+ALTER TYPE
+ERROR:  type "action" already exists
+ALTER TYPE
+ERROR:  type "equality_op" already exists
+ALTER TYPE
+ERROR:  type "user_defined_filter" already exists
+ALTER TYPE
+ERROR:  type "wal_column" already exists
+ALTER TYPE
+ERROR:  type "wal_rls" already exists
+ALTER TYPE
+ERROR:  permission denied for schema storage
+ALTER TYPE
+ERROR:  permission denied for schema auth
+ALTER FUNCTION
+ERROR:  must be owner of function auth.email
+ERROR:  permission denied for schema auth
+ALTER FUNCTION
+ERROR:  permission denied for schema auth
+ALTER FUNCTION
+ERROR:  must be owner of function auth.role
+ERROR:  permission denied for schema auth
+ALTER FUNCTION
+ERROR:  must be owner of function auth.uid
+ERROR:  function "grant_pg_cron_access" already exists with same argument types
+ALTER FUNCTION
+ERROR:  must be owner of function extensions.grant_pg_cron_access
+ERROR:  function "grant_pg_graphql_access" already exists with same argument types
+ALTER FUNCTION
+ERROR:  must be owner of function extensions.grant_pg_graphql_access
+ERROR:  function "grant_pg_net_access" already exists with same argument types
+ALTER FUNCTION
+ERROR:  must be owner of function extensions.grant_pg_net_access
+ERROR:  function "pgrst_ddl_watch" already exists with same argument types
+ALTER FUNCTION
+ERROR:  function "pgrst_drop_watch" already exists with same argument types
+ALTER FUNCTION
+ERROR:  function "set_graphql_placeholder" already exists with same argument types
+ALTER FUNCTION
+ERROR:  must be owner of function extensions.set_graphql_placeholder
+ERROR:  permission denied for schema pgbouncer
+ALTER FUNCTION
+ERROR:  function "update_marketplace_prompts_updated_at" already exists with same argument types
+ALTER FUNCTION
+ERROR:  function "apply_rls" already exists with same argument types
+ALTER FUNCTION
+ERROR:  function "broadcast_changes" already exists with same argument types
+ALTER FUNCTION
+ERROR:  function "build_prepared_statement_sql" already exists with same argument types
+ALTER FUNCTION
+ERROR:  function "cast" already exists with same argument types
+ALTER FUNCTION
+ERROR:  function "check_equality_op" already exists with same argument types
+ALTER FUNCTION
+ERROR:  function "is_visible_through_filters" already exists with same argument types
+ALTER FUNCTION
+ERROR:  permission denied to set parameter "log_min_messages"
+ALTER FUNCTION
+ERROR:  function "quote_wal2json" already exists with same argument types
+ALTER FUNCTION
+ERROR:  function "send" already exists with same argument types
+ALTER FUNCTION
+ERROR:  function "subscription_check_filters" already exists with same argument types
+ALTER FUNCTION
+ERROR:  function "to_regrole" already exists with same argument types
+ALTER FUNCTION
+ERROR:  function "topic" already exists with same argument types
+ALTER FUNCTION
+ERROR:  permission denied for schema storage
+ERROR:  function storage.add_prefixes(text, text) does not exist
+ERROR:  permission denied for schema storage
+ALTER FUNCTION
+ERROR:  permission denied for schema storage
+ERROR:  function storage.delete_leaf_prefixes(text[], text[]) does not exist
+ERROR:  permission denied for schema storage
+ERROR:  function storage.delete_prefix(text, text) does not exist
+ERROR:  permission denied for schema storage
+ERROR:  function storage.delete_prefix_hierarchy_trigger() does not exist
+ERROR:  permission denied for schema storage
+ALTER FUNCTION
+ERROR:  permission denied for schema storage
+ALTER FUNCTION
+ERROR:  permission denied for schema storage
+ALTER FUNCTION
+ERROR:  permission denied for schema storage
+ALTER FUNCTION
+ERROR:  permission denied for schema storage
+ERROR:  function storage.get_level(text) does not exist
+ERROR:  permission denied for schema storage
+ERROR:  function storage.get_prefix(text) does not exist
+ERROR:  permission denied for schema storage
+ERROR:  function storage.get_prefixes(text) does not exist
+ERROR:  permission denied for schema storage
+ALTER FUNCTION
+ERROR:  permission denied for schema storage
+ALTER FUNCTION
+ERROR:  permission denied for schema storage
+ERROR:  function storage.list_objects_with_delimiter(text, text, text, integer, text, text) does not exist
+ERROR:  permission denied for schema storage
+ERROR:  function storage.lock_top_prefixes(text[], text[]) does not exist
+ERROR:  permission denied for schema storage
+ERROR:  function storage.objects_delete_cleanup() does not exist
+ERROR:  permission denied for schema storage
+ERROR:  function storage.objects_insert_prefix_trigger() does not exist
+ERROR:  permission denied for schema storage
+ERROR:  function storage.objects_update_cleanup() does not exist
+ERROR:  permission denied for schema storage
+ERROR:  function storage.objects_update_level_trigger() does not exist
+ERROR:  permission denied for schema storage
+ERROR:  function storage.objects_update_prefix_trigger() does not exist
+ERROR:  permission denied for schema storage
+ALTER FUNCTION
+ERROR:  permission denied for schema storage
+ERROR:  function storage.prefixes_delete_cleanup() does not exist
+ERROR:  permission denied for schema storage
+ERROR:  function storage.prefixes_insert_trigger() does not exist
+ERROR:  permission denied for schema storage
+ALTER FUNCTION
+ERROR:  permission denied for schema storage
+ERROR:  function storage.search_legacy_v1(text, text, integer, integer, integer, text, text, text) does not exist
+ERROR:  permission denied for schema storage
+ERROR:  function storage.search_v1_optimised(text, text, integer, integer, integer, text, text, text) does not exist
+ERROR:  permission denied for schema storage
+ALTER FUNCTION
+ERROR:  permission denied for schema storage
+ALTER FUNCTION
+SET
+SET
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.audit_log_entries (
+                     ^
+ERROR:  must be owner of table audit_log_entries
+ERROR:  must be owner of table audit_log_entries
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.flow_state (
+                     ^
+ERROR:  must be owner of table flow_state
+ERROR:  must be owner of table flow_state
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.identities (
+                     ^
+ERROR:  must be owner of table identities
+ERROR:  must be owner of table identities
+ERROR:  must be owner of relation identities
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.instances (
+                     ^
+ERROR:  must be owner of table instances
+ERROR:  must be owner of table instances
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.mfa_amr_claims (
+                     ^
+ERROR:  must be owner of table mfa_amr_claims
+ERROR:  must be owner of table mfa_amr_claims
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.mfa_challenges (
+                     ^
+ERROR:  must be owner of table mfa_challenges
+ERROR:  must be owner of table mfa_challenges
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.mfa_factors (
+                     ^
+ERROR:  must be owner of table mfa_factors
+ERROR:  must be owner of table mfa_factors
+ERROR:  must be owner of relation mfa_factors
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.oauth_authorizations (
+                     ^
+ERROR:  must be owner of table oauth_authorizations
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.oauth_client_states (
+                     ^
+ERROR:  must be owner of table oauth_client_states
+ERROR:  must be owner of table oauth_client_states
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.oauth_clients (
+                     ^
+ERROR:  must be owner of table oauth_clients
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.oauth_consents (
+                     ^
+ERROR:  must be owner of table oauth_consents
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.one_time_tokens (
+                     ^
+ERROR:  must be owner of table one_time_tokens
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.refresh_tokens (
+                     ^
+ERROR:  must be owner of table refresh_tokens
+ERROR:  must be owner of table refresh_tokens
+ERROR:  permission denied for schema auth
+ERROR:  must be owner of sequence refresh_tokens_id_seq
+ERROR:  must be owner of sequence refresh_tokens_id_seq
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.saml_providers (
+                     ^
+ERROR:  must be owner of table saml_providers
+ERROR:  must be owner of table saml_providers
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.saml_relay_states (
+                     ^
+ERROR:  must be owner of table saml_relay_states
+ERROR:  must be owner of table saml_relay_states
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.schema_migrations (
+                     ^
+ERROR:  must be owner of table schema_migrations
+ERROR:  must be owner of table schema_migrations
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.sessions (
+                     ^
+ERROR:  must be owner of table sessions
+ERROR:  must be owner of table sessions
+ERROR:  must be owner of relation sessions
+ERROR:  must be owner of relation sessions
+ERROR:  must be owner of relation sessions
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.sso_domains (
+                     ^
+ERROR:  must be owner of table sso_domains
+ERROR:  must be owner of table sso_domains
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.sso_providers (
+                     ^
+ERROR:  must be owner of table sso_providers
+ERROR:  must be owner of table sso_providers
+ERROR:  must be owner of relation sso_providers
+ERROR:  permission denied for schema auth
+LINE 1: CREATE TABLE auth.users (
+                     ^
+ERROR:  must be owner of table users
+ERROR:  must be owner of table users
+ERROR:  must be owner of relation users
+ERROR:  relation "audit_logs" already exists
+ALTER TABLE
+ERROR:  relation "audit_logs_id_seq" already exists
+ALTER SEQUENCE
+ALTER SEQUENCE
+ERROR:  relation "client_devices" already exists
+ALTER TABLE
+ERROR:  relation "marketplace_prompts" already exists
+ALTER TABLE
+ERROR:  relation "profiles" already exists
+ALTER TABLE
+ERROR:  relation "sync_events" already exists
+ALTER TABLE
+ERROR:  relation "sync_events_id_seq" already exists
+ALTER SEQUENCE
+ALTER SEQUENCE
+ERROR:  relation "messages" already exists
+ALTER TABLE
+ERROR:  relation "schema_migrations" already exists
+ERROR:  must be owner of table schema_migrations
+ERROR:  relation "subscription" already exists
+ERROR:  must be owner of table subscription
+ERROR:  must be owner of table subscription
+ERROR:  permission denied for schema storage
+LINE 1: CREATE TABLE storage.buckets (
+                     ^
+ERROR:  must be owner of table buckets
+ERROR:  must be owner of relation buckets
+ERROR:  permission denied for schema storage
+LINE 1: CREATE TABLE storage.buckets_analytics (
+                     ^
+ERROR:  must be owner of table buckets_analytics
+ERROR:  permission denied for schema storage
+LINE 1: CREATE TABLE storage.buckets_vectors (
+                     ^
+ERROR:  must be owner of table buckets_vectors
+ERROR:  permission denied for schema storage
+LINE 1: CREATE TABLE storage.migrations (
+                     ^
+ERROR:  must be owner of table migrations
+ERROR:  permission denied for schema storage
+LINE 1: CREATE TABLE storage.objects (
+                     ^
+ERROR:  must be owner of table objects
+ERROR:  must be owner of relation objects
+ERROR:  permission denied for schema storage
+LINE 1: CREATE TABLE storage.prefixes (
+                     ^
+ERROR:  relation "storage.prefixes" does not exist
+ERROR:  permission denied for schema storage
+LINE 1: CREATE TABLE storage.s3_multipart_uploads (
+                     ^
+ERROR:  must be owner of table s3_multipart_uploads
+ERROR:  permission denied for schema storage
+LINE 1: CREATE TABLE storage.s3_multipart_uploads_parts (
+                     ^
+ERROR:  must be owner of table s3_multipart_uploads_parts
+ERROR:  permission denied for schema storage
+LINE 1: CREATE TABLE storage.vector_indexes (
+                     ^
+ERROR:  must be owner of table vector_indexes
+ERROR:  must be owner of table refresh_tokens
+ALTER TABLE
+ALTER TABLE
+COPY 0
+ERROR:  duplicate key value violates unique constraint "flow_state_pkey"
+DETAIL:  Key (id)=(6b9b6c9d-8da5-45f5-8c90-26ba1c16ba83) already exists.
+CONTEXT:  COPY flow_state, line 1
+COPY 8
+COPY 0
+ERROR:  insert or update on table "mfa_amr_claims" violates foreign key constraint "mfa_amr_claims_session_id_fkey"
+DETAIL:  Key (session_id)=(bb6fc32b-020c-47a4-b350-c93b9f7902e9) is not present in table "sessions".
+COPY 0
+COPY 0
+COPY 0
+COPY 0
+COPY 0
+COPY 0
+COPY 1
+ERROR:  insert or update on table "refresh_tokens" violates foreign key constraint "refresh_tokens_session_id_fkey"
+DETAIL:  Key (session_id)=(bb6fc32b-020c-47a4-b350-c93b9f7902e9) is not present in table "sessions".
+COPY 0
+COPY 0
+ERROR:  permission denied for table schema_migrations
+backslash commands are restricted; only \unrestrict is allowed
+ERROR:  syntax error at or near "20171026211738"
+LINE 1: 20171026211738
+        ^
+backslash commands are restricted; only \unrestrict is allowed
+backslash commands are restricted; only \unrestrict is allowed
+backslash commands are restricted; only \unrestrict is allowed
+backslash commands are restricted; only \unrestrict is allowed
+backslash commands are restricted; only \unrestrict is allowed
+backslash commands are restricted; only \unrestrict is allowed
+backslash commands are restricted; only \unrestrict is allowed
+backslash commands are restricted; only \unrestrict is allowed
+backslash commands are restricted; only \unrestrict is allowed
+backslash commands are restricted; only \unrestrict is allowed
+backslash commands are restricted; only \unrestrict is allowed
+backslash commands are restricted; only \unrestrict is allowed
+backslash commands are restricted; only \unrestrict is allowed
+ERROR:  syntax error at or near "bb6fc32b"
+LINE 1: bb6fc32b-020c-47a4-b350-c93b9f7902e9 48abc308-61dd-4688-b834...
+        ^
+backslash commands are restricted; only \unrestrict is allowed
+COPY 0
+ERROR:  duplicate key value violates unique constraint "users_pkey"
+DETAIL:  Key (id)=(205e2246-53eb-4c14-8119-5230da73a5d1) already exists.
+CONTEXT:  COPY users, line 1
+COPY 0
+COPY 0
+ERROR:  duplicate key value violates unique constraint "marketplace_prompts_pkey"
+DETAIL:  Key (id)=(bbefac11-9357-3e90-fc3e-f5b34758d97b) already exists.
+CONTEXT:  COPY marketplace_prompts, line 1
+ERROR:  duplicate key value violates unique constraint "profiles_pkey"
+DETAIL:  Key (id)=(340af5dc-299a-4396-8d76-2350be475f75) already exists.
+CONTEXT:  COPY profiles, line 1
+COPY 0
+ERROR:  duplicate key value violates unique constraint "schema_migrations_pkey"
+DETAIL:  Key (version)=(20211116024918) already exists.
+CONTEXT:  COPY schema_migrations, line 1
+COPY 0
+COPY 0
+COPY 0
+ERROR:  permission denied for table buckets_vectors
+backslash commands are restricted; only \unrestrict is allowed
+ERROR:  permission denied for table migrations
+backslash commands are restricted; only \unrestrict is allowed
+ERROR:  syntax error at or near "0"
+LINE 1: 0 create-migrations-table e18db593bcde2aca2a408c4d1100f6abba...
+        ^
+backslash commands are restricted; only \unrestrict is allowed
+ERROR:  relation "storage.prefixes" does not exist
+backslash commands are restricted; only \unrestrict is allowed
+COPY 0
+COPY 0
+ERROR:  permission denied for table vector_indexes
+backslash commands are restricted; only \unrestrict is allowed
+ERROR:  permission denied for table secrets
+backslash commands are restricted; only \unrestrict is allowed
+ setval 
+--------
+     33
+(1 row)
+
+ setval 
+--------
+      1
+(1 row)
+
+ setval 
+--------
+      1
+(1 row)
+
+ setval 
+--------
+      1
+(1 row)
+
+ERROR:  must be owner of table mfa_amr_claims
+ERROR:  must be owner of table audit_log_entries
+ERROR:  must be owner of table flow_state
+ERROR:  must be owner of table identities
+ERROR:  must be owner of table identities
+ERROR:  must be owner of table instances
+ERROR:  must be owner of table mfa_amr_claims
+ERROR:  must be owner of table mfa_challenges
+ERROR:  must be owner of table mfa_factors
+ERROR:  must be owner of table mfa_factors
+ERROR:  must be owner of table oauth_authorizations
+ERROR:  must be owner of table oauth_authorizations
+ERROR:  must be owner of table oauth_authorizations
+ERROR:  must be owner of table oauth_client_states
+ERROR:  must be owner of table oauth_clients
+ERROR:  must be owner of table oauth_consents
+ERROR:  must be owner of table oauth_consents
+ERROR:  must be owner of table one_time_tokens
+ERROR:  must be owner of table refresh_tokens
+ERROR:  must be owner of table refresh_tokens
+ERROR:  must be owner of table saml_providers
+ERROR:  must be owner of table saml_providers
+ERROR:  must be owner of table saml_relay_states
+ERROR:  must be owner of table schema_migrations
+ERROR:  must be owner of table sessions
+ERROR:  must be owner of table sso_domains
+ERROR:  must be owner of table sso_providers
+ERROR:  must be owner of table users
+ERROR:  must be owner of table users
+ERROR:  multiple primary keys for table "audit_logs" are not allowed
+ERROR:  multiple primary keys for table "client_devices" are not allowed
+ERROR:  multiple primary keys for table "marketplace_prompts" are not allowed
+ERROR:  multiple primary keys for table "profiles" are not allowed
+ERROR:  multiple primary keys for table "sync_events" are not allowed
+ERROR:  multiple primary keys for table "messages" are not allowed
+ERROR:  must be owner of table subscription
+ERROR:  must be owner of table schema_migrations
+ERROR:  must be owner of table buckets_analytics
+ERROR:  must be owner of table buckets
+ERROR:  must be owner of table buckets_vectors
+ERROR:  must be owner of table migrations
+ERROR:  must be owner of table migrations
+ERROR:  must be owner of table objects
+ERROR:  relation "storage.prefixes" does not exist
+ERROR:  must be owner of table s3_multipart_uploads_parts
+ERROR:  must be owner of table s3_multipart_uploads
+ERROR:  must be owner of table vector_indexes
+ERROR:  must be owner of table audit_log_entries
+ERROR:  must be owner of table users
+ERROR:  must be owner of table users
+ERROR:  must be owner of table users
+ERROR:  must be owner of table mfa_factors
+ERROR:  must be owner of table flow_state
+ERROR:  must be owner of table identities
+ERROR:  must be owner of index identities_email_idx
+ERROR:  must be owner of table identities
+ERROR:  must be owner of table flow_state
+ERROR:  must be owner of table oauth_client_states
+ERROR:  must be owner of table flow_state
+ERROR:  must be owner of table mfa_challenges
+ERROR:  must be owner of table mfa_factors
+ERROR:  must be owner of table mfa_factors
+ERROR:  must be owner of table oauth_authorizations
+ERROR:  must be owner of table oauth_clients
+ERROR:  must be owner of table oauth_consents
+ERROR:  must be owner of table oauth_consents
+ERROR:  must be owner of table oauth_consents
+ERROR:  must be owner of table one_time_tokens
+ERROR:  must be owner of table one_time_tokens
+ERROR:  must be owner of table one_time_tokens
+ERROR:  must be owner of table users
+ERROR:  must be owner of table users
+ERROR:  must be owner of table refresh_tokens
+ERROR:  must be owner of table refresh_tokens
+ERROR:  must be owner of table refresh_tokens
+ERROR:  must be owner of table refresh_tokens
+ERROR:  must be owner of table refresh_tokens
+ERROR:  must be owner of table saml_providers
+ERROR:  must be owner of table saml_relay_states
+ERROR:  must be owner of table saml_relay_states
+ERROR:  must be owner of table saml_relay_states
+ERROR:  must be owner of table sessions
+ERROR:  must be owner of table sessions
+ERROR:  must be owner of table sessions
+ERROR:  must be owner of table sso_domains
+ERROR:  must be owner of table sso_domains
+ERROR:  must be owner of table sso_providers
+ERROR:  must be owner of table sso_providers
+ERROR:  must be owner of table mfa_factors
+ERROR:  must be owner of table sessions
+ERROR:  must be owner of table users
+ERROR:  must be owner of index users_email_partial_key
+ERROR:  must be owner of table users
+ERROR:  must be owner of table users
+ERROR:  must be owner of table users
+ERROR:  relation "idx_audit_logs_user_id" already exists
+ERROR:  relation "idx_client_devices_user_id" already exists
+ERROR:  relation "idx_marketplace_prompts_category" already exists
+ERROR:  relation "idx_marketplace_prompts_created_at" already exists
+ERROR:  relation "idx_marketplace_prompts_status" already exists
+ERROR:  relation "idx_marketplace_prompts_tags" already exists
+ERROR:  relation "idx_marketplace_prompts_user_id" already exists
+ERROR:  relation "idx_profiles_is_admin" already exists
+ERROR:  relation "idx_profiles_role" already exists
+ERROR:  relation "idx_profiles_user_id" already exists
+ERROR:  relation "idx_sync_events_created_at" already exists
+ERROR:  relation "idx_sync_events_user_id" already exists
+ERROR:  must be owner of table subscription
+ERROR:  relation "messages_inserted_at_topic_index" already exists
+ERROR:  must be owner of table subscription
+ERROR:  must be owner of table buckets
+ERROR:  must be owner of table objects
+ERROR:  must be owner of table buckets_analytics
+ERROR:  must be owner of table s3_multipart_uploads
+ERROR:  must be owner of table objects
+ERROR:  must be owner of table objects
+ERROR:  must be owner of table objects
+ERROR:  relation "storage.prefixes" does not exist
+ERROR:  must be owner of table objects
+ERROR:  must be owner of table objects
+ERROR:  must be owner of table vector_indexes
+ERROR:  trigger "update_marketplace_prompts_updated_at" for relation "marketplace_prompts" already exists
+ERROR:  trigger "tr_check_filters" for relation "subscription" already exists
+ERROR:  trigger "enforce_bucket_name_length_trigger" for relation "buckets" already exists
+ERROR:  function storage.delete_prefix_hierarchy_trigger() does not exist
+ERROR:  function storage.objects_insert_prefix_trigger() does not exist
+ERROR:  function storage.objects_update_prefix_trigger() does not exist
+ERROR:  relation "storage.prefixes" does not exist
+ERROR:  relation "storage.prefixes" does not exist
+ERROR:  trigger "update_objects_updated_at" for relation "objects" already exists
+ERROR:  must be owner of table identities
+ERROR:  must be owner of table mfa_amr_claims
+ERROR:  must be owner of table mfa_challenges
+ERROR:  must be owner of table mfa_factors
+ERROR:  must be owner of table oauth_authorizations
+ERROR:  must be owner of table oauth_authorizations
+ERROR:  must be owner of table oauth_consents
+ERROR:  must be owner of table oauth_consents
+ERROR:  must be owner of table one_time_tokens
+ERROR:  must be owner of table refresh_tokens
+ERROR:  must be owner of table saml_providers
+ERROR:  must be owner of table saml_relay_states
+ERROR:  must be owner of table saml_relay_states
+ERROR:  must be owner of table sessions
+ERROR:  must be owner of table sessions
+ERROR:  must be owner of table sso_domains
+ERROR:  constraint "audit_logs_user_id_fkey" for relation "audit_logs" already exists
+ERROR:  constraint "client_devices_user_id_fkey" for relation "client_devices" already exists
+ERROR:  constraint "marketplace_prompts_user_id_fkey" for relation "marketplace_prompts" already exists
+ERROR:  constraint "profiles_id_fkey" for relation "profiles" already exists
+ERROR:  constraint "sync_events_user_id_fkey" for relation "sync_events" already exists
+ERROR:  must be owner of table objects
+ERROR:  relation "storage.prefixes" does not exist
+ERROR:  must be owner of table s3_multipart_uploads
+ERROR:  must be owner of table s3_multipart_uploads_parts
+ERROR:  must be owner of table s3_multipart_uploads_parts
+ERROR:  must be owner of table vector_indexes
+ERROR:  must be owner of table audit_log_entries
+ERROR:  must be owner of table flow_state
+ERROR:  must be owner of table identities
+ERROR:  must be owner of table instances
+ERROR:  must be owner of table mfa_amr_claims
+ERROR:  must be owner of table mfa_challenges
+ERROR:  must be owner of table mfa_factors
+ERROR:  must be owner of table one_time_tokens
+ERROR:  must be owner of table refresh_tokens
+ERROR:  must be owner of table saml_providers
+ERROR:  must be owner of table saml_relay_states
+ERROR:  must be owner of table schema_migrations
+ERROR:  must be owner of table sessions
+ERROR:  must be owner of table sso_domains
+ERROR:  must be owner of table sso_providers
+ERROR:  must be owner of table users
+ERROR:  policy "Admins can delete any prompt" for table "marketplace_prompts" already exists
+ERROR:  policy "Admins can update any prompt" for table "marketplace_prompts" already exists
+ERROR:  policy "Admins can view all prompts" for table "marketplace_prompts" already exists
+ERROR:  policy "Anyone can view approved prompts" for table "marketplace_prompts" already exists
+ERROR:  policy "Anyone can view profiles" for table "profiles" already exists
+ERROR:  policy "Authenticated users can insert prompts" for table "marketplace_prompts" already exists
+ERROR:  policy "Service role can do anything" for table "profiles" already exists
+ERROR:  policy "Users can delete their own prompts" for table "marketplace_prompts" already exists
+ERROR:  policy "Users can insert their own profile" for table "profiles" already exists
+ERROR:  policy "Users can update own profile" for table "profiles" already exists
+ERROR:  policy "Users can update their own profile" for table "profiles" already exists
+ERROR:  policy "Users can update their own prompts" for table "marketplace_prompts" already exists
+ERROR:  policy "Users can view own profile" for table "profiles" already exists
+ERROR:  policy "Users can view their own prompts" for table "marketplace_prompts" already exists
+ALTER TABLE
+ERROR:  policy "audit_logs_admin_select" for table "audit_logs" already exists
+ERROR:  policy "audit_logs_no_insert" for table "audit_logs" already exists
+ERROR:  policy "audit_logs_system_insert" for table "audit_logs" already exists
+ALTER TABLE
+ERROR:  policy "client_devices_delete" for table "client_devices" already exists
+ERROR:  policy "client_devices_insert" for table "client_devices" already exists
+ERROR:  policy "client_devices_select" for table "client_devices" already exists
+ERROR:  policy "client_devices_update" for table "client_devices" already exists
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ERROR:  must be owner of table buckets
+ERROR:  must be owner of table buckets_analytics
+ERROR:  must be owner of table buckets_vectors
+ERROR:  must be owner of table migrations
+ERROR:  must be owner of table objects
+ERROR:  relation "storage.prefixes" does not exist
+ERROR:  must be owner of table s3_multipart_uploads
+ERROR:  must be owner of table s3_multipart_uploads_parts
+ERROR:  must be owner of table vector_indexes
+ERROR:  publication "supabase_realtime" already exists
+ALTER PUBLICATION
+WARNING:  no privileges were granted for "auth"
+GRANT
+WARNING:  no privileges were granted for "auth"
+GRANT
+WARNING:  no privileges were granted for "auth"
+GRANT
+WARNING:  no privileges were granted for "auth"
+GRANT
+WARNING:  no privileges were granted for "auth"
+GRANT
+WARNING:  no privileges were granted for "auth"
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+WARNING:  no privileges were granted for "realtime"
+GRANT
+WARNING:  no privileges were granted for "realtime"
+GRANT
+WARNING:  no privileges were granted for "realtime"
+GRANT
+WARNING:  no privileges were granted for "realtime"
+GRANT
+WARNING:  no privileges were granted for "realtime"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+GRANT
+WARNING:  no privileges were granted for "email"
+GRANT
+WARNING:  no privileges were granted for "jwt"
+GRANT
+WARNING:  no privileges were granted for "jwt"
+GRANT
+WARNING:  no privileges were granted for "role"
+GRANT
+WARNING:  no privileges were granted for "uid"
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+WARNING:  no privileges could be revoked for "grant_pg_cron_access"
+REVOKE
+WARNING:  no privileges were granted for "grant_pg_cron_access"
+GRANT
+WARNING:  no privileges were granted for "grant_pg_cron_access"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+WARNING:  no privileges could be revoked for "grant_pg_net_access"
+REVOKE
+WARNING:  no privileges were granted for "grant_pg_net_access"
+GRANT
+WARNING:  no privileges were granted for "grant_pg_net_access"
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+ERROR:  grant options cannot be granted back to your own grantor
+ERROR:  grant options cannot be granted back to your own grantor
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+WARNING:  no privileges were granted for "graphql"
+GRANT
+WARNING:  no privileges were granted for "graphql"
+GRANT
+WARNING:  no privileges were granted for "graphql"
+GRANT
+WARNING:  no privileges were granted for "graphql"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+ERROR:  permission denied for function get_auth
+ERROR:  permission denied for function get_auth
+GRANT
+GRANT
+GRANT
+WARNING:  no privileges were granted for "apply_rls"
+GRANT
+WARNING:  no privileges were granted for "apply_rls"
+GRANT
+WARNING:  no privileges were granted for "apply_rls"
+GRANT
+WARNING:  no privileges were granted for "apply_rls"
+GRANT
+WARNING:  no privileges were granted for "apply_rls"
+GRANT
+WARNING:  no privileges were granted for "apply_rls"
+GRANT
+WARNING:  no privileges were granted for "broadcast_changes"
+GRANT
+WARNING:  no privileges were granted for "broadcast_changes"
+GRANT
+WARNING:  no privileges were granted for "build_prepared_statement_sql"
+GRANT
+WARNING:  no privileges were granted for "build_prepared_statement_sql"
+GRANT
+WARNING:  no privileges were granted for "build_prepared_statement_sql"
+GRANT
+WARNING:  no privileges were granted for "build_prepared_statement_sql"
+GRANT
+WARNING:  no privileges were granted for "build_prepared_statement_sql"
+GRANT
+WARNING:  no privileges were granted for "build_prepared_statement_sql"
+GRANT
+WARNING:  no privileges were granted for "cast"
+GRANT
+WARNING:  no privileges were granted for "cast"
+GRANT
+WARNING:  no privileges were granted for "cast"
+GRANT
+WARNING:  no privileges were granted for "cast"
+GRANT
+WARNING:  no privileges were granted for "cast"
+GRANT
+WARNING:  no privileges were granted for "cast"
+GRANT
+WARNING:  no privileges were granted for "check_equality_op"
+GRANT
+WARNING:  no privileges were granted for "check_equality_op"
+GRANT
+WARNING:  no privileges were granted for "check_equality_op"
+GRANT
+WARNING:  no privileges were granted for "check_equality_op"
+GRANT
+WARNING:  no privileges were granted for "check_equality_op"
+GRANT
+WARNING:  no privileges were granted for "check_equality_op"
+GRANT
+WARNING:  no privileges were granted for "is_visible_through_filters"
+GRANT
+WARNING:  no privileges were granted for "is_visible_through_filters"
+GRANT
+WARNING:  no privileges were granted for "is_visible_through_filters"
+GRANT
+WARNING:  no privileges were granted for "is_visible_through_filters"
+GRANT
+WARNING:  no privileges were granted for "is_visible_through_filters"
+GRANT
+WARNING:  no privileges were granted for "is_visible_through_filters"
+GRANT
+WARNING:  no privileges were granted for "list_changes"
+GRANT
+WARNING:  no privileges were granted for "list_changes"
+GRANT
+WARNING:  no privileges were granted for "list_changes"
+GRANT
+WARNING:  no privileges were granted for "list_changes"
+GRANT
+WARNING:  no privileges were granted for "list_changes"
+GRANT
+WARNING:  no privileges were granted for "list_changes"
+GRANT
+WARNING:  no privileges were granted for "quote_wal2json"
+GRANT
+WARNING:  no privileges were granted for "quote_wal2json"
+GRANT
+WARNING:  no privileges were granted for "quote_wal2json"
+GRANT
+WARNING:  no privileges were granted for "quote_wal2json"
+GRANT
+WARNING:  no privileges were granted for "quote_wal2json"
+GRANT
+WARNING:  no privileges were granted for "quote_wal2json"
+GRANT
+WARNING:  no privileges were granted for "send"
+GRANT
+WARNING:  no privileges were granted for "send"
+GRANT
+WARNING:  no privileges were granted for "subscription_check_filters"
+GRANT
+WARNING:  no privileges were granted for "subscription_check_filters"
+GRANT
+WARNING:  no privileges were granted for "subscription_check_filters"
+GRANT
+WARNING:  no privileges were granted for "subscription_check_filters"
+GRANT
+WARNING:  no privileges were granted for "subscription_check_filters"
+GRANT
+WARNING:  no privileges were granted for "subscription_check_filters"
+GRANT
+WARNING:  no privileges were granted for "to_regrole"
+GRANT
+WARNING:  no privileges were granted for "to_regrole"
+GRANT
+WARNING:  no privileges were granted for "to_regrole"
+GRANT
+WARNING:  no privileges were granted for "to_regrole"
+GRANT
+WARNING:  no privileges were granted for "to_regrole"
+GRANT
+WARNING:  no privileges were granted for "to_regrole"
+GRANT
+GRANT
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+GRANT
+GRANT
+WARNING:  no privileges were granted for "audit_log_entries"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+WARNING:  no privileges were granted for "flow_state"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+GRANT
+WARNING:  no privileges were granted for "identities"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+GRANT
+GRANT
+WARNING:  no privileges were granted for "instances"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+WARNING:  no privileges were granted for "mfa_amr_claims"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+GRANT
+WARNING:  no privileges were granted for "mfa_challenges"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+GRANT
+WARNING:  no privileges were granted for "mfa_factors"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+GRANT
+WARNING:  no privileges were granted for "oauth_authorizations"
+GRANT
+WARNING:  no privileges were granted for "oauth_authorizations"
+GRANT
+WARNING:  no privileges were granted for "oauth_client_states"
+GRANT
+WARNING:  no privileges were granted for "oauth_client_states"
+GRANT
+WARNING:  no privileges were granted for "oauth_clients"
+GRANT
+WARNING:  no privileges were granted for "oauth_clients"
+GRANT
+WARNING:  no privileges were granted for "oauth_consents"
+GRANT
+WARNING:  no privileges were granted for "oauth_consents"
+GRANT
+WARNING:  no privileges were granted for "one_time_tokens"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+GRANT
+GRANT
+WARNING:  no privileges were granted for "refresh_tokens"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+WARNING:  no privileges were granted for "refresh_tokens_id_seq"
+GRANT
+WARNING:  no privileges were granted for "refresh_tokens_id_seq"
+GRANT
+WARNING:  no privileges were granted for "saml_providers"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+GRANT
+WARNING:  no privileges were granted for "saml_relay_states"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+WARNING:  no privileges were granted for "sessions"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+GRANT
+WARNING:  no privileges were granted for "sso_domains"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+GRANT
+WARNING:  no privileges were granted for "sso_providers"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+GRANT
+GRANT
+WARNING:  no privileges were granted for "users"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+REVOKE
+GRANT
+GRANT
+REVOKE
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+WARNING:  no privileges were granted for "schema_migrations"
+GRANT
+WARNING:  no privileges were granted for "schema_migrations"
+GRANT
+WARNING:  no privileges were granted for "schema_migrations"
+GRANT
+WARNING:  no privileges were granted for "schema_migrations"
+GRANT
+WARNING:  no privileges were granted for "schema_migrations"
+GRANT
+WARNING:  no privileges were granted for "schema_migrations"
+GRANT
+WARNING:  no privileges were granted for "subscription"
+GRANT
+WARNING:  no privileges were granted for "subscription"
+GRANT
+WARNING:  no privileges were granted for "subscription"
+GRANT
+WARNING:  no privileges were granted for "subscription"
+GRANT
+WARNING:  no privileges were granted for "subscription"
+GRANT
+WARNING:  no privileges were granted for "subscription"
+GRANT
+WARNING:  no privileges were granted for "subscription_id_seq"
+GRANT
+WARNING:  no privileges were granted for "subscription_id_seq"
+GRANT
+WARNING:  no privileges were granted for "subscription_id_seq"
+GRANT
+WARNING:  no privileges were granted for "subscription_id_seq"
+GRANT
+WARNING:  no privileges were granted for "subscription_id_seq"
+GRANT
+WARNING:  no privileges were granted for "subscription_id_seq"
+GRANT
+REVOKE
+GRANT
+GRANT
+GRANT
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+WARNING:  no privileges were granted for "buckets_analytics"
+GRANT
+WARNING:  no privileges were granted for "buckets_analytics"
+GRANT
+WARNING:  no privileges were granted for "buckets_analytics"
+GRANT
+WARNING:  no privileges were granted for "buckets_vectors"
+GRANT
+WARNING:  no privileges were granted for "buckets_vectors"
+GRANT
+WARNING:  no privileges were granted for "buckets_vectors"
+GRANT
+REVOKE
+GRANT
+GRANT
+GRANT
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+ERROR:  relation "storage.prefixes" does not exist
+ERROR:  relation "storage.prefixes" does not exist
+ERROR:  relation "storage.prefixes" does not exist
+WARNING:  no privileges were granted for "s3_multipart_uploads"
+GRANT
+WARNING:  no privileges were granted for "s3_multipart_uploads"
+GRANT
+WARNING:  no privileges were granted for "s3_multipart_uploads"
+GRANT
+WARNING:  no privileges were granted for "s3_multipart_uploads_parts"
+GRANT
+WARNING:  no privileges were granted for "s3_multipart_uploads_parts"
+GRANT
+WARNING:  no privileges were granted for "s3_multipart_uploads_parts"
+GRANT
+WARNING:  no privileges were granted for "vector_indexes"
+GRANT
+WARNING:  no privileges were granted for "vector_indexes"
+GRANT
+WARNING:  no privileges were granted for "vector_indexes"
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+GRANT
+ERROR:  grant options cannot be granted back to your own grantor
+GRANT
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ERROR:  permission denied to change default privileges
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ERROR:  Non-superuser owned event trigger must execute a non-superuser owned function
+DETAIL:  The current user "postgres" is not a superuser and the function "extensions.set_graphql_placeholder" is owned by a superuser
+ALTER EVENT TRIGGER
+ERROR:  Non-superuser owned event trigger must execute a non-superuser owned function
+DETAIL:  The current user "postgres" is not a superuser and the function "extensions.grant_pg_cron_access" is owned by a superuser
+ALTER EVENT TRIGGER
+ERROR:  Non-superuser owned event trigger must execute a non-superuser owned function
+DETAIL:  The current user "postgres" is not a superuser and the function "extensions.grant_pg_graphql_access" is owned by a superuser
+ALTER EVENT TRIGGER
+ERROR:  Non-superuser owned event trigger must execute a non-superuser owned function
+DETAIL:  The current user "postgres" is not a superuser and the function "extensions.grant_pg_net_access" is owned by a superuser
+ALTER EVENT TRIGGER
+ERROR:  Non-superuser owned event trigger must execute a non-superuser owned function
+DETAIL:  The current user "postgres" is not a superuser and the function "extensions.pgrst_ddl_watch" is owned by a superuser
+ALTER EVENT TRIGGER
+ERROR:  Non-superuser owned event trigger must execute a non-superuser owned function
+DETAIL:  The current user "postgres" is not a superuser and the function "extensions.pgrst_drop_watch" is owned by a superuser
+ALTER EVENT TRIGGER

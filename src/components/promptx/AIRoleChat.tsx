@@ -534,6 +534,8 @@ ${input}
                           variant="ghost"
                           size="sm"
                           className="h-6 w-6 p-0 opacity-50 hover:opacity-100"
+                          aria-label="复制消息"
+                          title="复制消息"
                           onClick={() => copyMessage(message.content)}
                         >
                           <Copy className="h-3 w-3" />
@@ -585,6 +587,8 @@ ${input}
               onClick={handleSendMessage}
               disabled={!inputMessage.trim() || isLoading}
               className="self-end"
+              aria-label="发送消息"
+              title="发送消息"
             >
               <Send className="h-4 w-4" />
             </Button>

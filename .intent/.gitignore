@@ -1,0 +1,5 @@
+# Intent workspace config directory
+# Only config.json is tracked in git — everything else is local
+*
+!.gitignore
+!config.json

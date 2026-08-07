@@ -1,0 +1,358 @@
+{
+  "scripts": [
+    {
+      "name": "dev",
+      "command": "pnpm dev",
+      "mode": "service",
+      "category": "dev"
+    },
+    {
+      "name": "test:api",
+      "command": "pnpm test:api",
+      "mode": "command",
+      "category": "test"
+    },
+    {
+      "name": "import:docs-prompts",
+      "command": "pnpm import:docs-prompts",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "test:api:local",
+      "command": "pnpm test:api:local",
+      "mode": "command",
+      "category": "test"
+    },
+    {
+      "name": "test:api:vercel",
+      "command": "pnpm test:api:vercel",
+      "mode": "command",
+      "category": "test"
+    },
+    {
+      "name": "build",
+      "command": "pnpm build",
+      "mode": "command",
+      "category": "build"
+    },
+    {
+      "name": "build:electron-app",
+      "command": "pnpm build:electron-app",
+      "mode": "command",
+      "category": "build"
+    },
+    {
+      "name": "build:api",
+      "command": "pnpm build:api",
+      "mode": "command",
+      "category": "build"
+    },
+    {
+      "name": "build:info",
+      "command": "pnpm build:info",
+      "mode": "command",
+      "category": "build"
+    },
+    {
+      "name": "build:electron",
+      "command": "pnpm build:electron",
+      "mode": "command",
+      "category": "build"
+    },
+    {
+      "name": "build:dev",
+      "command": "pnpm build:dev",
+      "mode": "command",
+      "category": "build"
+    },
+    {
+      "name": "lint",
+      "command": "pnpm lint",
+      "mode": "command",
+      "category": "lint"
+    },
+    {
+      "name": "preview",
+      "command": "pnpm preview",
+      "mode": "service",
+      "category": "dev"
+    },
+    {
+      "name": "package",
+      "command": "pnpm package",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "pack",
+      "command": "pnpm pack",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "dist",
+      "command": "pnpm dist",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "dist:win",
+      "command": "pnpm dist:win",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "dist:mac-intel",
+      "command": "pnpm dist:mac-intel",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "dist:mac-arm",
+      "command": "pnpm dist:mac-arm",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "dist:mac",
+      "command": "pnpm dist:mac",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "dist:all",
+      "command": "pnpm dist:all",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "electron:dev",
+      "command": "pnpm electron:dev",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "electron:build",
+      "command": "pnpm electron:build",
+      "mode": "command",
+      "category": "build"
+    },
+    {
+      "name": "electron:preview",
+      "command": "pnpm electron:preview",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "electron:start",
+      "command": "pnpm electron:start",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "server:build",
+      "command": "pnpm server:build",
+      "mode": "command",
+      "category": "build"
+    },
+    {
+      "name": "server:start",
+      "command": "pnpm server:start",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "server:dev",
+      "command": "pnpm server:dev",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "test:login",
+      "command": "pnpm test:login",
+      "mode": "command",
+      "category": "test"
+    },
+    {
+      "name": "test:login:email",
+      "command": "pnpm test:login:email",
+      "mode": "command",
+      "category": "test"
+    },
+    {
+      "name": "test:login:google",
+      "command": "pnpm test:login:google",
+      "mode": "command",
+      "category": "test"
+    },
+    {
+      "name": "test:login:github",
+      "command": "pnpm test:login:github",
+      "mode": "command",
+      "category": "test"
+    },
+    {
+      "name": "test:login:linuxdo",
+      "command": "pnpm test:login:linuxdo",
+      "mode": "command",
+      "category": "test"
+    },
+    {
+      "name": "test:login:all",
+      "command": "pnpm test:login:all",
+      "mode": "command",
+      "category": "test"
+    },
+    {
+      "name": "version:patch",
+      "command": "pnpm version:patch",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "version:minor",
+      "command": "pnpm version:minor",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "version:major",
+      "command": "pnpm version:major",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "release:patch",
+      "command": "pnpm release:patch",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "release:minor",
+      "command": "pnpm release:minor",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "release:major",
+      "command": "pnpm release:major",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "release:win",
+      "command": "pnpm release:win",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "release:mac",
+      "command": "pnpm release:mac",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "release:all",
+      "command": "pnpm release:all",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "publish:patch",
+      "command": "pnpm publish:patch",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "publish:minor",
+      "command": "pnpm publish:minor",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "publish:major",
+      "command": "pnpm publish:major",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "publish:win",
+      "command": "pnpm publish:win",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "publish:mac",
+      "command": "pnpm publish:mac",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "publish:all",
+      "command": "pnpm publish:all",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "quick:patch",
+      "command": "pnpm quick:patch",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "quick:minor",
+      "command": "pnpm quick:minor",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "quick:major",
+      "command": "pnpm quick:major",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "quick:win",
+      "command": "pnpm quick:win",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "quick:mac",
+      "command": "pnpm quick:mac",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "quick:all",
+      "command": "pnpm quick:all",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "simple:patch",
+      "command": "pnpm simple:patch",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "simple:minor",
+      "command": "pnpm simple:minor",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "simple:major",
+      "command": "pnpm simple:major",
+      "mode": "command",
+      "category": "other"
+    },
+    {
+      "name": "test:build",
+      "command": "pnpm test:build",
+      "mode": "command",
+      "category": "test"
+    }
+  ]
+}
